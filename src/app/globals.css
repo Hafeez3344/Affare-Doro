@@ -20,4 +20,5 @@ body{
     --text-color-body-minus: rgba(247, 0, 0, 1);
     --text-color-body-pending: rgba(255, 163, 26, 1);
     --text-color-body-order: rgba(0, 161, 255, 1);
+    --price-color: #4880FF;
 }

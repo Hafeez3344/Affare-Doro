@@ -1,9 +1,11 @@
-"use client"
+"use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Image from "next/image";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
+import { updatePageNavigation } from "@/features/features";
 
 import { GoDotFill } from "react-icons/go";
 
@@ -23,55 +25,52 @@ import {
   CategoryScale,
   LinearScale,
   Tooltip,
-  Legend
-} from 'chart.js';
+  Legend,
+} from "chart.js";
 
-import { Bar } from 'react-chartjs-2';
+import { Bar } from "react-chartjs-2";
 
-ChartJS.register(
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend
-)
-
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(updatePageNavigation("dashboard"));
+  }, []);
   const data = {
-    labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
+    labels: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
     datasets: [
       {
-        label: 'Order',
+        label: "Order",
         data: [5300, 5200, 9300, 13500, 5300, 10200, 1200, 7100],
-        backgroundColor: '#00A1FF',
-        borderRadius: 5
+        backgroundColor: "#00A1FF",
+        borderRadius: 5,
       },
       {
-        label: 'Revenue',
+        label: "Revenue",
         data: [4500, 4000, 9300, 15000, 4000, 11000, 2000, 8000],
-        backgroundColor: '#06E775',
-        borderRadius: 5
-      }
-    ]
+        backgroundColor: "#06E775",
+        borderRadius: 5,
+      },
+    ],
   };
   const options = {
     plugins: {
       legend: {
-        display: false
-      }
+        display: false,
+      },
     },
     scales: {
       x: {
         grid: {
-          display: false
-        }
+          display: false,
+        },
       },
       y: {
         grid: {
-          display: false
-        }
-      }
+          display: false,
+        },
+      },
     },
   };
   return (
@@ -157,10 +156,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div>
-                <Bar
-                  data={data}
-                  options={options}
-                ></Bar>
+                <Bar data={data} options={options}></Bar>
               </div>
             </div>
             {/* products */}
