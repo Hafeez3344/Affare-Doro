@@ -1,72 +1,109 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { RxDashboard } from "react-icons/rx";
 import { LuShoppingBag } from "react-icons/lu";
-import { RiUserStarLine, RiDiscountPercentLine, RiStore2Line } from "react-icons/ri";
+import {
+  RiUserStarLine,
+  RiDiscountPercentLine,
+  RiStore2Line,
+} from "react-icons/ri";
 import { IoBagRemoveOutline } from "react-icons/io5";
 import { FiSettings } from "react-icons/fi";
-import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import {
+  HiOutlineExclamationCircle,
+  HiOutlineQuestionMarkCircle,
+} from "react-icons/hi2";
+import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
+import { updateSidebar } from "@/features/features";
 
 const Sidebar = () => {
   const navigate = useRouter();
+  const dispatch = useDispatch();
+  const showSidebar = useSelector((state) => state.showSidebar);
+  const fn_sidebarControl = () => {
+    dispatch(updateSidebar(!showSidebar));
+  };
   return (
-    <div className="w-[240px] bg-white rounded-tr-[8px] mt-[30px] shadow-md px-[20px] py-[25px] flex flex-col gap-1.5">
-      <SidebarPageTemplate
-        icon={<RxDashboard className="w-[20px] h-[20px]" />}
-        label={"Dashboard"}
-        navigateTo={"dashboard"}
-        navigate={navigate}
-      />
-      <SidebarPageTemplate
-        icon={<LuShoppingBag className="w-[20px] h-[20px]" />}
-        label={"Products"}
-        navigateTo={"products"}
-        navigate={navigate}
-      />
-      <SidebarPageTemplate
-        icon={<RiUserStarLine className="w-[20px] h-[20px]" />}
-        label={"Customers"}
-        navigateTo={"customers"}
-        navigate={navigate}
-      />
-      <SidebarPageTemplate
-        icon={<IoBagRemoveOutline className="w-[21px] h-[21px]" />}
-        label={"Orders"}
-        navigateTo={"orders"}
-        navigate={navigate}
-      />
-      <SidebarPageTemplate
-        icon={<RiDiscountPercentLine className="w-[20px] h-[20px]" />}
-        label={"Offers"}
-        navigateTo={"offers"}
-        navigate={navigate}
-      />
-      <SidebarPageTemplate
-        icon={<RiStore2Line className="w-[20px] h-[20px]" />}
-        label={"Store Settings"}
-        navigateTo={"store-settings"}
-        navigate={navigate}
-      />
-      <SidebarPageTemplate
-        icon={<FiSettings className="w-[20px] h-[19px]" />}
-        label={` Settings`}
-        navigateTo={"settings"}
-        navigate={navigate}
-      />
-      <SidebarPageTemplate
-        icon={<HiOutlineExclamationCircle className="w-[20px] h-[20px] scale-[1.15]" />}
-        label={` Feedback`}
-        navigateTo={"feedback"}
-        navigate={navigate}
-      />
-      {/* <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Shipment"} />
-      <SidebarPageTemplate icon={<PiStorefront className="w-[20px] h-[20px]" />} label={"Store Settings"} />
-      <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Settings"} />
-      <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Feedback"} />
-      <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Help Store"} /> */}
-    </div>
+    <>
+      <div
+        className={`${
+          showSidebar ? "absolute md:relative flex h-[85%] min-h-[550px] md:h-auto" : "absolute md:relative hidden md:flex md:h-auto"
+        } w-[240px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[20px] py-[25px] flex-col gap-1.5`}
+      >
+        <button
+          className="absolute md:hidden text-[var(--text-color)] right-5 scale-[1.5] top-2"
+          onClick={fn_sidebarControl}
+        >
+          <FaArrowAltCircleLeft />
+        </button>
+        <SidebarPageTemplate
+          icon={<RxDashboard className="w-[20px] h-[20px]" />}
+          label={"Dashboard"}
+          navigateTo={"dashboard"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<LuShoppingBag className="w-[20px] h-[20px]" />}
+          label={"Products"}
+          navigateTo={"products"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<RiUserStarLine className="w-[20px] h-[20px]" />}
+          label={"Customers"}
+          navigateTo={"customers"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<IoBagRemoveOutline className="w-[21px] h-[21px]" />}
+          label={"Orders"}
+          navigateTo={"orders"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<RiDiscountPercentLine className="w-[20px] h-[20px]" />}
+          label={"Offers"}
+          navigateTo={"offers"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<RiStore2Line className="w-[20px] h-[20px]" />}
+          label={"Store Settings"}
+          navigateTo={"store-settings"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<FiSettings className="w-[20px] h-[19px]" />}
+          label={` Settings`}
+          navigateTo={"settings"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={
+            <HiOutlineExclamationCircle className="w-[20px] h-[20px] scale-[1.15]" />
+          }
+          label={`Feedback`}
+          navigateTo={"feedback"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={
+            <HiOutlineQuestionMarkCircle className="w-[20px] h-[20px] scale-[1.15]" />
+          }
+          label={`Help Store`}
+          navigateTo={"help-store"}
+          navigate={navigate}
+        />
+      </div>
+      <button
+        className={`${showSidebar ? "hidden" : "absolute"} md:hidden text-[var(--text-color)] left-5 scale-[1.5] top-[77px]`}
+        onClick={fn_sidebarControl}
+      >
+        <FaArrowAltCircleRight />
+      </button>
+    </>
   );
 };
 

@@ -10,7 +10,7 @@ const General = () => {
   return (
     <div className="mt-[20px]">
       <p className="text-[20px] font-[500]">Logo</p>
-      <div className="my-[30px] flex gap-10 items-center">
+      <div className="my-[30px] flex gap-10 items-center flex-col sm:flex-row">
         <div className="w-[110px] h-[110px] bg-[#ECEDF0] border border-[#D6D6D6] rounded-full flex justify-center items-center">
           <IoMdCamera className="text-gray-500 text-[40px]" />
         </div>

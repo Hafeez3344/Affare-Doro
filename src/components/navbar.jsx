@@ -8,12 +8,12 @@ import Image from "next/image";
 
 const Navbar = () => {
   return (
-    <div className="bg-white h-[70px] shadow-sm flex items-center">
-      <div className="w-[240px] flex justify-center items-center">
-        <Image src={grazleLogo} className="scale-[0.35] mt-[10px]" />
+    <div className="bg-white h-[70px] shadow-sm flex items-center justify-between">
+      <div className="md:w-[240px] flex justify-center items-center px-5 md:ps-0">
+        <Image src={grazleLogo} className="h-[80px] w-auto mt-3.5" />
       </div>
-      <div className="flex-1 flex justify-between items-center px-[22px]">
-        <div>
+      <div className="sm:flex-1 flex justify-between items-center px-[22px]">
+        <div className="hidden sm:block">
           <p className="text-[16px] font-[600] leading-[24px]">
             Hello, Johny Haulas
           </p>

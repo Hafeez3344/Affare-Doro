@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   pageNavigation: "",
+  showSidebar: true,
 };
 
 export const featuresSlice = createSlice({
@@ -11,8 +12,11 @@ export const featuresSlice = createSlice({
     updatePageNavigation: (state, action) => {
       state.pageNavigation = action.payload;
     },
+    updateSidebar: (state, action) => {
+      state.showSidebar = action.payload
+    }
   },
 });
 
-export const { updatePageNavigation } = featuresSlice.actions;
+export const { updatePageNavigation, updateSidebar } = featuresSlice.actions;
 export const featuresReducer = featuresSlice.reducer;

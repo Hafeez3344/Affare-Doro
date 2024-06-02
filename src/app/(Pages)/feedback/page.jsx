@@ -47,7 +47,7 @@ const Feedback = () => {
               <p className="text-[16px] text-[var(--text-color-body)] mt-2">
                 Your feedback will help us make the app better for everyone.
               </p>
-              <div className="flex justify-end gap-5 mt-5">
+              <div className="flex justify-end gap-5 mt-5 flex-col sm:flex-row items-center sm:items-start">
                 <Image src={cancel} className="cursor-pointer" />
                 <Image src={submit} className="cursor-pointer" />
               </div>

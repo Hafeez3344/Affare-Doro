@@ -80,8 +80,8 @@ const Dashboard = () => {
         <Sidebar />
         <div className="flex-1 mt-[30px] px-[22px]">
           {/* boxes */}
-          <div className="flex justify-between flex-wrap">
-            <div className="w-[260px] h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+          <div className="flex flex-col sm:flex-row justify-between sm:flex-wrap gap-5">
+            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Total Sales
@@ -95,7 +95,7 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <div className="w-[260px] h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Total Orders
@@ -109,7 +109,7 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <div className="w-[260px] h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Lifetime Revenue
@@ -123,7 +123,7 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <div className="w-[260px] h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Return Orders
@@ -139,9 +139,9 @@ const Dashboard = () => {
             </div>
           </div>
           {/* graphs and products */}
-          <div className="mt-[30px] flex gap-5">
+          <div className="mt-[30px] flex gap-5 flex-col xl:flex-row">
             {/* graph */}
-            <div className="w-[55%] bg-white shadow-sm rounded-[10px] p-[20px]">
+            <div className="xl:w-[55%] bg-white shadow-sm rounded-[10px] p-[20px]">
               <div className="flex justify-between items-center">
                 <p className="text-[20px] font-[600]">Revenue Trend</p>
                 <div className="flex gap-3">
@@ -155,12 +155,12 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-              <div>
+              <div className="w-[100%]">
                 <Bar data={data} options={options}></Bar>
               </div>
             </div>
             {/* products */}
-            <div className="w-[45%] bg-white shadow-sm rounded-[10px] px-[20px] py-[25px] flex flex-col gap-5">
+            <div className="xl:w-[45%] bg-white shadow-sm rounded-[10px] px-[20px] py-[25px] flex flex-col gap-5">
               <div className="flex justify-between items-center">
                 <p className="text-[20px] font-[600]">Customer Favorite</p>
                 <button className="w-[135px] h-[32px] text-[var(--text-color-body)] rounded-[4px] border-black border-[1px] py-[6px] px-[12px] text-[13px] font-[500]">
@@ -237,48 +237,46 @@ const Dashboard = () => {
           </div>
           {/* table */}
           <div className="bg-white rounded-[10px] shadow-sm px-[20px] py-[25px] mt-[20px] flex flex-col gap-5">
-            {/* table header */}
             <div className="flex mb-1">
-              <p className="w-[100px] font-[500] text-[var(--text-color-body)]">
+              <p className="min-w-[100px] font-[500] text-[var(--text-color-body)]">
                 No
               </p>
-              <p className="w-[202px] font-[500] text-[var(--text-color-body)]">
+              <p className="min-w-[202px] font-[500] text-[var(--text-color-body)]">
                 Product Name
               </p>
-              <p className="w-[130px] font-[500] text-[var(--text-color-body)]">
+              <p className="min-w-[130px] font-[500] text-[var(--text-color-body)]">
                 Price
               </p>
-              <p className="w-[170px] font-[500] text-[var(--text-color-body)]">
+              <p className="min-w-[170px] font-[500] text-[var(--text-color-body)]">
                 Country
               </p>
-              <p className="w-[150px] font-[500] text-[var(--text-color-body)]">
+              <p className="min-w-[150px] font-[500] text-[var(--text-color-body)]">
                 Date
               </p>
-              <p className="w-[170px] font-[500] text-[var(--text-color-body)]">
+              <p className="min-w-[170px] font-[500] text-[var(--text-color-body)]">
                 Payment
               </p>
-              <p className="w-[120px] font-[500] text-[var(--text-color-body)]">
+              <p className="min-w-[120px] font-[500] text-[var(--text-color-body)]">
                 Status
               </p>
             </div>
-            {/* table body */}
             <div className="flex">
-              <p className="w-[100px] text-[14px]">PK09485</p>
-              <p className="w-[202px] text-[14px] flex items-center gap-2">
+              <p className="min-w-[100px] text-[14px]">PK09485</p>
+              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
                 <Image src={dashboardTableImg} />
                 Electric LED
               </p>
-              <p className="w-[130px] text-[14px]">$111.00</p>
-              <p className="w-[170px] text-[14px]">United States</p>
-              <p className="w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="w-[170px] text-[14px]">Transfer</p>
-              <div className="w-[120px] text-[14px]">
+              <p className="min-w-[130px] text-[14px]">$111.00</p>
+              <p className="min-w-[170px] text-[14px]">United States</p>
+              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
+              <p className="min-w-[170px] text-[14px]">Transfer</p>
+              <div className="min-w-[120px] text-[14px]">
                 <p className="text-[var(--text-color-body-plus)] font-[500] text-[10px] bg-green-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Delivered
                 </p>
               </div>
             </div>
-            <div className="flex">
+            {/* <div className="flex">
               <p className="w-[100px] text-[14px]">PK09485</p>
               <p className="w-[202px] text-[14px] flex items-center gap-2">
                 <Image src={dashboardTableImg} />
@@ -325,7 +323,7 @@ const Dashboard = () => {
                   Pending
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
