@@ -7,6 +7,7 @@ import { LuShoppingBag } from "react-icons/lu";
 import { RiUserStarLine, RiDiscountPercentLine, RiStore2Line } from "react-icons/ri";
 import { IoBagRemoveOutline } from "react-icons/io5";
 import { FiSettings } from "react-icons/fi";
+import { HiOutlineExclamationCircle } from "react-icons/hi2";
 
 const Sidebar = () => {
   const navigate = useRouter();
@@ -52,6 +53,12 @@ const Sidebar = () => {
         icon={<FiSettings className="w-[20px] h-[19px]" />}
         label={` Settings`}
         navigateTo={"settings"}
+        navigate={navigate}
+      />
+      <SidebarPageTemplate
+        icon={<HiOutlineExclamationCircle className="w-[20px] h-[20px] scale-[1.15]" />}
+        label={` Feedback`}
+        navigateTo={"feedback"}
         navigate={navigate}
       />
       {/* <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Shipment"} />
