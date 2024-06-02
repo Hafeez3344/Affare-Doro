@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 
 import { RxDashboard } from "react-icons/rx";
 import { LuShoppingBag } from "react-icons/lu";
+import { RiUserStarLine, RiDiscountPercentLine } from "react-icons/ri";
+import { IoBagRemoveOutline } from "react-icons/io5";
 
 const Sidebar = () => {
   const navigate = useRouter();
@@ -21,9 +23,25 @@ const Sidebar = () => {
         navigateTo={"products"}
         navigate={navigate}
       />
-      {/* <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Customers"} />
-      <SidebarPageTemplate icon={<HiOutlineShoppingBag className="w-[20px] h-[20px]" />} label={"Orders"} />
-      <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Shipment"} />
+      <SidebarPageTemplate
+        icon={<RiUserStarLine className="w-[20px] h-[20px]" />}
+        label={"Customers"}
+        navigateTo={"customers"}
+        navigate={navigate}
+      />
+      <SidebarPageTemplate
+        icon={<IoBagRemoveOutline className="w-[21px] h-[21px]" />}
+        label={"Orders"}
+        navigateTo={"orders"}
+        navigate={navigate}
+      />
+      <SidebarPageTemplate
+        icon={<RiDiscountPercentLine className="w-[20px] h-[20px]" />}
+        label={"Offers"}
+        navigateTo={"offers"}
+        navigate={navigate}
+      />
+      {/* <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Shipment"} />
       <SidebarPageTemplate icon={<PiStorefront className="w-[20px] h-[20px]" />} label={"Store Settings"} />
       <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Settings"} />
       <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Feedback"} />
@@ -38,7 +56,11 @@ const SidebarPageTemplate = ({ icon, label, navigateTo, navigate }) => {
   const pageNavigation = useSelector((state) => state.pageNavigation);
   return (
     <div
-      className={`flex h-[48px] items-center rounded-tr-full rounded-br-full gap-5 px-[17px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)]  border-l-[2px] hover:border-[var(--text-color)] ${pageNavigation === navigateTo ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]" : "text-gray-500 bg-transparent border-white"}`}
+      className={`flex h-[48px] items-center rounded-tr-full rounded-br-full gap-5 px-[17px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)]  border-l-[2px] hover:border-[var(--text-color)] ${
+        pageNavigation === navigateTo
+          ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]"
+          : "text-gray-500 bg-transparent border-white"
+      }`}
       onClick={() => navigate.push(`/${navigateTo}`)}
     >
       {icon}
