@@ -4,13 +4,14 @@ import { useSelector } from "react-redux";
 
 import { RxDashboard } from "react-icons/rx";
 import { LuShoppingBag } from "react-icons/lu";
-import { RiUserStarLine, RiDiscountPercentLine } from "react-icons/ri";
+import { RiUserStarLine, RiDiscountPercentLine, RiStore2Line } from "react-icons/ri";
 import { IoBagRemoveOutline } from "react-icons/io5";
+import { FiSettings } from "react-icons/fi";
 
 const Sidebar = () => {
   const navigate = useRouter();
   return (
-    <div className="w-[240px] bg-white rounded-tr-[5px] mt-[30px] shadow-md px-[20px] py-[25px] flex flex-col gap-1.5">
+    <div className="w-[240px] bg-white rounded-tr-[8px] mt-[30px] shadow-md px-[20px] py-[25px] flex flex-col gap-1.5">
       <SidebarPageTemplate
         icon={<RxDashboard className="w-[20px] h-[20px]" />}
         label={"Dashboard"}
@@ -39,6 +40,18 @@ const Sidebar = () => {
         icon={<RiDiscountPercentLine className="w-[20px] h-[20px]" />}
         label={"Offers"}
         navigateTo={"offers"}
+        navigate={navigate}
+      />
+      <SidebarPageTemplate
+        icon={<RiStore2Line className="w-[20px] h-[20px]" />}
+        label={"Store Settings"}
+        navigateTo={"store-settings"}
+        navigate={navigate}
+      />
+      <SidebarPageTemplate
+        icon={<FiSettings className="w-[20px] h-[19px]" />}
+        label={` Settings`}
+        navigateTo={"settings"}
         navigate={navigate}
       />
       {/* <SidebarPageTemplate icon={<LuShoppingBag className="w-[20px] h-[20px]" />} label={"Shipment"} />
