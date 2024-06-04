@@ -37,8 +37,10 @@ const Orders = () => {
         <Sidebar />
         <div className="flex-1 mt-[30px] px-[22px]">
           <SearchOnTop />
-          <div className="my-[20px] p-[30px] bg-white rounded-[8px] shadow-sm">
-            <div className="flex gap-10 mb-[15px]">
+          
+          {/* from customer */}
+          <div className="my-[20px] p-[30px] bg-white rounded-[8px] shadow-sm overflow-x-auto w-[94vw] md:w-[67vw] lg:w-[75vw] xl:w-auto">
+            <div className="flex gap-10 mb-[15px] w-[max-content]">
               <p
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                   selectedTab === "all"
@@ -80,7 +82,7 @@ const Orders = () => {
                 Cancelled
               </p>
             </div>
-            <table className="w-full">
+            <table className="w-[1000px] xl:w-[100%]">
               <thead>
                 <tr className="font-[500] text-[var(--text-color-body)] text-[15px] h-[50px]">
                   <td>No</td>
@@ -125,42 +127,6 @@ const Orders = () => {
                     </td>
                   </tr>
                 ))}
-                {/* <tr className="h-[50px] text-[14px]">
-                  <td>PK09485</td>
-                  <td className="flex items-center gap-1.5 h-[50px]">
-                    <Image src={electronicLED} className="h-[26px] w-[26px]" />
-                    Electronic LED
-                  </td>
-                  <td>$111.00</td>
-                  <td>12 Jan, 2024</td>
-                  <td>PK09485</td>
-                  <td className="w-[130px]">
-                    <p className="h-[23px] w-[60px] rounded-[5px] bg-[var(--bg-color-pending)] text-[10px] text-[var(--text-color-pending)] font-[500] flex items-center justify-center">
-                      Pending
-                    </p>
-                  </td>
-                  <td className="px-[17px]">
-                    <Image src={tableAction} className="cursor-pointer" />
-                  </td>
-                </tr>
-                <tr className="h-[50px] text-[14px]">
-                  <td>PK09485</td>
-                  <td className="flex items-center gap-1.5 h-[50px]">
-                    <Image src={electronicLED} className="h-[26px] w-[26px]" />
-                    Electronic LED
-                  </td>
-                  <td>$111.00</td>
-                  <td>12 Jan, 2024</td>
-                  <td>PK09485</td>
-                  <td className="w-[130px]">
-                    <p className="h-[23px] w-[60px] rounded-[5px] bg-[var(--bg-color-cancelled)] text-[10px] text-[var(--text-color-cancelled)] font-[500] flex items-center justify-center">
-                      Cancelled
-                    </p>
-                  </td>
-                  <td className="px-[17px]">
-                    <Image src={tableAction} className="cursor-pointer" />
-                  </td>
-                </tr> */}
               </tbody>
             </table>
           </div>

@@ -37,8 +37,8 @@ const Customers = () => {
         <Sidebar />
         <div className="flex-1 mt-[30px] px-[22px]">
           <SearchOnTop />
-          <div className="my-[20px] p-[30px] bg-white rounded-[8px] shadow-sm">
-            <table className="w-full">
+          <div className="my-[20px] p-[30px] bg-white rounded-[8px] shadow-sm overflow-x-auto w-[94vw] md:w-[67vw] lg:w-[75vw] xl:w-auto">
+            <table className="w-[1000px] xl:w-[100%]">
               <thead>
                 <tr className="font-[500] text-[var(--text-color-body)] text-[15px]">
                   <td>Name</td>
