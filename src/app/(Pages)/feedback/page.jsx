@@ -26,7 +26,7 @@ const Feedback = () => {
           <div className="my-[20px] px-[20px] py-[30px] bg-white rounded-[8px] shadow-sm">
             <p className="text-[21px] font-[600]">Help us improve Grazle</p>
             <p className="text-[15px] text-[var(--text-color-body)] mt-2">
-              We're always working to improve the app and your feedback is an
+              We are always working to improve the app and your feedback is an
               important part of that process.
             </p>
             <div className="flex flex-col gap-5 pb-2 mt-5">
