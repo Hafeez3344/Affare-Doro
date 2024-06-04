@@ -21,7 +21,7 @@ const HelpStore = () => {
   const [selectedFaqs, setSelectedFaqs] = useState(0);
   useEffect(() => {
     dispatch(updatePageNavigation("help-store"));
-  }, []);
+  }, [dispatch]);
   const fn_showAnswer = (id) => {
     if (selectedFaqs === id) {
       return setSelectedFaqs(0);

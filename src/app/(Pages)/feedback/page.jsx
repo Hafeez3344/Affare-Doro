@@ -15,7 +15,7 @@ const Feedback = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updatePageNavigation("feedback"));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -48,8 +48,8 @@ const Feedback = () => {
                 Your feedback will help us make the app better for everyone.
               </p>
               <div className="flex justify-end gap-5 mt-5 flex-col sm:flex-row items-center sm:items-start">
-                <Image src={cancel} className="cursor-pointer" />
-                <Image src={submit} className="cursor-pointer" />
+                <Image alt="" src={cancel} className="cursor-pointer" />
+                <Image alt="" src={submit} className="cursor-pointer" />
               </div>
             </div>
           </div>

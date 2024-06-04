@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <div className="bg-white h-[70px] shadow-sm flex items-center justify-between">
       <div className="md:w-[240px] flex justify-center items-center px-5 md:ps-0">
-        <Image src={grazleLogo} className="h-[80px] w-auto mt-3.5" />
+        <Image alt="" src={grazleLogo} className="h-[80px] w-auto mt-3.5" />
       </div>
       <div className="sm:flex-1 flex justify-between items-center px-[22px]">
         <div className="hidden sm:block">
@@ -25,7 +25,7 @@ const Navbar = () => {
           <IoIosNotificationsOutline className="bg-gray-200 rounded-[5px] h-[23px] w-[23px] p-1" />
           <p className="text-[14px] font-[500]">Johny Haulas</p>
           <div className="w-[40px] h-[40px] rounded-[9px] bg-gray-200">
-            <Image src={profile} className="rounded-[9px]" />
+            <Image alt="" src={profile} className="rounded-[9px]" />
           </div>
         </div>
       </div>

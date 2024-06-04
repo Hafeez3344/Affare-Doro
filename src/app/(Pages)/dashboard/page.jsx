@@ -36,7 +36,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updatePageNavigation("dashboard"));
-  }, []);
+  }, [dispatch]);
   const data = {
     labels: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
     datasets: [
@@ -86,7 +86,7 @@ const Dashboard = () => {
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Total Sales
                 </p>
-                <Image src={salesIcon} />
+                <Image alt="" src={salesIcon} />
               </div>
               <div>
                 <p className="text-[32px] font-[600] text-black">$ 77.21</p>
@@ -100,7 +100,7 @@ const Dashboard = () => {
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Total Orders
                 </p>
-                <Image src={ordersIcon} />
+                <Image alt="" src={ordersIcon} />
               </div>
               <div>
                 <p className="text-[32px] font-[600] text-black">$ 2,107</p>
@@ -114,7 +114,7 @@ const Dashboard = () => {
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Lifetime Revenue
                 </p>
-                <Image src={revenueIcon} />
+                <Image alt="" src={revenueIcon} />
               </div>
               <div>
                 <p className="text-[32px] font-[600] text-black">$ 653</p>
@@ -128,7 +128,7 @@ const Dashboard = () => {
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Return Orders
                 </p>
-                <Image src={returnIcon} />
+                <Image alt="" src={returnIcon} />
               </div>
               <div>
                 <p className="text-[32px] font-[600] text-black">$ 2,107</p>
@@ -168,7 +168,7 @@ const Dashboard = () => {
                 </button>
               </div>
               <div className="flex gap-5">
-                <Image src={productOne} className="w-[67px] h-[67px]" />
+                <Image alt="" src={productOne} className="w-[67px] h-[67px]" />
                 <div className="flex-1 flex justify-between items-center">
                   <div className="flex flex-col gap-1.5">
                     <p className="font-[500] leading-[24px]">
@@ -190,7 +190,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex gap-5">
-                <Image src={productTwo} className="w-[67px] h-[67px]" />
+                <Image alt="" src={productTwo} className="w-[67px] h-[67px]" />
                 <div className="flex-1 flex justify-between items-center">
                   <div className="flex flex-col gap-1.5">
                     <p className="font-[500] leading-[24px]">
@@ -212,7 +212,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex gap-5">
-                <Image src={productThree} className="w-[67px] h-[67px]" />
+                <Image alt="" src={productThree} className="w-[67px] h-[67px]" />
                 <div className="flex-1 flex justify-between items-center">
                   <div className="flex flex-col gap-1.5">
                     <p className="font-[500] leading-[24px]">
@@ -263,7 +263,7 @@ const Dashboard = () => {
             <div className="flex">
               <p className="min-w-[100px] text-[14px]">PK09485</p>
               <p className="min-w-[202px] text-[14px] flex items-center gap-2">
-                <Image src={dashboardTableImg} />
+                <Image alt="" src={dashboardTableImg} />
                 Electric LED
               </p>
               <p className="min-w-[130px] text-[14px]">$111.00</p>
@@ -279,7 +279,7 @@ const Dashboard = () => {
             <div className="flex">
               <p className="min-w-[100px] text-[14px]">PK09485</p>
               <p className="min-w-[202px] text-[14px] flex items-center gap-2">
-                <Image src={dashboardTableImg} />
+                <Image alt="" src={dashboardTableImg} />
                 Electric LED
               </p>
               <p className="min-w-[130px] text-[14px]">$111.00</p>
@@ -295,7 +295,7 @@ const Dashboard = () => {
             <div className="flex">
               <p className="min-w-[100px] text-[14px]">PK09485</p>
               <p className="min-w-[202px] text-[14px] flex items-center gap-2">
-                <Image src={dashboardTableImg} />
+                <Image alt="" src={dashboardTableImg} />
                 Electric LED
               </p>
               <p className="min-w-[130px] text-[14px]">$111.00</p>
@@ -311,7 +311,7 @@ const Dashboard = () => {
             <div className="flex">
               <p className="min-w-[100px] text-[14px]">PK09485</p>
               <p className="min-w-[202px] text-[14px] flex items-center gap-2">
-                <Image src={dashboardTableImg} />
+                <Image alt="" src={dashboardTableImg} />
                 Electric LED
               </p>
               <p className="min-w-[130px] text-[14px]">$111.00</p>

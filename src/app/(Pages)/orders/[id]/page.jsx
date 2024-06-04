@@ -23,7 +23,7 @@ const OrderDetails = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updatePageNavigation("orders"));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -44,6 +44,7 @@ const OrderDetails = () => {
                 </p>
                 <div className="flex gap-10 xl:gap-3">
                   <Image
+                    alt=""
                     src={img}
                     className="w-[100px] h-[100px] rounded-full"
                   />
@@ -107,6 +108,7 @@ const OrderDetails = () => {
                 <div className="flex justify-between">
                   <div className="flex gap-7 items-center">
                     <Image
+                      alt=""
                       src={productOne}
                       className="w-[75px] h-[75px] rounded-[9px]"
                     />
@@ -129,6 +131,7 @@ const OrderDetails = () => {
                 <div className="flex justify-between">
                   <div className="flex gap-7 items-center">
                     <Image
+                      alt=""
                       src={productTwo}
                       className="w-[75px] h-[75px] rounded-[9px]"
                     />
@@ -149,6 +152,7 @@ const OrderDetails = () => {
                 <div className="flex justify-between">
                   <div className="flex gap-7 items-center">
                     <Image
+                      alt=""
                       src={productThree}
                       className="w-[75px] h-[75px] rounded-[9px]"
                     />

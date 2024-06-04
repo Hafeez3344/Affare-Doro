@@ -17,7 +17,7 @@ const CustomersDetails = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updatePageNavigation("customers"));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -32,7 +32,7 @@ const CustomersDetails = () => {
                   Total Cost Order
                 </p>
                 <div className="flex gap-2 items-start mt-4">
-                  <Image src={grommetIconsMoney} className="mt-2" />
+                  <Image alt="" src={grommetIconsMoney} className="mt-2" />
                   <div>
                     <p className="text-[25px] font-[600]">
                       $840,820
@@ -49,7 +49,7 @@ const CustomersDetails = () => {
                   Total Cost Order
                 </p>
                 <div className="flex gap-2 items-start mt-4">
-                  <Image src={grommetIconsMoney} className="mt-2" />
+                  <Image alt="" src={grommetIconsMoney} className="mt-2" />
                   <div>
                     <p className="text-[25px] font-[600]">
                       $840,820
@@ -66,7 +66,7 @@ const CustomersDetails = () => {
                   Total Cost Order
                 </p>
                 <div className="flex gap-2 items-start mt-4">
-                  <Image src={grommetIconsMoney} className="mt-2" />
+                  <Image alt="" src={grommetIconsMoney} className="mt-2" />
                   <div>
                     <p className="text-[25px] font-[600]">
                       $840,820
@@ -125,7 +125,7 @@ const CustomersDetails = () => {
           </div>
           <div className="xl:w-[320px] bg-white rounded-[8px] shadow-sm flex items-center flex-col px-[20px] py-[39px] h-[max-content]">
             <div className="w-[65px] h-[65px] rounded-full bg-[#E0D5C9] overflow-hidden">
-              <Image src={customer} className="w-[100%] h-[100%]" />
+              <Image alt="" src={customer} className="w-[100%] h-[100%]" />
             </div>
             <p className="font-[600] mt-3">Park Kim Ju</p>
             <p className="text-[14px] font-[500] mt-1"><span className="text-[var(--text-color-body)]">ID:CUS</span>120038299</p>

@@ -14,7 +14,7 @@ const StoreSettings = () => {
   const [selectedTab, setSelectedTab] = useState("general");
   useEffect(() => {
     dispatch(updatePageNavigation("store-settings"));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />

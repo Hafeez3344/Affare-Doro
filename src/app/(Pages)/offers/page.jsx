@@ -20,7 +20,7 @@ const Offers = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updatePageNavigation("offers"));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -33,15 +33,16 @@ const Offers = () => {
             <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
               <div className="rounded-[8px] flex justify-center pt-[10px] pb-[15px] flex-col relative">
                 <Image
+                  alt=""
                   src={offerImg}
                   className="h-[260px] rounded-[8px] object-cover w-[100%] px-[10px]"
                 />
                 <div className="px-[17px] absolute w-[340px] top-[17px] flex justify-between">
                   <div className="font-[300] flex gap-1 items-center bg-[#F69B26] w-[max-content] px-[5px] py-[3px] rounded-[7px] text-white">
                     4.8 (342)
-                    <Image src={whiteStar} className="mt-[-2px]" />
+                    <Image alt="" src={whiteStar} className="mt-[-2px]" />
                   </div>
-                  <Image src={offerLike} />
+                  <Image alt="" src={offerLike} />
                 </div>
               </div>
               <div className="px-[20px]">
@@ -62,15 +63,16 @@ const Offers = () => {
             <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
               <div className="rounded-[8px] flex justify-center pt-[10px] pb-[15px] flex-col relative">
                 <Image
+                  alt=""
                   src={offerImg}
                   className="h-[260px] rounded-[8px] object-cover w-[100%] px-[10px]"
                 />
                 <div className="px-[17px] absolute w-[340px] top-[17px] flex justify-between">
                   <div className="font-[300] flex gap-1 items-center bg-[#F69B26] w-[max-content] px-[5px] py-[3px] rounded-[7px] text-white">
                     4.8 (342)
-                    <Image src={whiteStar} className="mt-[-2px]" />
+                    <Image alt="" src={whiteStar} className="mt-[-2px]" />
                   </div>
-                  <Image src={offerLike} />
+                  <Image alt="" src={offerLike} />
                 </div>
               </div>
               <div className="px-[20px]">
@@ -91,15 +93,16 @@ const Offers = () => {
             <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
               <div className="rounded-[8px] flex justify-center pt-[10px] pb-[15px] flex-col relative">
                 <Image
+                  alt=""
                   src={offerImg}
                   className="h-[260px] rounded-[8px] object-cover w-[100%] px-[10px]"
                 />
                 <div className="px-[17px] absolute w-[340px] top-[17px] flex justify-between">
                   <div className="font-[300] flex gap-1 items-center bg-[#F69B26] w-[max-content] px-[5px] py-[3px] rounded-[7px] text-white">
                     4.8 (342)
-                    <Image src={whiteStar} className="mt-[-2px]" />
+                    <Image alt="" src={whiteStar} className="mt-[-2px]" />
                   </div>
-                  <Image src={offerLike} />
+                  <Image alt="" src={offerLike} />
                 </div>
               </div>
               <div className="px-[20px]">
@@ -120,15 +123,16 @@ const Offers = () => {
             <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
               <div className="rounded-[8px] flex justify-center pt-[10px] pb-[15px] flex-col relative">
                 <Image
+                  alt=""
                   src={offerImg}
                   className="h-[260px] rounded-[8px] object-cover w-[100%] px-[10px]"
                 />
                 <div className="px-[17px] absolute w-[340px] top-[17px] flex justify-between">
                   <div className="font-[300] flex gap-1 items-center bg-[#F69B26] w-[max-content] px-[5px] py-[3px] rounded-[7px] text-white">
                     4.8 (342)
-                    <Image src={whiteStar} className="mt-[-2px]" />
+                    <Image alt="" src={whiteStar} className="mt-[-2px]" />
                   </div>
-                  <Image src={offerLike} />
+                  <Image alt="" src={offerLike} />
                 </div>
               </div>
               <div className="px-[20px]">

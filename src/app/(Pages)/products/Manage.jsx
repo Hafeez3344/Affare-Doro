@@ -13,6 +13,7 @@ const Manage = () => {
       <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
         <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
           <Image
+            alt=""
             src={productOne}
             className="h-[290px] rounded-[8px] object-contain"
           />
@@ -24,11 +25,11 @@ const Manage = () => {
               $120.00
             </p>
             <div className="flex gap-0.5 mt-1">
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={grayStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={grayStar} />
               <p className="text-[12px] text-[--text-color-body] font-[600]">
                 (131)
               </p>
@@ -38,7 +39,7 @@ const Manage = () => {
             </button>
           </div>
           <div>
-            <Image src={fvrtIcon} />
+            <Image alt="" src={fvrtIcon} />
           </div>
         </div>
       </div>
@@ -46,6 +47,7 @@ const Manage = () => {
       <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
         <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
           <Image
+            alt=""
             src={productOne}
             className="h-[290px] rounded-[8px] object-contain"
           />
@@ -57,11 +59,11 @@ const Manage = () => {
               $120.00
             </p>
             <div className="flex gap-0.5 mt-1">
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={grayStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={grayStar} />
               <p className="text-[12px] text-[--text-color-body] font-[600]">
                 (131)
               </p>
@@ -71,7 +73,7 @@ const Manage = () => {
             </button>
           </div>
           <div>
-            <Image src={fvrtIcon} />
+            <Image alt="" src={fvrtIcon} />
           </div>
         </div>
       </div>
@@ -79,6 +81,7 @@ const Manage = () => {
       <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
         <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
           <Image
+            alt=""
             src={productOne}
             className="h-[290px] rounded-[8px] object-contain"
           />
@@ -90,11 +93,11 @@ const Manage = () => {
               $120.00
             </p>
             <div className="flex gap-0.5 mt-1">
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={grayStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={grayStar} />
               <p className="text-[12px] text-[--text-color-body] font-[600]">
                 (131)
               </p>
@@ -104,7 +107,7 @@ const Manage = () => {
             </button>
           </div>
           <div>
-            <Image src={fvrtIcon} />
+            <Image alt="" src={fvrtIcon} />
           </div>
         </div>
       </div>
@@ -112,6 +115,7 @@ const Manage = () => {
       <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
         <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
           <Image
+            alt=""
             src={productOne}
             className="h-[290px] rounded-[8px] object-contain"
           />
@@ -123,11 +127,11 @@ const Manage = () => {
               $120.00
             </p>
             <div className="flex gap-0.5 mt-1">
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={grayStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={grayStar} />
               <p className="text-[12px] text-[--text-color-body] font-[600]">
                 (131)
               </p>
@@ -137,7 +141,7 @@ const Manage = () => {
             </button>
           </div>
           <div>
-            <Image src={fvrtIcon} />
+            <Image alt="" src={fvrtIcon} />
           </div>
         </div>
       </div>
@@ -145,6 +149,7 @@ const Manage = () => {
       <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
         <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
           <Image
+            alt=""
             src={productOne}
             className="h-[290px] rounded-[8px] object-contain"
           />
@@ -156,11 +161,11 @@ const Manage = () => {
               $120.00
             </p>
             <div className="flex gap-0.5 mt-1">
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={grayStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={grayStar} />
               <p className="text-[12px] text-[--text-color-body] font-[600]">
                 (131)
               </p>
@@ -170,7 +175,7 @@ const Manage = () => {
             </button>
           </div>
           <div>
-            <Image src={fvrtIcon} />
+            <Image alt="" src={fvrtIcon} />
           </div>
         </div>
       </div>
@@ -178,6 +183,7 @@ const Manage = () => {
       <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
         <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
           <Image
+            alt=""
             src={productOne}
             className="h-[290px] rounded-[8px] object-contain"
           />
@@ -189,11 +195,11 @@ const Manage = () => {
               $120.00
             </p>
             <div className="flex gap-0.5 mt-1">
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={fillStar} />
-              <Image src={grayStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={fillStar} />
+              <Image alt="" src={grayStar} />
               <p className="text-[12px] text-[--text-color-body] font-[600]">
                 (131)
               </p>
@@ -203,7 +209,7 @@ const Manage = () => {
             </button>
           </div>
           <div>
-            <Image src={fvrtIcon} />
+            <Image alt="" src={fvrtIcon} />
           </div>
         </div>
       </div>

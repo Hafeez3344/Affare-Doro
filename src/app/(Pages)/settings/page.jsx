@@ -13,7 +13,7 @@ const Settings = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updatePageNavigation("settings"));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -83,7 +83,7 @@ const Settings = () => {
               </div>
             </div>
             <div>
-                <Image src={saveChanges} className="mt-8 mb-3 cursor-pointer" />
+                <Image alt="" src={saveChanges} className="mt-8 mb-3 cursor-pointer" />
               </div>
           </div>
         </div>

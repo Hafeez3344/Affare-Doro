@@ -40,7 +40,7 @@ const Payment = () => {
             className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
           />
         </div>
-        <Image src={saveChanges} className="mt-5 cursor-pointer" />
+        <Image alt="" src={saveChanges} className="mt-5 cursor-pointer" />
       </div>
     </div>
   );

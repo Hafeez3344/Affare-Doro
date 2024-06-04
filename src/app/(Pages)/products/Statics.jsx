@@ -104,7 +104,7 @@ const Statics = () => {
               <tr className="h-[45px]">
                 <td>PK08656</td>
                 <td className="flex gap-1 items-center pt-2.5">
-                  <Image src={electronicLED} />
+                  <Image alt="" src={electronicLED} />
                   <p>Electric LED</p>
                 </td>
                 <td>$111.00</td>
@@ -117,7 +117,7 @@ const Statics = () => {
               <tr className="h-[45px]">
                 <td>PK08656</td>
                 <td className="flex gap-1 items-center pt-2.5">
-                  <Image src={electronicLED} />
+                  <Image alt="" src={electronicLED} />
                   <p>Electric LED</p>
                 </td>
                 <td>$111.00</td>
@@ -130,7 +130,7 @@ const Statics = () => {
               <tr className="h-[45px]">
                 <td>PK08656</td>
                 <td className="flex gap-1 items-center pt-2.5">
-                  <Image src={electronicLED} />
+                  <Image alt="" src={electronicLED} />
                   <p>Electric LED</p>
                 </td>
                 <td>$111.00</td>
@@ -143,7 +143,7 @@ const Statics = () => {
               <tr className="h-[45px]">
                 <td>PK08656</td>
                 <td className="flex gap-1 items-center pt-2.5">
-                  <Image src={electronicLED} />
+                  <Image alt="" src={electronicLED} />
                   <p>Electric LED</p>
                 </td>
                 <td>$111.00</td>

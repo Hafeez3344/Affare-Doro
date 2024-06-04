@@ -10,9 +10,9 @@ const MessageSentSuccessfully = ({ setFormSubmit }) => {
     <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center backdrop-blur">
       <div className="h-[280px] w-[390px] rounded-[8px] bg-white shadow-sm flex flex-col justify-center items-center">
         <div className="flex justify-center items-center gap-1">
-          <Image src={leftSuccessDots} />
-          <Image src={success} className="w-[70px] h-[70px]" />
-          <Image src={rightSuccessDots} />
+          <Image alt="" src={leftSuccessDots} />
+          <Image alt="" src={success} className="w-[70px] h-[70px]" />
+          <Image alt="" src={rightSuccessDots} />
         </div>
         <p className="text-[20px] font-[500] text-center my-4">
           Message send successfully!

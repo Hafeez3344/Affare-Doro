@@ -14,7 +14,7 @@ const General = () => {
         <div className="w-[110px] h-[110px] bg-[#ECEDF0] border border-[#D6D6D6] rounded-full flex justify-center items-center">
           <IoMdCamera className="text-gray-500 text-[40px]" />
         </div>
-        <Image src={uploadPhoto} className="cursor-pointer" />
+        <Image alt="" src={uploadPhoto} className="cursor-pointer" />
       </div>
       <div className="flex flex-col gap-5 pb-5">
         <div className="flex flex-col gap-1">
@@ -31,7 +31,7 @@ const General = () => {
             className="focus:outline-none py-2 border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[100px] text-[15px]"
           />
         </div>
-        <Image src={saveChanges} className="mt-5 cursor-pointer" />
+        <Image alt="" src={saveChanges} className="mt-5 cursor-pointer" />
       </div>
     </div>
   );

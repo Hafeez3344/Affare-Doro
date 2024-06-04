@@ -23,7 +23,7 @@ const Orders = () => {
   const [selectedTab, setSelectedTab] = useState("all");
   useEffect(() => {
     dispatch(updatePageNavigation("orders"));
-  }, []);
+  }, [dispatch]);
   const fn_viewDetails = (id) => {
     if (id === selectedCustomer) {
       return setSelectedCustomer(0);
@@ -98,6 +98,7 @@ const Orders = () => {
                     <td>PK09485</td>
                     <td className="flex items-center gap-1.5 h-[50px]">
                       <Image
+                        alt=""
                         src={electronicLED}
                         className="h-[26px] w-[26px]"
                       />
@@ -113,6 +114,7 @@ const Orders = () => {
                     </td>
                     <td className="px-[17px] relative">
                       <Image
+                        alt=""
                         src={tableAction}
                         className="cursor-pointer"
                         onClick={() => fn_viewDetails(item.id)}

@@ -23,7 +23,7 @@ const Customers = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(0);
   useEffect(() => {
     dispatch(updatePageNavigation("customers"));
-  }, []);
+  }, [dispatch]);
   const fn_viewDetails = (id) => {
     if (id === selectedCustomer) {
       return setSelectedCustomer(0);
@@ -54,6 +54,7 @@ const Customers = () => {
                   <tr className="h-[50px] text-[14px]" key={item.id}>
                     <td className="flex items-center gap-1.5 h-[50px]">
                       <Image
+                        alt=""
                         src={tableNameImg}
                         className="h-[26px] w-[26px] rounded-[5px]"
                       />
@@ -63,6 +64,7 @@ const Customers = () => {
                     <td>+01 755776544 66</td>
                     <td className="flex items-center gap-1.5 h-[50px]">
                       <Image
+                        alt=""
                         src={electronicLED}
                         className="h-[26px] w-[26px]"
                       />
@@ -75,6 +77,7 @@ const Customers = () => {
                     </td>
                     <td className="px-[17px] relative">
                       <Image
+                        alt=""
                         src={tableAction}
                         className="cursor-pointer"
                         onClick={() => fn_viewDetails(item.id)}

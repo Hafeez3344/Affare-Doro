@@ -16,7 +16,7 @@ const Products = () => {
   const [selectedTab, setSelectedTab] = useState("manage");
   useEffect(() => {
     dispatch(updatePageNavigation("products"));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
