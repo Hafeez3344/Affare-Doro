@@ -51,7 +51,7 @@ const Customers = () => {
               </thead>
               <tbody>
                 {data?.map((item) => (
-                  <tr className="h-[50px] text-[14px]">
+                  <tr className="h-[50px] text-[14px]" key={item.id}>
                     <td className="flex items-center gap-1.5 h-[50px]">
                       <Image
                         src={tableNameImg}
