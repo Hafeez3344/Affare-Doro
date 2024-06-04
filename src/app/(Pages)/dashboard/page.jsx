@@ -161,7 +161,7 @@ const Dashboard = () => {
             </div>
             {/* products */}
             <div className="xl:w-[45%] bg-white shadow-sm rounded-[10px] px-[20px] py-[25px] flex flex-col gap-5">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
                 <p className="text-[20px] font-[600]">Customer Favorite</p>
                 <button className="w-[135px] h-[32px] text-[var(--text-color-body)] rounded-[4px] border-black border-[1px] py-[6px] px-[12px] text-[13px] font-[500]">
                   See All Products
@@ -236,7 +236,7 @@ const Dashboard = () => {
             </div>
           </div>
           {/* table */}
-          <div className="bg-white rounded-[10px] shadow-sm px-[20px] py-[25px] mt-[20px] flex flex-col gap-5">
+          <div className="dashboard-table bg-white rounded-[10px] shadow-sm px-[20px] py-[25px] mt-[20px] flex flex-col gap-5">
             <div className="flex mb-1">
               <p className="min-w-[100px] font-[500] text-[var(--text-color-body)]">
                 No
@@ -248,7 +248,7 @@ const Dashboard = () => {
                 Price
               </p>
               <p className="min-w-[170px] font-[500] text-[var(--text-color-body)]">
-                Country
+                Customer Name
               </p>
               <p className="min-w-[150px] font-[500] text-[var(--text-color-body)]">
                 Date
@@ -267,7 +267,7 @@ const Dashboard = () => {
                 Electric LED
               </p>
               <p className="min-w-[130px] text-[14px]">$111.00</p>
-              <p className="min-w-[170px] text-[14px]">United States</p>
+              <p className="min-w-[170px] text-[14px]">John Due</p>
               <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
               <p className="min-w-[170px] text-[14px]">Transfer</p>
               <div className="min-w-[120px] text-[14px]">
@@ -276,54 +276,54 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            {/* <div className="flex">
-              <p className="w-[100px] text-[14px]">PK09485</p>
-              <p className="w-[202px] text-[14px] flex items-center gap-2">
+            <div className="flex">
+              <p className="min-w-[100px] text-[14px]">PK09485</p>
+              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
                 <Image src={dashboardTableImg} />
                 Electric LED
               </p>
-              <p className="w-[130px] text-[14px]">$111.00</p>
-              <p className="w-[170px] text-[14px]">United States</p>
-              <p className="w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="w-[170px] text-[14px]">Credit Card</p>
-              <div className="w-[120px] text-[14px]">
+              <p className="min-w-[130px] text-[14px]">$111.00</p>
+              <p className="min-w-[170px] text-[14px]">John Due</p>
+              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
+              <p className="min-w-[170px] text-[14px]">Credit Card</p>
+              <div className="min-w-[120px] text-[14px]">
                 <p className="text-[var(--text-color-body-pending)] font-[500] text-[10px] bg-orange-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Pending
                 </p>
               </div>
             </div>
             <div className="flex">
-              <p className="w-[100px] text-[14px]">PK09485</p>
-              <p className="w-[202px] text-[14px] flex items-center gap-2">
+              <p className="min-w-[100px] text-[14px]">PK09485</p>
+              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
                 <Image src={dashboardTableImg} />
                 Electric LED
               </p>
-              <p className="w-[130px] text-[14px]">$111.00</p>
-              <p className="w-[170px] text-[14px]">United States</p>
-              <p className="w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="w-[170px] text-[14px]">Transfer</p>
-              <div className="w-[120px] text-[14px]">
+              <p className="min-w-[130px] text-[14px]">$111.00</p>
+              <p className="min-w-[170px] text-[14px]">John Due</p>
+              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
+              <p className="min-w-[170px] text-[14px]">Transfer</p>
+              <div className="min-w-[120px] text-[14px]">
                 <p className="text-[var(--text-color-body-plus)] font-[500] text-[10px] bg-green-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Delivered
                 </p>
               </div>
             </div>
             <div className="flex">
-              <p className="w-[100px] text-[14px]">PK09485</p>
-              <p className="w-[202px] text-[14px] flex items-center gap-2">
+              <p className="min-w-[100px] text-[14px]">PK09485</p>
+              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
                 <Image src={dashboardTableImg} />
                 Electric LED
               </p>
-              <p className="w-[130px] text-[14px]">$111.00</p>
-              <p className="w-[170px] text-[14px]">United States</p>
-              <p className="w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="w-[170px] text-[14px]">Credit Card</p>
-              <div className="w-[120px] text-[14px]">
+              <p className="min-w-[130px] text-[14px]">$111.00</p>
+              <p className="min-w-[170px] text-[14px]">John Due</p>
+              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
+              <p className="min-w-[170px] text-[14px]">Credit Card</p>
+              <div className="min-w-[120px] text-[14px]">
                 <p className="text-[var(--text-color-body-pending)] font-[500] text-[10px] bg-orange-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Pending
                 </p>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

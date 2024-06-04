@@ -8,16 +8,28 @@ import { updatePageNavigation } from "@/features/features";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import SearchOnTop from "@/components/SearchOnTop";
+import { BiSolidEditAlt } from "react-icons/bi";
 
 import electronicLED from "@/assets/Electronic-LED.png";
 import tableAction from "@/assets/svgs/table-action.svg";
+import { IoEye } from "react-icons/io5";
+
+import data from "@/components/customers";
+import { useRouter } from "next/navigation";
 
 const Orders = () => {
   const dispatch = useDispatch();
+  const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [selectedTab, setSelectedTab] = useState("all");
   useEffect(() => {
     dispatch(updatePageNavigation("orders"));
   }, []);
+  const fn_viewDetails = (id) => {
+    if (id === selectedCustomer) {
+      return setSelectedCustomer(0);
+    }
+    setSelectedCustomer(id);
+  };
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -81,25 +93,37 @@ const Orders = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="h-[50px] text-[14px]">
-                  <td>PK09485</td>
-                  <td className="flex items-center gap-1.5 h-[50px]">
-                    <Image src={electronicLED} className="h-[26px] w-[26px]" />
-                    Electronic LED
-                  </td>
-                  <td>$111.00</td>
-                  <td>12 Jan, 2024</td>
-                  <td>PK09485</td>
-                  <td className="w-[130px]">
-                    <p className="h-[23px] w-[60px] rounded-[5px] bg-[var(--bg-color-delivered)] text-[10px] text-[var(--text-color-delivered)] font-[500] flex items-center justify-center">
-                      Delivered
-                    </p>
-                  </td>
-                  <td className="px-[17px]">
-                    <Image src={tableAction} className="cursor-pointer" />
-                  </td>
-                </tr>
-                <tr className="h-[50px] text-[14px]">
+                {data?.map((item) => (
+                  <tr key={item.id} className="h-[50px] text-[14px]">
+                    <td>PK09485</td>
+                    <td className="flex items-center gap-1.5 h-[50px]">
+                      <Image
+                        src={electronicLED}
+                        className="h-[26px] w-[26px]"
+                      />
+                      Electronic LED
+                    </td>
+                    <td>$111.00</td>
+                    <td>12 Jan, 2024</td>
+                    <td>PK09485</td>
+                    <td className="w-[130px]">
+                      <p className="h-[23px] w-[60px] rounded-[5px] bg-[var(--bg-color-delivered)] text-[10px] text-[var(--text-color-delivered)] font-[500] flex items-center justify-center">
+                        Delivered
+                      </p>
+                    </td>
+                    <td className="px-[17px] relative">
+                      <Image
+                        src={tableAction}
+                        className="cursor-pointer"
+                        onClick={() => fn_viewDetails(item.id)}
+                      />
+                      {selectedCustomer === item.id && (
+                        <ViewDetails id={item.id} />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {/* <tr className="h-[50px] text-[14px]">
                   <td>PK09485</td>
                   <td className="flex items-center gap-1.5 h-[50px]">
                     <Image src={electronicLED} className="h-[26px] w-[26px]" />
@@ -134,7 +158,7 @@ const Orders = () => {
                   <td className="px-[17px]">
                     <Image src={tableAction} className="cursor-pointer" />
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
           </div>
@@ -145,3 +169,26 @@ const Orders = () => {
 };
 
 export default Orders;
+
+const ViewDetails = ({ id }) => {
+  const navigate = useRouter();
+  return (
+    <div className="absolute py-[10px] px-[10px] flex flex-col items-center text-[var(--text-color-body)] bg-white rounded-[8px] shadow-md border border-gray-100 w-[max-content] left-[-145px] top-[13px] cursor-pointer">
+      <div
+        className="flex items-center gap-2.5 w-full px-2 py-1.5 hover:bg-gray-100 rounded-sm"
+        onClick={() => navigate.push(`/orders/${id}`)}
+      >
+        <IoEye className="w-[20px] h-[20px]" />
+        <p className="text-[14px]">View Details</p>
+      </div>
+      <div className="flex items-center gap-2.5 w-full px-2 py-1.5 hover:bg-gray-100 rounded-sm">
+        <BiSolidEditAlt className="w-[20px] h-[20px]" />
+        <p className="text-[14px]">Edit Order</p>
+      </div>
+      <div className="flex items-center gap-2.5 w-full px-2 py-1.5 hover:bg-gray-100 rounded-sm">
+        <IoEye className="w-[20px] h-[20px]" />
+        <p className="text-[14px]">Cancel Order</p>
+      </div>
+    </div>
+  );
+};

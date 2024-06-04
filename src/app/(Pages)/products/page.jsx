@@ -8,6 +8,8 @@ import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import SearchOnTop from "@/components/SearchOnTop";
 import Manage from "./Manage";
+import CreateNew from "./CreateNew";
+import Statics from "./Statics";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -54,7 +56,7 @@ const Products = () => {
               Statics
             </p>
           </div>
-          {selectedTab === "manage" ? <Manage /> : null}
+          {selectedTab === "manage" ? <Manage /> : selectedTab === "createNew" ? <CreateNew /> : <Statics />}
         </div>
       </div>
     </div>

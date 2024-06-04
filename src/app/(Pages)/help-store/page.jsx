@@ -3,21 +3,31 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
+
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
+import Contact from "./contact";
 
 import { IoSearch } from "react-icons/io5";
 import { LuUsers2, LuClock3 } from "react-icons/lu";
 import { BsCalendar2Date } from "react-icons/bs";
-import { FaCirclePlus } from "react-icons/fa6";
-import Contact from "./contact";
+import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
+
+import data from "@/components/faqs";
 
 const HelpStore = () => {
   const dispatch = useDispatch();
   const [selectedTab, setSelectedTab] = useState("");
+  const [selectedFaqs, setSelectedFaqs] = useState(0);
   useEffect(() => {
     dispatch(updatePageNavigation("help-store"));
   }, []);
+  const fn_showAnswer = (id) => {
+    if (selectedFaqs === id) {
+      return setSelectedFaqs(0);
+    }
+    setSelectedFaqs(id);
+  };
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -75,38 +85,39 @@ const HelpStore = () => {
                   Find answers to your questions and more
                 </p>
                 <div className="mt-6 flex flex-col gap-6">
-                  <div className="border-[2px] border-gray-200 rounded-[8px] p-5 flex justify-between items-center">
-                    <p className="text-[17px] font-[500]">
-                      Lorem ipsum dolor sit amet consectetur. Eu sit aliquam.
-                    </p>
-                    <div>
-                      <FaCirclePlus className="w-[35px] h-[35px] text-[var(--text-color)] cursor-pointer" />
-                    </div>
-                  </div>
-                  <div className="border-[2px] border-gray-200 rounded-[8px] p-5 flex justify-between items-center">
-                    <p className="text-[17px] font-[500]">
-                      Lorem ipsum dolor sit amet consectetur. Eu sit aliquam.
-                    </p>
-                    <div>
-                      <FaCirclePlus className="w-[35px] h-[35px] text-[var(--text-color)] cursor-pointer" />
-                    </div>
-                  </div>
-                  <div className="border-[2px] border-gray-200 rounded-[8px] p-5 flex justify-between items-center">
-                    <p className="text-[17px] font-[500]">
-                      Lorem ipsum dolor sit amet consectetur. Eu sit aliquam.
-                    </p>
-                    <div>
-                      <FaCirclePlus className="w-[35px] h-[35px] text-[var(--text-color)] cursor-pointer" />
-                    </div>
-                  </div>
-                  <div className="border-[2px] border-gray-200 rounded-[8px] p-5 flex justify-between items-center">
-                    <p className="text-[17px] font-[500]">
-                      Lorem ipsum dolor sit amet consectetur. Eu sit aliquam.
-                    </p>
-                    <div>
-                      <FaCirclePlus className="w-[35px] h-[35px] text-[var(--text-color)] cursor-pointer" />
-                    </div>
-                  </div>
+                  {data?.map((item) => (
+                    <>
+                      <div
+                        key={item.id}
+                        className="border-[2px] border-gray-200 rounded-[8px] p-5 flex justify-between items-center"
+                      >
+                        <p className="text-[17px] font-[500]">
+                          {item.question}
+                        </p>
+                        <div>
+                          {selectedFaqs == item.id ? (
+                            <FaCircleMinus
+                              className="w-[35px] h-[35px] text-[var(--text-color)] cursor-pointer"
+                              onClick={() => fn_showAnswer(item.id)}
+                            />
+                          ) : (
+                            <FaCirclePlus
+                              className="w-[35px] h-[35px] text-[var(--text-color)] cursor-pointer"
+                              onClick={() => fn_showAnswer(item.id)}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <div
+                        key={item.id}
+                        className={`faq-answer ${
+                          selectedFaqs === item.id ? "expanded" : ""
+                        }`}
+                      >
+                        {item.answer}
+                      </div>
+                    </>
+                  ))}
                 </div>
               </div>
               <div className="mt-8">
