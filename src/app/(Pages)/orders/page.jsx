@@ -1,19 +1,15 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
-
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import SearchOnTop from "@/components/SearchOnTop";
 import { BiSolidEditAlt } from "react-icons/bi";
-
 import electronicLED from "@/assets/Electronic-LED.png";
 import tableAction from "@/assets/svgs/table-action.svg";
 import { IoEye } from "react-icons/io5";
-
 import data from "@/components/customers";
 import { useRouter } from "next/navigation";
 
