@@ -11,8 +11,10 @@ body {
 }
 
 :root {
-  --bg-color: rgba(247, 0, 0, 0.08);
-  --text-color: rgba(247, 0, 0, 1);
+  /* --bg-color: rgba(247, 0, 0, 0.08); */
+  --bg-color: rgba(232, 187, 76, 0.08);
+  /* --text-color: rgba(247, 0, 0, 1); */
+  --text-color: rgb(232, 187, 76);
   --text-color-body: rgba(119, 119, 119, 1);
   --text-color-body-plus: rgba(0, 198, 18, 1);
   --text-color-body-minus: rgba(247, 0, 0, 1);

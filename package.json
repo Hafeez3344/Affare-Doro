@@ -9,9 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.0.1",
+    "@mui/material": "^7.0.1",
     "@next/swc-win32-x64-msvc": "^15.2.3",
     "@reduxjs/toolkit": "^2.2.5",
+    "antd": "^5.24.5",
+    "axios": "^1.8.4",
     "chart.js": "^4.4.3",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^0.487.0",
     "next": "^15.3.0-canary.13",
     "rc-progress": "^4.0.0",
     "react": "^18",
