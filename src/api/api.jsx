@@ -425,3 +425,139 @@ export const deleteMaterial = async (id) => {
     }
 };
 
+// ---------------------------- Color APIs -------------------------------
+export const createColor = async (data) => {
+    try {
+        const response = await api.post('/color/create', data, getAuthHeader());
+        return {
+            status: true,
+            message: "Color created successfully",
+            data: response.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+export const getColors = async () => {
+    try {
+        const response = await api.get('/color/viewAll');
+        return {
+            status: true,
+            message: "Colors fetched successfully",
+            data: response.data.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+export const updateColor = async (id, data) => {
+    try {
+        const response = await api.put(`/color/update/${id}`, data, getAuthHeader());
+        return {
+            status: true,
+            message: "Color updated successfully",
+            data: response.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+export const deleteColor = async (id) => {
+    try {
+        const response = await api.delete(`/color/delete/${id}`, getAuthHeader());
+        return {
+            status: true,
+            message: "Color deleted successfully",
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+// ---------------------------- Size APIs -------------------------------
+export const createSize = async (data) => {
+    try {
+        const response = await api.post('/size/create', data, getAuthHeader());
+        return {
+            status: true,
+            message: "Size created successfully",
+            data: response.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+export const getSizes = async (categoryId) => {
+    try {
+        const response = await api.get(`/size/viewAll?categoryId=${categoryId}`);
+        return {
+            status: true,
+            message: "Sizes fetched successfully",
+            data: response.data.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+export const updateSize = async (id, data) => {
+    try {
+        const response = await api.put(`/size/update/${id}`, data, getAuthHeader());
+        return {
+            status: true,
+            message: "Size updated successfully",
+            data: response.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+export const deleteSize = async (id) => {
+    try {
+        const response = await api.delete(`/size/delete/${id}`, getAuthHeader());
+        return {
+            status: true,
+            message: "Size deleted successfully",
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+

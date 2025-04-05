@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { Badge, Package, StoreIcon } from "lucide-react";
+import { Badge, Maximize2, Package, Palette, StoreIcon } from "lucide-react";
 import { RxDashboard } from "react-icons/rx";
 import { LuShoppingBag, LuShoppingBasket } from "react-icons/lu";
 import {
@@ -96,6 +96,18 @@ const Sidebar = () => {
           icon={<Package className="w-[20px] h-[20px]" />}
           label={"Package Size"}
           navigateTo={"packages"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<Palette className="w-[20px] h-[20px]" />}
+          label={"Colors"}
+          navigateTo={"colors"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<Maximize2 className="w-[20px] h-[20px]" />}
+          label={"Size"}
+          navigateTo={"size"}
           navigate={navigate}
         />
         <SidebarPageTemplate
