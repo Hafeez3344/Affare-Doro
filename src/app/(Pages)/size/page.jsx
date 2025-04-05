@@ -25,7 +25,7 @@ const Sizes = () => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
-    dispatch(updatePageNavigation("sizes"));
+    dispatch(updatePageNavigation("size")); // Ensure this matches the exact sidebar label "Size"
     fetchCategories();
   }, [dispatch]);
 

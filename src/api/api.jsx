@@ -123,7 +123,7 @@ export const getCategories = async () => {
     }
 };
 
-// ---------------------------- Category APIs -------------------------------
+// ---------------------------- Update Category APIs -------------------------------
 export const updateCategory = async (id, data) => {
     try {
         const response = await api.put(`/category/update/${id}`, data, getAuthHeader());
@@ -141,6 +141,7 @@ export const updateCategory = async (id, data) => {
     }
 };
 
+// ---------------------------- Delete Category APIs -------------------------------
 export const deleteCategory = async (id) => {
     try {
         const response = await api.delete(`/category/delete/${id}`, getAuthHeader());
@@ -239,6 +240,7 @@ export const updateBrand = async (id, data) => {
     }
 };
 
+// ---------------------------- Delete Brand APIs -------------------------------
 export const deleteBrand = async (id) => {
     try {
         const response = await api.delete(`/brand/delete/${id}`, getAuthHeader());
@@ -306,7 +308,7 @@ export const getPackages = async () => {
     }
 };
 
-// ---------------------------- Package APIs -------------------------------
+// ---------------------------- Update Package APIs -------------------------------
 export const updatePackage = async (id, data) => {
     try {
         const response = await api.put(`/packageSize/update/${id}`, data, getAuthHeader());
@@ -324,6 +326,7 @@ export const updatePackage = async (id, data) => {
     }
 };
 
+// ---------------------------- Delete Package APIs -------------------------------
 export const deletePackage = async (id) => {
     try {
         const response = await api.delete(`/packageSize/delete/${id}`, getAuthHeader());
@@ -340,7 +343,7 @@ export const deletePackage = async (id) => {
     }
 };
 
-// ---------------------create Material api -------------------------------
+// ---------------------Create Material api -------------------------------
 export const createMaterial = async (data) => {
     try {
         const response = await api.post('/material/create', 
@@ -391,7 +394,7 @@ export const getMaterials = async () => {
     }
 };
 
-// ---------------------------- Material APIs -------------------------------
+// ---------------------------- Update Material APIs -------------------------------
 export const updateMaterial = async (id, data) => {
     try {
         const response = await api.put(`/material/update/${id}`, data, getAuthHeader());
@@ -409,6 +412,7 @@ export const updateMaterial = async (id, data) => {
     }
 };
 
+// ---------------------------- Delete Material APIs -------------------------------
 export const deleteMaterial = async (id) => {
     try {
         const response = await api.delete(`/material/delete/${id}`, getAuthHeader());
@@ -425,7 +429,7 @@ export const deleteMaterial = async (id) => {
     }
 };
 
-// ---------------------------- Color APIs -------------------------------
+// ----------------------------Create Color APIs -------------------------------
 export const createColor = async (data) => {
     try {
         const response = await api.post('/color/create', data, getAuthHeader());
@@ -443,6 +447,7 @@ export const createColor = async (data) => {
     }
 };
 
+// ---------------------------- Get Colors API -------------------------------
 export const getColors = async () => {
     try {
         const response = await api.get('/color/viewAll');
@@ -460,6 +465,7 @@ export const getColors = async () => {
     }
 };
 
+// ---------------------------- Update Color APIs -------------------------------
 export const updateColor = async (id, data) => {
     try {
         const response = await api.put(`/color/update/${id}`, data, getAuthHeader());
@@ -477,6 +483,7 @@ export const updateColor = async (id, data) => {
     }
 };
 
+// ---------------------------- Delete Color APIs -------------------------------
 export const deleteColor = async (id) => {
     try {
         const response = await api.delete(`/color/delete/${id}`, getAuthHeader());
@@ -493,7 +500,7 @@ export const deleteColor = async (id) => {
     }
 };
 
-// ---------------------------- Size APIs -------------------------------
+// ---------------------------- Create Size APIs -------------------------------
 export const createSize = async (data) => {
     try {
         const response = await api.post('/size/create', data, getAuthHeader());
@@ -511,6 +518,7 @@ export const createSize = async (data) => {
     }
 };
 
+// ---------------------------- Get Sizes API -------------------------------
 export const getSizes = async (categoryId) => {
     try {
         const response = await api.get(`/size/viewAll?categoryId=${categoryId}`);
@@ -528,6 +536,7 @@ export const getSizes = async (categoryId) => {
     }
 };
 
+// ---------------------------- Update Size APIs -------------------------------
 export const updateSize = async (id, data) => {
     try {
         const response = await api.put(`/size/update/${id}`, data, getAuthHeader());
@@ -545,6 +554,7 @@ export const updateSize = async (id, data) => {
     }
 };
 
+// ---------------------------- Delete Size APIs -------------------------------
 export const deleteSize = async (id) => {
     try {
         const response = await api.delete(`/size/delete/${id}`, getAuthHeader());
@@ -554,6 +564,54 @@ export const deleteSize = async (id) => {
         };
     } catch (error) {
         console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+// ---------------------Create Condition API -------------------------------
+export const createCondition = async (data) => {
+    try {
+        const response = await api.post('/condition/create', data, getAuthHeader());
+        return {
+            status: true,
+            message: "Condition created successfully",
+            data: response.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        if (error.code === 'ERR_NETWORK') {
+            return {
+                status: false,
+                message: "Unable to connect to server. Please check if the server is running."
+            };
+        }
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+// ---------------------------- Get Conditions API -------------------------------
+export const getConditions = async () => {
+    try {
+        const response = await api.get('/condition/viewAll');
+        return {
+            status: true,
+            message: "Conditions fetched successfully",
+            data: response.data.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+        if (error.code === 'ERR_NETWORK') {
+            return {
+                status: false,
+                message: "Unable to connect to server. Please check if the server is running."
+            };
+        }
         return {
             status: false,
             message: error?.response?.data?.message || "An unexpected error occurred"

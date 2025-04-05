@@ -22,7 +22,32 @@ const Colors = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // ...existing pattern for useEffect, fetchColors...
+  useEffect(() => {
+    dispatch(updatePageNavigation("colors")); // Ensure this matches the sidebar label
+    fetchColors(); // Call fetchColors to load the colors
+  }, [dispatch]);
+
+  // Add the missing fetchColors function
+  const fetchColors = async () => {
+    try {
+      const response = await getColors();
+      if (response.status) {
+        setColors(response.data);
+      } else {
+        notification.error({
+          message: response.message,
+          placement: 'topRight',
+          style: { marginTop: '50px' }
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Failed to fetch colors',
+        placement: 'topRight',
+        style: { marginTop: '50px' }
+      });
+    }
+  };
 
   const handleEdit = (item) => {
     setSelectedItem(item);
