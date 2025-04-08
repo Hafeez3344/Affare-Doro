@@ -19,7 +19,7 @@ import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
 import { updateSidebar } from "@/features/features";
 
 
-const Sidebar = () => {
+const Sidebar = ({ showModal }) => {
   const navigate = useRouter();
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.showSidebar);
@@ -30,7 +30,9 @@ const Sidebar = () => {
     <>
       <div
         className={`${showSidebar ? "absolute md:relative flex h-[85%] min-h-[550px] md:h-auto" : "absolute md:relative hidden md:flex md:h-auto"
-          } w-[240px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[20px] py-[25px] flex-col gap-1.5 z-[999]`}
+          } w-[215px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[10px] py-[20px] flex-col gap-0.5 z-[9] ${
+          showModal ? "opacity-50 pointer-events-none" : "opacity-100"
+        }`}
       >
         <button
           className="absolute md:hidden text-[var(--text-color)] right-5 scale-[1.5] top-2"
@@ -50,30 +52,30 @@ const Sidebar = () => {
           navigateTo={"products"}
           navigate={navigate}
         />
-        <SidebarPageTemplate
+        {/* <SidebarPageTemplate
           icon={<RiUserStarLine className="w-[20px] h-[20px]" />}
           label={"Customers"}
           navigateTo={"customers"}
           navigate={navigate}
-        />
+        /> */}
         <SidebarPageTemplate
           icon={<IoBagRemoveOutline className="w-[21px] h-[21px]" />}
           label={"Orders"}
           navigateTo={"orders"}
           navigate={navigate}
         />
-        <SidebarPageTemplate
+        {/* <SidebarPageTemplate
           icon={<RiDiscountPercentLine className="w-[20px] h-[20px]" />}
           label={"Offers"}
           navigateTo={"offers"}
           navigate={navigate}
-        />
-        <SidebarPageTemplate
+        /> */}
+        {/* <SidebarPageTemplate
           icon={<RiStore2Line className="w-[20px] h-[20px]" />}
           label={"Store Settings"}
           navigateTo={"store-settings"}
           navigate={navigate}
-        />
+        /> */}
         <SidebarPageTemplate
           icon={<LuShoppingBasket className="w-[20px] h-[20px]" />}
           label={"Categories"}
@@ -87,8 +89,26 @@ const Sidebar = () => {
           navigate={navigate}
         />
         <SidebarPageTemplate
+          icon={<Palette className="w-[20px] h-[20px]" />}
+          label={"Product Colors"}
+          navigateTo={"colors"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<Maximize2 className="w-[20px] h-[20px]" />}
+          label={"Product Size"}
+          navigateTo={"size"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<ListChecks className="w-[20px] h-[20px]" />}
+          label={"Product Conditions"}
+          navigateTo={"conditions"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
           icon={<StoreIcon className="w-[20px] h-[20px]" />}
-          label={"Materials"}
+          label={"Product Materials"}
           navigateTo={"materials"}
           navigate={navigate}
         />
@@ -99,30 +119,12 @@ const Sidebar = () => {
           navigate={navigate}
         />
         <SidebarPageTemplate
-          icon={<Palette className="w-[20px] h-[20px]" />}
-          label={"Colors"}
-          navigateTo={"colors"}
-          navigate={navigate}
-        />
-        <SidebarPageTemplate
-          icon={<Maximize2 className="w-[20px] h-[20px]" />}
-          label={"Size"}
-          navigateTo={"size"}
-          navigate={navigate}
-        />
-        <SidebarPageTemplate
-          icon={<ListChecks className="w-[20px] h-[20px]" />}
-          label={"Conditions"}
-          navigateTo={"conditions"}
-          navigate={navigate}
-        />
-        <SidebarPageTemplate
           icon={<FiSettings className="w-[20px] h-[19px]" />}
           label={` Settings`}
           navigateTo={"settings"}
           navigate={navigate}
         />
-        <SidebarPageTemplate
+        {/* <SidebarPageTemplate
           icon={
             <HiOutlineExclamationCircle className="w-[20px] h-[20px] scale-[1.15]" />
           }
@@ -137,7 +139,7 @@ const Sidebar = () => {
           label={`Help Store`}
           navigateTo={"help-store"}
           navigate={navigate}
-        />
+        /> */}
       </div>
       <button
         className={`${showSidebar ? "hidden" : "absolute"} md:hidden text-[var(--text-color)] left-5 scale-[1.5] top-[77px]`}
@@ -155,14 +157,14 @@ const SidebarPageTemplate = ({ icon, label, navigateTo, navigate }) => {
   const pageNavigation = useSelector((state) => state.pageNavigation);
   return (
     <div
-      className={`flex h-[48px] items-center rounded-tr-full rounded-br-full gap-5 px-[17px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)]  border-l-[2px] hover:border-[var(--text-color)] ${pageNavigation === navigateTo
+      className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full ${pageNavigation === navigateTo
         ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]"
         : "text-gray-500 bg-transparent border-white"
         }`}
       onClick={() => navigate.push(`/${navigateTo}`)}
     >
-      {icon}
-      <p className="text-[16px] font-[500]">{label}</p>
+      <div className="flex-shrink-0">{icon}</div>
+      <p className="text-[13px] font-[500] whitespace-nowrap">{label}</p>
     </div>
   );
 };

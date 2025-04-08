@@ -85,7 +85,7 @@ const Materials = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
       <div className="flex-1 flex">
-        {!showModal && <Sidebar />}
+        <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-800">Materials</h1>
@@ -167,7 +167,10 @@ const Materials = () => {
                     label="Material Name"
                     rules={[{ required: true, message: 'Please enter material name' }]}
                   >
-                    <Input placeholder="Enter material name" />
+                    <Input
+                      placeholder="Enter material name"
+                      className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                    />
                   </Form.Item>
 
                   <Form.Item
@@ -175,13 +178,23 @@ const Materials = () => {
                     label="Description"
                     rules={[{ required: true, message: 'Please enter description' }]}
                   >
-                    <Input.TextArea placeholder="Enter description" />
+                    <Input.TextArea
+                      placeholder="Enter description"
+                      className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                    />
                   </Form.Item>
 
+
                   <div className="flex justify-end gap-3">
-                    <Button onClick={() => setShowModal(false)}>Cancel</Button>
-                    <Button type="primary" htmlType="submit" loading={loading}>
-                      Create Material
+                    <Button
+                      onClick={() => setShowModal(false)}
+                      className="border-[--text-color] text-[--text-color] bg-[rgba(232,187,76,0.08)] hover:border-[--text-color] hover:text-[--text-color]"
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button htmlType="submit" loading={loading} className="border-[--text-color] text-[--text-color] bg-[rgba(232,187,76,0.08)] hover:bg-[rgba(232,187,76,0.2)] hover:text-[--text-color] hover:border-[--text-color] transition-colors">
+                        Create Material
                     </Button>
                   </div>
                 </Form>

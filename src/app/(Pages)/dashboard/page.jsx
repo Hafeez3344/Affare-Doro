@@ -75,10 +75,40 @@ const Dashboard = () => {
   };
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
+      <style jsx global>{`
+        ::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background-color: rgba(232, 187, 76, 0.3);
+          border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(232, 187, 76, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: rgba(232, 187, 76, 0.3);
+          border-radius: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(232, 187, 76, 0.5);
+        }
+      `}</style>
       <Navbar />
       <div className="flex-1 flex">
         <Sidebar />
-        <div className="flex-1 mt-[30px] px-[22px]">
+        <div className="flex-1 mt-[30px] px-[22px] custom-scrollbar overflow-y-auto">
           {/* boxes */}
           <div className="flex flex-col sm:flex-row justify-between sm:flex-wrap gap-5">
             <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">

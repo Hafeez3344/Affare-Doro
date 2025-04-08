@@ -28,6 +28,62 @@ body {
   --text-color-pending: #ffa31a;
   --text-color-cancelled: #f70000;
 }
+.ant-upload-wrapper .ant-upload,
+.ant-upload.ant-upload-select {
+  border-color: var(--text-color);
+}
+
+.ant-upload-wrapper .ant-upload:hover,
+.ant-upload.ant-upload-select:hover {
+  border-color: var(--text-color) !important;
+}
+
+.ant-upload-wrapper .ant-upload.ant-upload-select,
+.ant-btn {
+  color: var(--text-color);
+  /* border-color: var(--text-color); */
+  /* background-color: rgba(232, 187, 76, 0.08); */
+}
+
+.ant-upload-wrapper .ant-upload.ant-upload-select:hover,
+.ant-btn:hover {
+  border-color: var(--text-color) !important;
+  color: var(--text-color) !important;
+}
+
+/* Change the radio button border and text color */
+.ant-radio-wrapper .ant-radio-inner {
+  border-color: var(--text-color) !important;
+}
+
+.ant-radio-wrapper .ant-radio-inner:checked {
+  background-color: var(--text-color) !important;
+  border-color: var(--text-color) !important;
+}
+
+.ant-radio-wrapper .ant-radio-inner:hover {
+  border-color: var(--text-color) !important;
+}
+
+.ant-radio-wrapper .ant-radio + span {
+  color: var(--text-color) !important;
+}
+
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+  background-color: var(--text-color) !important;
+  border-color: var(--text-color) !important;
+}
+
+.ant-select-selector {
+  border-color: var(--text-color) !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ant-select-focused .ant-select-selector,
+.ant-select-selector:hover {
+  border-color: var(--text-color) !important;
+  box-shadow: 0 0 0 2px rgba(232, 187, 76, 0.2) !important;
+}
 
 ::-webkit-scrollbar {
   width: 8px;

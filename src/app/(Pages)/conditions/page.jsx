@@ -86,7 +86,7 @@ const Conditions = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
       <div className="flex-1 flex">
-        <Sidebar />
+        <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-800">Conditions</h1>
@@ -156,16 +156,21 @@ const Conditions = () => {
                     label="Condition Name"
                     rules={[{ required: true, message: "Please enter condition name" }]}
                   >
-                    <Input placeholder="Enter condition name" />
+                    <Input
+                      placeholder="Enter condition name"
+                      className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                    />
                   </Form.Item>
 
+
                   <div className="flex justify-end gap-3">
-                    <Button onClick={() => setShowModal(false)}>Cancel</Button>
+                    <Button onClick={() => setShowModal(false)}
+                      style={{ backgroundColor: "white", borderColor: "rgb(232, 187, 76)" }}>Cancel</Button>
                     <Button
                       type="primary"
                       htmlType="submit"
                       loading={loading}
-                      style={{ backgroundColor: "rgb(232, 187, 76)", borderColor: "rgb(232, 187, 76)" }}
+                      style={{ backgroundColor: "white", borderColor: "rgb(232, 187, 76)" }}
                     >
                       {isEditMode ? "Update Condition" : "Create Condition"}
                     </Button>

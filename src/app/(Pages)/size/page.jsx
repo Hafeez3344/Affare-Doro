@@ -82,7 +82,7 @@ const Sizes = () => {
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
-      const response = isEditMode 
+      const response = isEditMode
         ? await updateSize(selectedItem._id, values)
         : await createSize(values);
 
@@ -113,7 +113,7 @@ const Sizes = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
       <div className="flex-1 flex">
-        {!showModal && <Sidebar />}
+        <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
@@ -165,13 +165,13 @@ const Sizes = () => {
                     <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                     <td className="px-[17px] relative">
                       <div className="flex gap-2">
-                        <MdEdit 
-                          className="cursor-pointer text-blue-600" 
-                          onClick={() => handleEdit(item)} 
+                        <MdEdit
+                          className="cursor-pointer text-blue-600"
+                          onClick={() => handleEdit(item)}
                         />
-                        <MdDelete 
-                          className="cursor-pointer text-red-600" 
-                          onClick={() => handleDelete(item._id)} 
+                        <MdDelete
+                          className="cursor-pointer text-red-600"
+                          onClick={() => handleDelete(item._id)}
                         />
                       </div>
                     </td>
@@ -213,21 +213,27 @@ const Sizes = () => {
                     />
                   </Form.Item>
 
+
                   <Form.Item
                     name="name"
                     label="Size Name"
                     rules={[{ required: true, message: 'Please enter size name' }]}
                   >
-                    <Input placeholder="Enter size name" />
+                    <Input
+                      placeholder="Enter size name"
+                      className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                    />
                   </Form.Item>
 
+
                   <div className="flex justify-end gap-3">
-                    <Button onClick={() => setShowModal(false)}>Cancel</Button>
-                    <Button 
-                      type="primary" 
-                      htmlType="submit" 
+                    <Button onClick={() => setShowModal(false)}
+                      style={{ backgroundColor: 'white', borderColor: 'rgb(232, 187, 76)' }}>Cancel</Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
                       loading={loading}
-                      style={{ backgroundColor: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
+                      style={{ backgroundColor: 'white', borderColor: 'rgb(232, 187, 76)' }}
                     >
                       {isEditMode ? 'Update Size' : 'Create Size'}
                     </Button>

@@ -18,8 +18,10 @@
     "antd": "^5.24.5",
     "axios": "^1.8.4",
     "chart.js": "^4.4.3",
+    "framer-motion": "^12.6.3",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.487.0",
+    "moment-timezone": "^0.5.48",
     "next": "^15.3.0-canary.13",
     "rc-progress": "^4.0.0",
     "react": "^18",
@@ -27,6 +29,7 @@
     "react-dom": "^18",
     "react-icons": "^5.2.1",
     "react-redux": "^9.1.2",
+    "sonner": "^2.0.3",
     "swr": "^2.3.3"
   },
   "devDependencies": {

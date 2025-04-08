@@ -82,7 +82,7 @@ const Colors = () => {
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
-      const response = isEditMode 
+      const response = isEditMode
         ? await updateColor(selectedItem._id, values)
         : await createColor(values);
 
@@ -113,7 +113,7 @@ const Colors = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
       <div className="flex-1 flex">
-        {!showModal && <Sidebar />}
+        <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
@@ -151,7 +151,7 @@ const Colors = () => {
                     <td>{item.name}</td>
                     <td>{item.code}</td>
                     <td>
-                      <div 
+                      <div
                         className="w-8 h-8 rounded-full border"
                         style={{ backgroundColor: item.code }}
                       />
@@ -164,13 +164,13 @@ const Colors = () => {
                     <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                     <td className="px-[17px] relative">
                       <div className="flex gap-2">
-                        <MdEdit 
-                          className="cursor-pointer text-blue-600" 
-                          onClick={() => handleEdit(item)} 
+                        <MdEdit
+                          className="cursor-pointer text-blue-600"
+                          onClick={() => handleEdit(item)}
                         />
-                        <MdDelete 
-                          className="cursor-pointer text-red-600" 
-                          onClick={() => handleDelete(item._id)} 
+                        <MdDelete
+                          className="cursor-pointer text-red-600"
+                          onClick={() => handleDelete(item._id)}
                         />
                       </div>
                     </td>
@@ -206,8 +206,12 @@ const Colors = () => {
                     label="Color Name"
                     rules={[{ required: true, message: 'Please enter color name' }]}
                   >
-                    <Input placeholder="Enter color name" />
+                    <Input
+                      placeholder="Enter color name"
+                      className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                    />
                   </Form.Item>
+
 
                   <Form.Item
                     name="code"
@@ -218,12 +222,17 @@ const Colors = () => {
                   </Form.Item>
 
                   <div className="flex justify-end gap-3">
-                    <Button onClick={() => setShowModal(false)}>Cancel</Button>
                     <Button 
-                      type="primary" 
-                      htmlType="submit" 
+                      onClick={() => setShowModal(false)} 
+                      style={{ backgroundColor: 'white', borderColor: 'lightgray', color: 'black' }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => {}}
+                      style={{ backgroundColor: 'white', borderColor: 'lightgray', color: 'black' }}
+                      htmlType="submit"
                       loading={loading}
-                      style={{ backgroundColor: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
                     >
                       {isEditMode ? 'Update Color' : 'Create Color'}
                     </Button>

@@ -115,7 +115,7 @@ const Brands = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
       <div className="flex-1 flex">
-        {!showModal && <Sidebar />}
+        <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-800">Brands</h1>
@@ -213,8 +213,12 @@ const Brands = () => {
                     label="Brand Name"
                     rules={[{ required: true, message: 'Please enter brand name' }]}
                   >
-                    <Input placeholder="Enter brand name" />
+                    <Input
+                      placeholder="Enter brand name"
+                      className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                    />
                   </Form.Item>
+
 
                   <Form.Item
                     name="image"
