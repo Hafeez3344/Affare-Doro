@@ -12,8 +12,9 @@ import { UploadOutlined } from '@ant-design/icons';
 import { motion, AnimatePresence } from "framer-motion";
 import { updatePageNavigation } from "@/features/features";
 import { ChevronDown, ChevronUp, ArrowLeft, ArrowRight } from "lucide-react";
-import { Form, Input, Upload, Radio, Button, notification, Select } from 'antd';
+import { Form, Input, Upload, Radio, Button, notification, Select, Modal, Pagination } from 'antd';
 import { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
+import { FiEye } from "react-icons/fi";
 
 const { Option } = Select;
 
@@ -28,34 +29,44 @@ const Categories = () => {
   const [categoryPath, setCategoryPath] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentParentId, setCurrentParentId] = useState(null);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [viewSubCategories, setViewSubCategories] = useState([]);
+  const [isViewDropdownOpen, setIsViewDropdownOpen] = useState(false);
+  const [viewCategoryPath, setViewCategoryPath] = useState([]);
+  const [currentViewParentId, setCurrentViewParentId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const paginatedCategories = categories.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   useEffect(() => {
     dispatch(updatePageNavigation("categories"));
-    fetchCategories();
+    fetchCategories(); // Remove the currentPage dependency
   }, [dispatch]);
 
   const fetchCategories = async () => {
     try {
-      const response = await getCategories();
-      console.log('Categories Response:', response); 
-      if (response.status) {
-        console.log('Categories Data:', response.data); 
-        setCategories(response.data);
+      const response = await getCategories(); // Remove the page parameter if the API doesn't support pagination
+      console.log('API Response:', response); // Debugging line
+
+      if (response?.status && Array.isArray(response?.data)) {
+        setCategories(response.data); // Assuming response.data is the array of categories
       } else {
-        notification.error({
-          message: response.message,
-          placement: 'topRight',
-          style: { marginTop: '50px' }
-        });
+        throw new Error(response?.message || 'Unexpected API response');
       }
     } catch (error) {
+      console.error('Error fetching categories:', error);
       notification.error({
         message: 'Failed to fetch categories',
+        description: error.message || 'An unexpected error occurred',
         placement: 'topRight',
-        style: { marginTop: '50px' }
+        style: { marginTop: '50px' },
       });
     }
   };
@@ -101,6 +112,7 @@ const Categories = () => {
 
   const handleSubmit = async (values) => {
     try {
+      console.log('Form values:', values);
       setLoading(true);
       let response;
 
@@ -113,22 +125,27 @@ const Categories = () => {
         Object.keys(values).forEach(key => {
           if (key !== 'image' && key !== 'category') {
             formData.append(key, values[key]);
+            console.log(`Added ${key} to formData:`, values[key]);
           }
         });
 
         // Handle image file separately
         if (imageFile) {
           formData.append('image', imageFile);
+          console.log('Added image file to formData');
         }
 
         // If we have a selected category, add it to the form data
         if (categoryPath.length > 0) {
-          formData.append('parentId', categoryPath[categoryPath.length - 1]._id);
+          const parentId = categoryPath[categoryPath.length - 1]._id;
+          formData.append('parentId', parentId);
+          console.log('Added parentId to formData:', parentId);
         }
 
-        console.log('Submitting data:', Object.fromEntries(formData));
+        console.log('Final formData:', Object.fromEntries(formData));
 
         response = await createCategory(formData);
+        console.log('API Response:', response);
       }
 
       if (response.status) {
@@ -236,6 +253,49 @@ const Categories = () => {
     form.resetFields();
   };
 
+  const handleViewCategory = async (category) => {
+    setSelectedCategory(category);
+    setViewModalOpen(true);
+    setIsViewDropdownOpen(false);
+    setViewCategoryPath([category]);
+    await fetchViewSubCategories(category._id);
+  };
+
+  const handleViewCategorySelect = async (category) => {
+    if (category.subCategoryCount > 0) {
+      setViewCategoryPath([...viewCategoryPath, category]);
+      await fetchViewSubCategories(category._id);
+    }
+  };
+
+  const handleViewGoBack = async () => {
+    if (viewCategoryPath.length > 1) {
+      const newPath = [...viewCategoryPath];
+      newPath.pop();
+      setViewCategoryPath(newPath);
+      
+      const parentId = newPath[newPath.length - 1]._id;
+      await fetchViewSubCategories(parentId);
+    }
+  };
+
+  const fetchViewSubCategories = async (categoryId) => {
+    try {
+      const response = await fetch(`http://localhost:8000/category/viewAll?parentCategoryId=${categoryId}`);
+      const data = await response.json();
+      
+      if (data.status === "ok") {
+        setViewSubCategories(data.data);
+        setCurrentViewParentId(categoryId);
+      } else {
+        setViewSubCategories([]);
+      }
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+      setViewSubCategories([]);
+    }
+  };
+
   const modalTitle = isEditMode ? "Edit Category" : "Add New Category";
   const submitButtonText = isEditMode ? "Update Category" : "Create Category";
 
@@ -309,16 +369,16 @@ const Categories = () => {
             <table className="min-w-full border">
               <thead>
                 <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
-                  <th className="p-4 font-[500]">Category Name</th>
-                  <th className="p-4 font-[500]">Sub Categories</th>
+                  <th className="p-4 font-[500] text-nowrap">Category Name</th>
+                  <th className="p-4 font-[500] text-nowrap">Sub Categories</th>
                   <th className="p-4 font-[500]">Status</th>
                   <th className="p-4 font-[500]">Created Date</th>
                   <th className="p-4 font-[500]">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {categories && categories.length > 0 ? (
-                  categories.map((item) => (
+                {paginatedCategories.length > 0 ? (
+                  paginatedCategories.map((item) => (
                     <tr key={item._id} className="text-gray-800 text-sm border-b">
                       <td className="p-4 text-[13px]">{item.name}</td>
                       <td className="p-4 text-[13px]">{item.subCategoryCount}</td>
@@ -331,6 +391,13 @@ const Categories = () => {
                         {moment.utc(item?.createdAt).format('DD MMM YYYY, hh:mm A')}
                       </td>
                       <td className="p-4 flex space-x-2">
+                        <button
+                          className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
+                          title="View"
+                          onClick={() => handleViewCategory(item)}
+                        >
+                          <FiEye />
+                        </button>
                         <button
                           className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
                           title="Edit"
@@ -355,22 +422,168 @@ const Categories = () => {
                 )}
               </tbody>
             </table>
+            <div className="flex justify-end mt-4">
+              <Pagination
+                current={currentPage}
+                onChange={(page) => setCurrentPage(page)}
+                total={categories.length}
+                pageSize={itemsPerPage}
+              />
+            </div>
           </div>
 
-          {/* Modal for Add/Edit Category */}
-          {showModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg w-full max-w-[600px] md:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">{modalTitle}</h2>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="text-gray-500 hover:text-gray-700 text-3xl font-bold w-10 h-10 flex items-center justify-center"
-                  >
-                    ×
-                  </button>
+          {/* View Category Modal */}
+          <Modal
+            centered
+            footer={null}
+            width={600}
+            title={<p className="text-[20px] font-[700]">Category Details</p>}
+            open={viewModalOpen}
+            onCancel={() => {
+              setViewModalOpen(false);
+              setIsViewDropdownOpen(false);
+              setViewSubCategories([]);
+              setViewCategoryPath([]);
+            }}
+          >
+            {selectedCategory && (
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                  <p className="text-[14px] font-[600] w-[150px]">Category Name:</p>
+                  <p className="text-[14px]">{selectedCategory.name}</p>
                 </div>
-                <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+                <div className="flex items-center gap-4">
+                  <p className="text-[14px] font-[600] w-[150px]">Status:</p>
+                  <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                    {selectedCategory.status || 'Active'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <p className="text-[14px] font-[600] w-[150px]">Created Date:</p>
+                  <p className="text-[14px]">
+                    {moment.utc(selectedCategory?.createdAt).format('DD MMM YYYY, hh:mm A')}
+                  </p>
+                </div>
+                {selectedCategory.image && (
+                  <div className="flex items-center gap-4">
+                    <p className="text-[14px] font-[600] w-[150px]">Image:</p>
+                    <img 
+                      src={`http://localhost:8000/${selectedCategory.image.replace(/\\/g, '/')}`}
+                      alt={selectedCategory.name}
+                      className="w-32 h-32 object-cover rounded"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-col gap-2">
+                  <p className="text-[14px] font-[600]">Features:</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px]">Has Brand:</p>
+                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasBrand ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                        {selectedCategory.hasBrand ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px]">Has Size:</p>
+                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasSize ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                        {selectedCategory.hasSize ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px]">Has Condition:</p>
+                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCondition ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                        {selectedCategory.hasCondition ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px]">Has Color:</p>
+                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasColor ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                        {selectedCategory.hasColor ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px]">Has Material:</p>
+                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasMaterial ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                        {selectedCategory.hasMaterial ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px]">Has Custom Shopping:</p>
+                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCustomShopping ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                        {selectedCategory.hasCustomShopping ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <p className="text-[14px] font-[600]">Sub Categories:</p>
+                  <div
+                    className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                    onClick={() => setIsViewDropdownOpen(!isViewDropdownOpen)}
+                  >
+                    <span>
+                      {viewCategoryPath.map((c) => c.name).join(" / ")}
+                    </span>
+                    {isViewDropdownOpen ? (
+                      <ChevronUp className="absolute right-2" />
+                    ) : (
+                      <ChevronDown className="absolute right-2" />
+                    )}
+                  </div>
+                  <AnimatePresence>
+                    {isViewDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
+                      >
+                        {viewCategoryPath.length > 1 && (
+                          <div
+                            className="cursor-pointer p-2 hover:bg-gray-100"
+                            onClick={handleViewGoBack}
+                          >
+                            <ArrowLeft /> Back
+                          </div>
+                        )}
+                        {viewSubCategories.length > 0 ? (
+                          viewSubCategories.map((subCategory) => (
+                            <div
+                              key={subCategory._id}
+                              className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
+                              onClick={() => handleViewCategorySelect(subCategory)}
+                            >
+                              <span>{subCategory.name}</span>
+                              {subCategory.subCategoryCount > 0 && <ArrowRight />}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="p-2 text-gray-500">No subcategories found</div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
+          </Modal>
+
+          {/* Modal for Add/Edit Category */}
+          <Modal
+            centered
+            footer={null}
+            width={600}
+            title={<p className="text-[20px] font-[700]">{modalTitle}</p>}
+            open={showModal}
+            onCancel={() => {
+              setShowModal(false);
+              setIsEditMode(false);
+              form.resetFields();
+              setImageFile(null);
+              setCategoryPath([]);
+            }}
+            closeIcon={<span className="text-gray-500 hover:text-gray-700 text-3xl font-bold w-10 h-10 flex items-center justify-center">×</span>}
+          >
                   <Form
                     form={form}
                     layout="vertical"
@@ -458,7 +671,7 @@ const Categories = () => {
                         Upload Image
                       </Button>
                     </Upload>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
+              <div className="grid grid-cols-3 gap-2 mt-4">
                       <Form.Item
                         name="hasBrand"
                         label="Has Brand"
@@ -519,8 +732,6 @@ const Categories = () => {
                           <Radio value={false}>No</Radio>
                         </Radio.Group>
                       </Form.Item>
-                    </div>
-                  </Form>
                 </div>
                 <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
                   <Button
@@ -541,9 +752,8 @@ const Categories = () => {
                     {submitButtonText}
                   </Button>
                 </div>
-              </div>
-            </div>
-          )}
+            </Form>
+          </Modal>
         </div>
       </div>
     </div>

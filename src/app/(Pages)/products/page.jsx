@@ -8,7 +8,6 @@ import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import SearchOnTop from "@/components/SearchOnTop";
 import Manage from "./Manage";
-import CreateNew from "./CreateNew";
 import Statics from "./Statics";
 
 const Products = () => {
@@ -35,7 +34,7 @@ const Products = () => {
             >
               Manage
             </p>
-            <p
+            {/* <p
               className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                 selectedTab === "createNew"
                   ? "text-[var(--text-color)] border-[var(--text-color)]"
@@ -44,7 +43,7 @@ const Products = () => {
               onClick={() => setSelectedTab("createNew")}
             >
               Create New
-            </p>
+            </p> */}
             <p
               className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                 selectedTab === "statics"
@@ -56,7 +55,7 @@ const Products = () => {
               Statics
             </p>
           </div>
-          {selectedTab === "manage" ? <Manage /> : selectedTab === "createNew" ? <CreateNew /> : <Statics />}
+          {selectedTab === "manage" ? <Manage /> : <Statics />}
         </div>
       </div>
     </div>

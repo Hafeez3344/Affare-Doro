@@ -1,219 +1,129 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-
-import productOne from "@/assets/product-1.png";
-import fillStar from "@/assets/svgs/Star.svg";
-import grayStar from "@/assets/svgs/Gray-Star.svg";
-import fvrtIcon from "@/assets/svgs/Favourite-icon.svg";
+import { getCategories } from "@/api/api"; // Import the API function
+import { notification, Modal } from "antd"; // Import Ant Design Modal
+import fillStar from "@/assets/svgs/Star.svg"; // Import filled star icon
+import grayStar from "@/assets/svgs/Gray-Star.svg"; // Import gray star icon
 
 const Manage = () => {
+  const [categories, setCategories] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await getCategories();
+      if (response?.status && Array.isArray(response?.data)) {
+        setCategories(response.data);
+      } else {
+        throw new Error(response?.message || "Failed to fetch categories");
+      }
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: error.message || "An unexpected error occurred",
+        placement: "topRight",
+        style: { marginTop: "50px" },
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleModalOpen = (category) => {
+    setSelectedCategory(category);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setSelectedCategory(null);
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className="flex gap-5 flex-wrap pb-[30px]">
-      {/* product */}
-      <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
-        <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
-          <Image
-            alt=""
-            src={productOne}
-            className="h-[290px] rounded-[8px] object-contain"
-          />
-        </div>
-        <div className="px-[20px] flex">
-          <div className="flex flex-col gap-0.5 flex-1">
-            <p className="font-[600] text-[17px]">Apple Watch Series 4</p>
-            <p className="text-[var(--price-color)] text-[15px] font-[600]">
-              $120.00
-            </p>
-            <div className="flex gap-0.5 mt-1">
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={grayStar} />
-              <p className="text-[12px] text-[--text-color-body] font-[600]">
-                (131)
-              </p>
+    <>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[10px] pb-[30px]">
+        {categories.map((category) => (
+          <div
+            key={category._id}
+            className="relative rounded-[8px] bg-white shadow-sm overflow-hidden"
+          >
+            <Image
+              alt={category.name}
+              src={`http://localhost:8000/${category.image?.replace(/\\/g, "/")}`}
+              className="w-full h-[165px] object-contain"
+              width={300}
+              height={165}
+            />
+            <div className="absolute left-0 top-0 w-full h-full bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
+              <button
+                onClick={() => handleModalOpen(category)}
+                className="bg-black w-[100px] h-[30px] text-[14px] font-[500] text-white rounded-full border border-gray-600"
+              >
+                View Detail
+              </button>
             </div>
-            <button className="bg-[#E2EAF8] rounded-[8px] text-[14px] font-[600] h-[38px] w-[max-content] px-[13px] mt-[20px]">
-              Edit Product
-            </button>
-          </div>
-          <div>
-            <Image alt="" src={fvrtIcon} />
-          </div>
-        </div>
-      </div>
-      {/* product */}
-      <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
-        <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
-          <Image
-            alt=""
-            src={productOne}
-            className="h-[290px] rounded-[8px] object-contain"
-          />
-        </div>
-        <div className="px-[20px] flex">
-          <div className="flex flex-col gap-0.5 flex-1">
-            <p className="font-[600] text-[17px]">Apple Watch Series 4</p>
-            <p className="text-[var(--price-color)] text-[15px] font-[600]">
-              $120.00
-            </p>
-            <div className="flex gap-0.5 mt-1">
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={grayStar} />
-              <p className="text-[12px] text-[--text-color-body] font-[600]">
-                (131)
+            <div className="p-[10px]">
+              <p className="font-[600] text-[15px]">{category.name}</p>
+              <p className="text-[var(--price-color)] text-[13px] font-[600]">
+                {category.status || "Active"}
               </p>
+              <div className="flex gap-0.5 mt-1">
+                {/* Star ratings */}
+                <Image alt="star" src={fillStar} width={16} height={16} />
+                <Image alt="star" src={fillStar} width={16} height={16} />
+                <Image alt="star" src={fillStar} width={16} height={16} />
+                <Image alt="star" src={fillStar} width={16} height={16} />
+                <Image alt="star" src={grayStar} width={16} height={16} />
+                <p className="text-[11px] text-[--text-color-body] font-[600]">
+                  (131)
+                </p>
+              </div>
             </div>
-            <button className="bg-[#E2EAF8] rounded-[8px] text-[14px] font-[600] h-[38px] w-[max-content] px-[13px] mt-[20px]">
-              Edit Product
-            </button>
           </div>
-          <div>
-            <Image alt="" src={fvrtIcon} />
-          </div>
-        </div>
+        ))}
       </div>
-      {/* product */}
-      <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
-        <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
-          <Image
-            alt=""
-            src={productOne}
-            className="h-[290px] rounded-[8px] object-contain"
-          />
-        </div>
-        <div className="px-[20px] flex">
-          <div className="flex flex-col gap-0.5 flex-1">
-            <p className="font-[600] text-[17px]">Apple Watch Series 4</p>
-            <p className="text-[var(--price-color)] text-[15px] font-[600]">
-              $120.00
-            </p>
-            <div className="flex gap-0.5 mt-1">
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={grayStar} />
-              <p className="text-[12px] text-[--text-color-body] font-[600]">
-                (131)
-              </p>
+
+      {/* Modal */}
+      <Modal
+        centered
+        footer={null}
+        width={600}
+        title={<p className="text-[20px] font-[700]">Product Details</p>}
+        open={isModalOpen}
+        onCancel={handleModalClose}
+      >
+        {selectedCategory && (
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-4">
+              <p className="text-[14px] font-[600] w-[150px]">Product Name:</p>
+              <p className="text-[14px]">{selectedCategory.name}</p>
             </div>
-            <button className="bg-[#E2EAF8] rounded-[8px] text-[14px] font-[600] h-[38px] w-[max-content] px-[13px] mt-[20px]">
-              Edit Product
-            </button>
-          </div>
-          <div>
-            <Image alt="" src={fvrtIcon} />
-          </div>
-        </div>
-      </div>
-      {/* product */}
-      <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
-        <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
-          <Image
-            alt=""
-            src={productOne}
-            className="h-[290px] rounded-[8px] object-contain"
-          />
-        </div>
-        <div className="px-[20px] flex">
-          <div className="flex flex-col gap-0.5 flex-1">
-            <p className="font-[600] text-[17px]">Apple Watch Series 4</p>
-            <p className="text-[var(--price-color)] text-[15px] font-[600]">
-              $120.00
-            </p>
-            <div className="flex gap-0.5 mt-1">
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={grayStar} />
-              <p className="text-[12px] text-[--text-color-body] font-[600]">
-                (131)
-              </p>
+            <div className="flex items-center gap-4">
+              <p className="text-[14px] font-[600] w-[150px]">Status:</p>
+              <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                {selectedCategory.status || "Active"}
+              </span>
             </div>
-            <button className="bg-[#E2EAF8] rounded-[8px] text-[14px] font-[600] h-[38px] w-[max-content] px-[13px] mt-[20px]">
-              Edit Product
-            </button>
+            {selectedCategory.image && (
+              <div className="flex items-center gap-4">
+                <p className="text-[14px] font-[600] w-[150px]">Image:</p>
+                <img
+                  src={`http://localhost:8000/${selectedCategory.image.replace(
+                    /\\/g,
+                    "/"
+                  )}`}
+                  alt={selectedCategory.name}
+                  className="w-32 h-32 object-cover rounded"
+                />
+              </div>
+            )}
           </div>
-          <div>
-            <Image alt="" src={fvrtIcon} />
-          </div>
-        </div>
-      </div>
-      {/* product */}
-      <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
-        <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
-          <Image
-            alt=""
-            src={productOne}
-            className="h-[290px] rounded-[8px] object-contain"
-          />
-        </div>
-        <div className="px-[20px] flex">
-          <div className="flex flex-col gap-0.5 flex-1">
-            <p className="font-[600] text-[17px]">Apple Watch Series 4</p>
-            <p className="text-[var(--price-color)] text-[15px] font-[600]">
-              $120.00
-            </p>
-            <div className="flex gap-0.5 mt-1">
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={grayStar} />
-              <p className="text-[12px] text-[--text-color-body] font-[600]">
-                (131)
-              </p>
-            </div>
-            <button className="bg-[#E2EAF8] rounded-[8px] text-[14px] font-[600] h-[38px] w-[max-content] px-[13px] mt-[20px]">
-              Edit Product
-            </button>
-          </div>
-          <div>
-            <Image alt="" src={fvrtIcon} />
-          </div>
-        </div>
-      </div>
-      {/* product */}
-      <div className="w-[340px] bg-white rounded-[8px] shadow-sm pb-[20px]">
-        <div className="rounded-[8px] flex justify-center pt-[20px] pb-[15px]">
-          <Image
-            alt=""
-            src={productOne}
-            className="h-[290px] rounded-[8px] object-contain"
-          />
-        </div>
-        <div className="px-[20px] flex">
-          <div className="flex flex-col gap-0.5 flex-1">
-            <p className="font-[600] text-[17px]">Apple Watch Series 4</p>
-            <p className="text-[var(--price-color)] text-[15px] font-[600]">
-              $120.00
-            </p>
-            <div className="flex gap-0.5 mt-1">
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={fillStar} />
-              <Image alt="" src={grayStar} />
-              <p className="text-[12px] text-[--text-color-body] font-[600]">
-                (131)
-              </p>
-            </div>
-            <button className="bg-[#E2EAF8] rounded-[8px] text-[14px] font-[600] h-[38px] w-[max-content] px-[13px] mt-[20px]">
-              Edit Product
-            </button>
-          </div>
-          <div>
-            <Image alt="" src={fvrtIcon} />
-          </div>
-        </div>
-      </div>
-    </div>
+        )}
+      </Modal>
+    </>
   );
 };
 
