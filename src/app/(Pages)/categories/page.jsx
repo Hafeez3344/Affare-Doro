@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { updatePageNavigation } from "@/features/features";
 import { ChevronDown, ChevronUp, ArrowLeft, ArrowRight } from "lucide-react";
 import { Form, Input, Upload, Radio, Button, notification, Select, Modal, Pagination } from 'antd';
-import { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
+import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
 import { FiEye } from "react-icons/fi";
 
 const { Option } = Select;
@@ -138,7 +138,7 @@ const Categories = () => {
         // If we have a selected category, add it to the form data
         if (categoryPath.length > 0) {
           const parentId = categoryPath[categoryPath.length - 1]._id;
-          formData.append('parentId', parentId);
+          formData.append('parentCategoryId', parentId);
           console.log('Added parentId to formData:', parentId);
         }
 
@@ -281,7 +281,7 @@ const Categories = () => {
 
   const fetchViewSubCategories = async (categoryId) => {
     try {
-      const response = await fetch(`http://localhost:8000/category/viewAll?parentCategoryId=${categoryId}`);
+      const response = await fetch(`${BACKEND_URL}/category/viewAll?parentCategoryId=${categoryId}`);
       const data = await response.json();
       
       if (data.status === "ok") {

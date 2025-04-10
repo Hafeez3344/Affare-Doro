@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const BACKEND_URL = "http://localhost:8000";
-
+export default BACKEND_URL;
 // Create axios instance with default config
 const api = axios.create({
     baseURL: BACKEND_URL,
@@ -62,7 +62,7 @@ const getAuthHeader = () => {
 export const createCategory = async (data) => {
     try {
         const response = await api.post(
-            '/category/create',
+            `/category/create`,
             data,
             getAuthHeader()
         );

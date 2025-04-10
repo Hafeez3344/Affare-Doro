@@ -1,14 +1,29 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { getCategories } from "@/api/api"; // Import the API function
-import { notification, Modal } from "antd"; // Import Ant Design Modal
-import fillStar from "@/assets/svgs/Star.svg"; // Import filled star icon
-import grayStar from "@/assets/svgs/Gray-Star.svg"; // Import gray star icon
+import { getCategories } from "@/api/api";
+import { notification, Modal } from "antd";
+import { Heart } from "lucide-react";
+
+// Function to generate star ratings
+const getStarRating = (rating) => {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 !== 0;
+  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+  return (
+    <span className="text-yellow-500 text-lg">
+      {"★".repeat(fullStars)}
+      {halfStar && "☆"}
+      {"☆".repeat(emptyStars)}
+    </span>
+  );
+};
 
 const Manage = () => {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [wishlist, setWishlist] = useState({});
 
   const fetchCategories = async () => {
     try {
@@ -32,6 +47,10 @@ const Manage = () => {
     fetchCategories();
   }, []);
 
+  const toggleWishlist = (id) => {
+    setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
   const handleModalOpen = (category) => {
     setSelectedCategory(category);
     setIsModalOpen(true);
@@ -44,49 +63,68 @@ const Manage = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[10px] pb-[30px]">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-6 justify-items-center">
         {categories.map((category) => (
           <div
             key={category._id}
-            className="relative rounded-[8px] bg-white shadow-sm overflow-hidden"
+            className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[300px]"
           >
-            <Image
-              alt={category.name}
-              src={`http://localhost:8000/${category.image?.replace(/\\/g, "/")}`}
-              className="w-full h-[165px] object-contain"
-              width={300}
-              height={165}
-            />
-            <div className="absolute left-0 top-0 w-full h-full bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
-              <button
-                onClick={() => handleModalOpen(category)}
-                className="bg-black w-[100px] h-[30px] text-[14px] font-[500] text-white rounded-full border border-gray-600"
-              >
-                View Detail
-              </button>
+            <div className="relative">
+              <Image
+                alt={category.name}
+                src={`http://localhost:8000/${category.image?.replace(/\\/g, "/")}`}
+                className="w-full h-[300px] object-cover rounded-lg"
+                width={300}
+                height={300}
+              />
             </div>
-            <div className="p-[10px]">
-              <p className="font-[600] text-[15px]">{category.name}</p>
-              <p className="text-[var(--price-color)] text-[13px] font-[600]">
-                {category.status || "Active"}
-              </p>
-              <div className="flex gap-0.5 mt-1">
-                {/* Star ratings */}
-                <Image alt="star" src={fillStar} width={16} height={16} />
-                <Image alt="star" src={fillStar} width={16} height={16} />
-                <Image alt="star" src={fillStar} width={16} height={16} />
-                <Image alt="star" src={fillStar} width={16} height={16} />
-                <Image alt="star" src={grayStar} width={16} height={16} />
-                <p className="text-[11px] text-[--text-color-body] font-[600]">
-                  (131)
-                </p>
+
+            <div className="mt-3 px-3">
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={() => handleModalOpen(category)}
+                  className="text-lg font-semibold text-gray-800 hover:underline"
+                >
+                  {category.name}
+                </button>
+
+                <button
+                  className={`cursor-pointer transition-colors ${
+                    wishlist[category._id]
+                      ? "text-red-500"
+                      : "text-gray-500 hover:text-red-300"
+                  }`}
+                  onClick={() => toggleWishlist(category._id)}
+                >
+                  <Heart
+                    size={22}
+                    fill={wishlist[category._id] ? "red" : "none"}
+                  />
+                </button>
               </div>
+
+              <div className="flex items-center gap-1 mt-1">
+                {getStarRating(4.5)} {/* Example rating */}
+              </div>
+
+              <p className="text-md text-gray-500">
+                Category: {category.category || "N/A"}
+              </p>
+              <p className="text-md text-gray-500">
+                Size: {category.size || "None"}
+              </p>
+              <p className="text-lg font-semibold text-teal-600">
+                {category.price || "N/A"}
+              </p>
+              <p className="text-lg font-semibold text-teal-600">
+                {category.inclPrice || "N/A"}{" "}
+                <span className="text-xs text-gray-400">incl.</span>
+              </p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modal */}
       <Modal
         centered
         footer={null}
