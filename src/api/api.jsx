@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "https://affari-doro-backend.shubhexchange.com";
 export default BACKEND_URL;
 // Create axios instance with default config
 const api = axios.create({
@@ -96,6 +96,37 @@ export const createCategory = async (data) => {
 export const getCategories = async () => {
     try {
         const response = await api.get('/category/viewAll');
+        console.log('API Response:', response);
+        return {
+            status: true,
+            message: "Categories fetched successfully",
+            data: response.data.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+
+        if (error.code === 'ERR_NETWORK') {
+            return {
+                status: false,
+                message: "Unable to connect to server. Please check if the server is running."
+            };
+        }
+
+        if (error?.response?.status === 400) {
+            return { status: false, message: error.response.data.message };
+        }
+
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
+// ---------------------------- Get product API -------------------------------
+export const getProducts = async () => {
+    try {
+        const response = await api.get('/product/viewAll');
         console.log('API Response:', response);
         return {
             status: true,

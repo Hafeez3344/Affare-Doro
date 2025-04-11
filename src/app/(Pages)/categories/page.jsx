@@ -52,8 +52,8 @@ const Categories = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await getCategories(); // Remove the page parameter if the API doesn't support pagination
-      console.log('API Response:', response); // Debugging line
+      const response = await getCategories(); 
+      console.log('API Response:', response); 
 
       if (response?.status && Array.isArray(response?.data)) {
         setCategories(response.data); // Assuming response.data is the array of categories
@@ -192,7 +192,7 @@ const Categories = () => {
 
   const fetchSubCategories = async (categoryId) => {
     try {
-      const response = await fetch(`http://localhost:8000/category/viewAll?parentCategoryId=${categoryId}`);
+      const response = await fetch(`${BACKEND_URL}/category/viewAll?parentCategoryId=${categoryId}`);
       const data = await response.json();
       
       if (data.status === "ok") {
