@@ -339,6 +339,7 @@ export const getPackages = async () => {
     }
 };
 
+
 // ---------------------------- Update Package APIs -------------------------------
 export const updatePackage = async (id, data) => {
     try {
@@ -356,6 +357,7 @@ export const updatePackage = async (id, data) => {
         };
     }
 };
+
 
 // ---------------------------- Delete Package APIs -------------------------------
 export const deletePackage = async (id) => {

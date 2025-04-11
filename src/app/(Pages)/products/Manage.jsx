@@ -71,6 +71,7 @@ const Manage = () => {
             key={category._id}
             className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[360px]" 
           >
+            
             <div className="relative h-[200px] w-full group">
               <Image
                 alt={category.name}
