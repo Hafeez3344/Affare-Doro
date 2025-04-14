@@ -137,6 +137,7 @@ const CustomersDetails = () => {
               <p className="text-[14px] text-[var(--text-color-body)]">Email</p>
               <p className="font-[500] text-[15px]">kimparkj@gmail.com</p>
             </div>
+
             <div className="w-[100%] flex flex-col gap-2 mt-4">
               <p className="text-[14px] text-[var(--text-color-body)]">Shipping Address</p>
               <p className="font-[500] text-[15px]">3401 S Malcolm X Blvd, Dallas, TX 75215, United States</p>
@@ -149,3 +150,4 @@ const CustomersDetails = () => {
 };
 
 export default CustomersDetails;
+

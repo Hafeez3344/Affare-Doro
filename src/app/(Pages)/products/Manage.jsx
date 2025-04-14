@@ -27,6 +27,7 @@ const Manage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [seller, setSeller] = useState(null);
   const [wishlist, setWishlist] = useState({});
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const carouselRef = React.useRef();
@@ -60,11 +61,13 @@ const Manage = () => {
 
   const handleModalOpen = (category) => {
     setSelectedCategory(category);
+    setSeller(category.userId); // Set seller data from userId
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setSelectedCategory(null);
+    setSeller(null);
     setIsModalOpen(false);
   };
 
@@ -105,8 +108,8 @@ const Manage = () => {
         <div className="w-full">
           <div className="bg-white h-[50px] rounded-[8px] flex items-center px-[25px] gap-3 shadow-sm">
             <IoSearch className="text-[var(--text-color-body)] text-[20px]" />
-            <input 
-              className="flex-1 focus:outline-none text-[15px]" 
+            <input
+              className="flex-1 focus:outline-none text-[15px]"
               placeholder="Search Here"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -169,7 +172,7 @@ const Manage = () => {
 
               <div className="mt-1">
                 <p className="text-[12px] text-gray-500">
-                  Category: {category.categoryId?.[category.categoryId.length-1]?.name || "N/A"}
+                  Category: {category.categoryId?.[category.categoryId.length - 1]?.name || "N/A"}
                 </p>
                 {/* <p className="text-[12px] text-gray-500">
                   Material: {category.materialId?.[0]?.name || "N/A"}
@@ -219,11 +222,11 @@ const Manage = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <p className="text-[14px] font-[600] w-[120px]">Category:</p>
-                  <p className="text-[14px]">{selectedCategory.categoryId?.[selectedCategory?.categoryId?.length-1]?.name || "N/A"}</p>
+                  <p className="text-[14px]">{selectedCategory.categoryId?.[selectedCategory?.categoryId?.length - 1]?.name || "N/A"}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <p className="text-[14px] font-[600] w-[120px]">Material:</p>
-                  <p className="text-[14px]">{selectedCategory.materialId?.[selectedCategory?.materialId?.length-1]?.name || "N/A"}</p>
+                  <p className="text-[14px]">{selectedCategory.materialId?.[selectedCategory?.materialId?.length - 1]?.name || "N/A"}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <p className="text-[14px] font-[600] w-[120px]">Size:</p>
@@ -254,20 +257,21 @@ const Manage = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <Image
-                          src={selectedCategory.seller?.profileImage || "/default-profile.png"}
-                          alt="Seller Profile"
-                          width={40}
-                          height={40}
+                          src={seller?.profileImage ? `${BACKEND_URL}/${seller.profileImage}` : "/default-profile.png"}
+                          alt={seller?.username || "Seller"}
+                          width={45}
+                          height={70}
                           className="rounded-full object-cover h-[40px]"
                         />
                         <div>
                           <p className="text-gray-900 text-[14px] font-semibold">
-                            {selectedCategory.seller?.name || "Seller Name"}
+                            {seller?.username || "Seller Name"}
                           </p>
-                          <div className="flex items-center">
-                            {getStarRating(4.5)}
-                            <span className="text-gray-500 text-xs ml-1">
-                              (120)
+                          <div className="flex items-center text-yellow-500">
+                            {"★".repeat(Math.floor(seller?.rating || 0))}
+                            {"☆".repeat(5 - Math.floor(seller?.rating || 0))}
+                            <span className="text-gray-900 text-sm ml-2">
+                              ({seller?.reviews || 0} reviews)
                             </span>
                           </div>
                         </div>
@@ -300,7 +304,7 @@ const Manage = () => {
                         </div>
                       ))}
                     </Carousel>
-                    
+
                     {/* Navigation Arrows */}
                     <button
                       onClick={prevSlide}
@@ -329,9 +333,8 @@ const Manage = () => {
                         {selectedCategory.image.map((img, index) => (
                           <div key={index} className="px-1">
                             <div
-                              className={`cursor-pointer rounded-lg overflow-hidden border-2 h-[60px] ${
-                                selectedImageIndex === index ? 'border-blue-500' : 'border-transparent'
-                              }`}
+                              className={`cursor-pointer rounded-lg overflow-hidden border-2 h-[60px] ${selectedImageIndex === index ? 'border-blue-500' : 'border-transparent'
+                                }`}
                               onClick={() => {
                                 setSelectedImageIndex(index);
                                 carouselRef.current.goTo(index);
