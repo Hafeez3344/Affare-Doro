@@ -1,12 +1,14 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const BACKEND_URL = "https://affari-doro-backend.shubhexchange.com";
+// const BACKEND_URL = "https://affari-doro-backend.shubhexchange.com";
+const BACKEND_URL = "http://localhost:8000"; // Localhost URL for development
+
 export default BACKEND_URL;
 // Create axios instance with default config
 const api = axios.create({
     baseURL: BACKEND_URL,
-    timeout: 5000, // 5 second timeout
+    timeout: 5000, 
 });
 
 // ---------------------create admin login api -------------------------------

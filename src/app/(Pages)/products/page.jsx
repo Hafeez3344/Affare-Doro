@@ -6,7 +6,7 @@ import { updatePageNavigation } from "@/features/features";
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
-import SearchOnTop from "@/components/SearchOnTop";
+// import SearchOnTop from "@/components/SearchOnTop";
 import Manage from "./Manage";
 import Statics from "./Statics";
 
@@ -22,9 +22,9 @@ const Products = () => {
       <div className="flex-1 flex">
         <Sidebar />
         <div className="flex-1 mt-[30px] px-[22px]">
-          <SearchOnTop />
-          <div className="flex gap-10 my-[20px]">
-            <p
+          {/* <SearchOnTop /> */}
+          <div className="flex gap-10 my-[15px]">
+            {/* <p
               className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                 selectedTab === "manage"
                   ? "text-[var(--text-color)] border-[var(--text-color)]"
@@ -34,7 +34,7 @@ const Products = () => {
             >
               Manage
             </p>
-            {/* <p
+            <p
               className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                 selectedTab === "createNew"
                   ? "text-[var(--text-color)] border-[var(--text-color)]"
@@ -43,7 +43,7 @@ const Products = () => {
               onClick={() => setSelectedTab("createNew")}
             >
               Create New
-            </p> */}
+            </p>
             <p
               className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                 selectedTab === "statics"
@@ -53,7 +53,7 @@ const Products = () => {
               onClick={() => setSelectedTab("statics")}
             >
               Statics
-            </p>
+            </p> */}
           </div>
           {selectedTab === "manage" ? <Manage /> : <Statics />}
         </div>
