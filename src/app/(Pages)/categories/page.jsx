@@ -52,8 +52,8 @@ const Categories = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await getCategories(); 
-      console.log('API Response:', response); 
+      const response = await getCategories();
+      console.log('API Response:', response);
 
       if (response?.status && Array.isArray(response?.data)) {
         setCategories(response.data); // Assuming response.data is the array of categories
@@ -194,12 +194,12 @@ const Categories = () => {
     try {
       const response = await fetch(`${BACKEND_URL}/category/viewAll?parentCategoryId=${categoryId}`);
       const data = await response.json();
-      
+
       if (data.status === "ok") {
         setSubCategories(data.data);
         setCurrentParentId(categoryId);
         setIsCategoryDropdownOpen(true);
-        
+
         // Update the category path with the current category
         const currentCategory = categories.find(cat => cat._id === categoryId);
         if (currentCategory) {
@@ -236,7 +236,7 @@ const Categories = () => {
       const newPath = [...categoryPath];
       newPath.pop();
       setCategoryPath(newPath);
-      
+
       if (newPath.length === 0) {
         setCurrentParentId(null);
         setSubCategories([]);
@@ -273,7 +273,7 @@ const Categories = () => {
       const newPath = [...viewCategoryPath];
       newPath.pop();
       setViewCategoryPath(newPath);
-      
+
       const parentId = newPath[newPath.length - 1]._id;
       await fetchViewSubCategories(parentId);
     }
@@ -283,7 +283,7 @@ const Categories = () => {
     try {
       const response = await fetch(`${BACKEND_URL}/category/viewAll?parentCategoryId=${categoryId}`);
       const data = await response.json();
-      
+
       if (data.status === "ok") {
         setViewSubCategories(data.data);
         setCurrentViewParentId(categoryId);
@@ -436,7 +436,7 @@ const Categories = () => {
           <Modal
             centered
             footer={null}
-            width={600}
+            width={800}
             title={<p className="text-[20px] font-[700]">Category Details</p>}
             open={viewModalOpen}
             onCancel={() => {
@@ -447,122 +447,132 @@ const Categories = () => {
             }}
           >
             {selectedCategory && (
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-4">
-                  <p className="text-[14px] font-[600] w-[150px]">Category Name:</p>
-                  <p className="text-[14px]">{selectedCategory.name}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-[14px] font-[600] w-[150px]">Status:</p>
-                  <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                    {selectedCategory.status || 'Active'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-[14px] font-[600] w-[150px]">Created Date:</p>
-                  <p className="text-[14px]">
-                    {moment.utc(selectedCategory?.createdAt).format('DD MMM YYYY, hh:mm A')}
-                  </p>
-                </div>
-                {selectedCategory.image && (
-                  <div className="flex items-center gap-4">
-                    <p className="text-[14px] font-[600] w-[150px]">Image:</p>
-                    <img 
-                      src={`http://localhost:8000/${selectedCategory.image.replace(/\\/g, '/')}`}
-                      alt={selectedCategory.name}
-                      className="w-32 h-32 object-cover rounded"
-                    />
-                  </div>
-                )}
-                <div className="flex flex-col gap-2">
-                  <p className="text-[14px] font-[600]">Features:</p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[14px]">Has Brand:</p>
-                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasBrand ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                        {selectedCategory.hasBrand ? 'Yes' : 'No'}
+              <div className="flex flex-col gap-6">
+                <div className="flex gap-6">
+                  {/* Left side - Category Details */}
+                  <div className="flex-1 flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                      <p className="text-[14px] font-[600] w-[120px]">Category Name:</p>
+                      <p className="text-[14px]">{selectedCategory.name}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <p className="text-[14px] font-[600] w-[120px]">Status:</p>
+                      <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                        {selectedCategory.status || 'Active'}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[14px]">Has Size:</p>
-                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasSize ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                        {selectedCategory.hasSize ? 'Yes' : 'No'}
-                      </span>
+                    <div className="flex items-center gap-3">
+                      <p className="text-[14px] font-[600] w-[120px]">Created Date:</p>
+                      <p className="text-[14px]">
+                        {moment.utc(selectedCategory?.createdAt).format('DD MMM YYYY, hh:mm A')}
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[14px]">Has Condition:</p>
-                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCondition ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                        {selectedCategory.hasCondition ? 'Yes' : 'No'}
-                      </span>
+
+                    <div className="flex flex-col gap-2 mt-4">
+                      <p className="text-[14px] font-[600]">Features:</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center justify-between">
+                          <p className="text-[14px]">Has Brand:</p>
+                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasBrand ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                            {selectedCategory.hasBrand ? 'Yes' : 'No'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[14px]">Has Size:</p>
+                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasSize ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                            {selectedCategory.hasSize ? 'Yes' : 'No'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[14px]">Has Condition:</p>
+                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCondition ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                            {selectedCategory.hasCondition ? 'Yes' : 'No'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[14px]">Has Color:</p>
+                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasColor ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                            {selectedCategory.hasColor ? 'Yes' : 'No'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[14px]">Has Material:</p>
+                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasMaterial ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                            {selectedCategory.hasMaterial ? 'Yes' : 'No'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[14px]">Has Custom Shopping:</p>
+                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCustomShopping ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
+                            {selectedCategory.hasCustomShopping ? 'Yes' : 'No'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[14px]">Has Color:</p>
-                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasColor ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                        {selectedCategory.hasColor ? 'Yes' : 'No'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[14px]">Has Material:</p>
-                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasMaterial ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                        {selectedCategory.hasMaterial ? 'Yes' : 'No'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[14px]">Has Custom Shopping:</p>
-                      <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCustomShopping ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                        {selectedCategory.hasCustomShopping ? 'Yes' : 'No'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <p className="text-[14px] font-[600]">Sub Categories:</p>
-                  <div
-                    className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-                    onClick={() => setIsViewDropdownOpen(!isViewDropdownOpen)}
-                  >
-                    <span>
-                      {viewCategoryPath.map((c) => c.name).join(" / ")}
-                    </span>
-                    {isViewDropdownOpen ? (
-                      <ChevronUp className="absolute right-2" />
-                    ) : (
-                      <ChevronDown className="absolute right-2" />
-                    )}
-                  </div>
-                  <AnimatePresence>
-                    {isViewDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
+
+                    <div className="flex flex-col gap-2 mt-4">
+                      <p className="text-[14px] font-[600]">Sub Categories:</p>
+                      <div
+                        className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                        onClick={() => setIsViewDropdownOpen(!isViewDropdownOpen)}
                       >
-                        {viewCategoryPath.length > 1 && (
-                          <div
-                            className="cursor-pointer p-2 hover:bg-gray-100"
-                            onClick={handleViewGoBack}
-                          >
-                            <ArrowLeft /> Back
-                          </div>
-                        )}
-                        {viewSubCategories.length > 0 ? (
-                          viewSubCategories.map((subCategory) => (
-                            <div
-                              key={subCategory._id}
-                              className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                              onClick={() => handleViewCategorySelect(subCategory)}
-                            >
-                              <span>{subCategory.name}</span>
-                              {subCategory.subCategoryCount > 0 && <ArrowRight />}
-                            </div>
-                          ))
+                        <span>
+                          {viewCategoryPath.map((c) => c.name).join(" / ")}
+                        </span>
+                        {isViewDropdownOpen ? (
+                          <ChevronUp className="absolute right-2" />
                         ) : (
-                          <div className="p-2 text-gray-500">No subcategories found</div>
+                          <ChevronDown className="absolute right-2" />
                         )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                      </div>
+                      <AnimatePresence>
+                        {isViewDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
+                          >
+                            {viewCategoryPath.length > 1 && (
+                              <div
+                                className="cursor-pointer p-2 hover:bg-gray-100"
+                                onClick={handleViewGoBack}
+                              >
+                                <ArrowLeft /> Back
+                              </div>
+                            )}
+                            {viewSubCategories.length > 0 ? (
+                              viewSubCategories.map((subCategory) => (
+                                <div
+                                  key={subCategory._id}
+                                  className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
+                                  onClick={() => handleViewCategorySelect(subCategory)}
+                                >
+                                  <span>{subCategory.name}</span>
+                                  {subCategory.subCategoryCount > 0 && <ArrowRight />}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="p-2 text-gray-500">No subcategories found</div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+
+                  {/* Right side - Category Image */}
+                  {selectedCategory.image && (
+                    <div className="w-[400px] flex-shrink-0">
+                      <div className="w-full h-[300px]">
+                        <img
+                          src={`http://localhost:8000/${selectedCategory.image.replace(/\\/g, '/')}`}
+                          alt={selectedCategory.name}
+                          className="w-full h-full object-cover rounded-lg shadow-md"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -584,174 +594,174 @@ const Categories = () => {
             }}
             closeIcon={<span className="text-gray-500 hover:text-gray-700 text-3xl font-bold w-10 h-10 flex items-center justify-center">×</span>}
           >
-                  <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={handleSubmit}
-                  >
-                    <Form.Item
-                      name="name"
-                      label="Category Name"
-                      rules={[{ required: true, message: 'Please enter category name' }]}
-                    >
-                      <Input
-                        placeholder="Enter category name"
-                        className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-                      />
-                    </Form.Item>
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleSubmit}
+            >
+              <Form.Item
+                name="name"
+                label="Category Name"
+                rules={[{ required: true, message: 'Please enter category name' }]}
+              >
+                <Input
+                  placeholder="Enter category name"
+                  className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                />
+              </Form.Item>
 
-                    <Form.Item
-                      name="category"
-                      label="Product Category"
-                      rules={[{ required: false, message: "Please select a category" }]}
+              <Form.Item
+                name="category"
+                label="Product Category"
+                rules={[{ required: false, message: "Please select a category" }]}
+              >
+                <div
+                  className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                  onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                >
+                  <span>
+                    {categoryPath.length
+                      ? categoryPath.map((c) => c.name).join(" / ")
+                      : "Select Category"}
+                  </span>
+                  {isCategoryDropdownOpen ? (
+                    <ChevronUp className="absolute right-2" />
+                  ) : (
+                    <ChevronDown className="absolute right-2" />
+                  )}
+                </div>
+                <AnimatePresence>
+                  {isCategoryDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
                     >
+                      {categoryPath.length > 0 && (
+                        <div
+                          className="cursor-pointer p-2 hover:bg-gray-100"
+                          onClick={handleGoBack}
+                        >
+                          <ArrowLeft /> Back
+                        </div>
+                      )}
                       <div
-                        className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-                        onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                        className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
+                        onClick={() => handleNewCategory()}
                       >
-                        <span>
-                          {categoryPath.length
-                            ? categoryPath.map((c) => c.name).join(" / ")
-                            : "Select Category"}
-                        </span>
-                        {isCategoryDropdownOpen ? (
-                          <ChevronUp className="absolute right-2" />
-                        ) : (
-                          <ChevronDown className="absolute right-2" />
-                        )}
+                        <span>New Category</span>
                       </div>
-                      <AnimatePresence>
-                        {isCategoryDropdownOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
-                          >
-                            {categoryPath.length > 0 && (
-                              <div
-                                className="cursor-pointer p-2 hover:bg-gray-100"
-                                onClick={handleGoBack}
-                              >
-                                <ArrowLeft /> Back
-                              </div>
-                            )}
-                            <div
-                              className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                              onClick={() => handleNewCategory()}
-                            >
-                              <span>New Category</span>
-                            </div>
-                            {(currentParentId ? subCategories : categories).map((category) => (
-                              <div
-                                key={category._id}
-                                className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                                onClick={() => handleCategorySelect(category)}
-                              >
-                                <span>{category.name}</span>
-                                {category.subCategoryCount > 0 && <ArrowRight />}
-                              </div>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </Form.Item>
+                      {(currentParentId ? subCategories : categories).map((category) => (
+                        <div
+                          key={category._id}
+                          className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
+                          onClick={() => handleCategorySelect(category)}
+                        >
+                          <span>{category.name}</span>
+                          {category.subCategoryCount > 0 && <ArrowRight />}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Form.Item>
 
-                    <Upload
-                      maxCount={1}
-                      beforeUpload={() => false}
-                      listType="picture"
-                      accept="image/*"
-                      className="w-full"
-                    >
-                      <Button
-                        icon={<UploadOutlined />}
-                        className="w-full border-[--text-color] text-[--text-color] bg-[rgba(232,187,76,0.08)] hover:border-[--text-color]"
-                      >
-                        Upload Image
-                      </Button>
-                    </Upload>
+              <Upload
+                maxCount={1}
+                beforeUpload={() => false}
+                listType="picture"
+                accept="image/*"
+                className="w-full"
+              >
+                <Button
+                  icon={<UploadOutlined />}
+                  className="w-full border-[--text-color] text-[--text-color] bg-[rgba(232,187,76,0.08)] hover:border-[--text-color]"
+                >
+                  Upload Image
+                </Button>
+              </Upload>
               <div className="grid grid-cols-3 gap-2 mt-4">
-                      <Form.Item
-                        name="hasBrand"
-                        label="Has Brand"
-                        initialValue={true}
-                      >
-                        <Radio.Group>
-                          <Radio value={true}>Yes</Radio>
-                          <Radio value={false}>No</Radio>
-                        </Radio.Group>
-                      </Form.Item>
-                      <Form.Item
-                        name="hasSize"
-                        label="Has Size"
-                        initialValue={true}
-                      >
-                        <Radio.Group>
-                          <Radio value={true}>Yes</Radio>
-                          <Radio value={false}>No</Radio>
-                        </Radio.Group>
-                      </Form.Item>
-                      <Form.Item
-                        name="hasCondition"
-                        label="Has Condition"
-                        initialValue={true}
-                      >
-                        <Radio.Group>
-                          <Radio value={true}>Yes</Radio>
-                          <Radio value={false}>No</Radio>
-                        </Radio.Group>
-                      </Form.Item>
-                      <Form.Item
-                        name="hasColor"
-                        label="Has Color"
-                        initialValue={true}
-                      >
-                        <Radio.Group>
-                          <Radio value={true}>Yes</Radio>
-                          <Radio value={false}>No</Radio>
-                        </Radio.Group>
-                      </Form.Item>
-                      <Form.Item
-                        name="hasMaterial"
-                        label="Has Material"
-                        initialValue={true}
-                      >
-                        <Radio.Group>
-                          <Radio value={true}>Yes</Radio>
-                          <Radio value={false}>No</Radio>
-                        </Radio.Group>
-                      </Form.Item>
-                      <Form.Item
-                        name="hasCustomShopping"
-                        label="Has Custom Shopping"
-                        initialValue={true}
-                      >
-                        <Radio.Group>
-                          <Radio value={true}>Yes</Radio>
-                          <Radio value={false}>No</Radio>
-                        </Radio.Group>
-                      </Form.Item>
-                </div>
-                <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
-                  <Button
-                    onClick={() => setShowModal(false)}
-                    style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
-                    className="transition-colors"
-                  >
-                    Cancel
-                  </Button>
+                <Form.Item
+                  name="hasBrand"
+                  label="Has Brand"
+                  initialValue={true}
+                >
+                  <Radio.Group>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  name="hasSize"
+                  label="Has Size"
+                  initialValue={true}
+                >
+                  <Radio.Group>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  name="hasCondition"
+                  label="Has Condition"
+                  initialValue={true}
+                >
+                  <Radio.Group>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  name="hasColor"
+                  label="Has Color"
+                  initialValue={true}
+                >
+                  <Radio.Group>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  name="hasMaterial"
+                  label="Has Material"
+                  initialValue={true}
+                >
+                  <Radio.Group>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  name="hasCustomShopping"
+                  label="Has Custom Shopping"
+                  initialValue={true}
+                >
+                  <Radio.Group>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </div>
+              <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
+                <Button
+                  onClick={() => setShowModal(false)}
+                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
+                  className="transition-colors"
+                >
+                  Cancel
+                </Button>
 
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
-                    className="transition-colors"
-                  >
-                    {submitButtonText}
-                  </Button>
-                </div>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
+                  className="transition-colors"
+                >
+                  {submitButtonText}
+                </Button>
+              </div>
             </Form>
           </Modal>
         </div>
