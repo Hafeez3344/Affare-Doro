@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import BACKEND_URL, { getProducts } from "@/api/api";
-import { notification, Modal, Carousel } from "antd";
+import { notification, Modal, Carousel, Pagination } from "antd";
 import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
-import { IoSearch } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 
 // Function to generate star ratings
@@ -21,15 +20,16 @@ const getStarRating = (rating) => {
   );
 };
 
-const Manage = () => {
+const Manage = ({ searchQuery }) => {
   const router = useRouter();
   const [categories, setCategories] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [seller, setSeller] = useState(null);
   const [wishlist, setWishlist] = useState({});
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const carouselRef = React.useRef();
   const thumbnailCarouselRef = React.useRef();
 
@@ -95,106 +95,121 @@ const Manage = () => {
     }
   };
 
-  // Filter categories based on search query
+  // Filter categories based on search query and paginate
   const filteredCategories = categories.filter((category) =>
     category.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const paginatedCategories = filteredCategories.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Reset to first page when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   console.log("Categories:", categories);
 
   return (
     <>
+      <div className="flex flex-col">
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-sm text-gray-500">
+            Showing {Math.min(currentPage * itemsPerPage, filteredCategories.length)} of {filteredCategories.length} products
+          </p>
+        </div>
 
-      <div className="mb-6">
-        <div className="w-full">
-          <div className="bg-white h-[50px] rounded-[8px] flex items-center px-[25px] gap-3 shadow-sm">
-            <IoSearch className="text-[var(--text-color-body)] text-[20px]" />
-            <input
-              className="flex-1 focus:outline-none text-[15px]"
-              placeholder="Search Here"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-6 justify-items-center">
+          {paginatedCategories.map((category) => (
+            <div
+              key={category._id}
+              className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[360px]"
+            >
+
+              <div className="relative h-[200px] w-full group"> 
+                <Image
+                  alt={category.name}
+                  src={`${BACKEND_URL}/${category.image?.[0]}`}
+                  className="w-full h-full object-cover rounded-lg"
+                  width={250}
+                  height={200}
+                />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <button
+                    onClick={() => handleModalOpen(category)}
+                    className="bg-white text-gray-800 px-3 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors"
+                  >
+                    View Detail
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-2 px-3">
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={() => handleModalOpen(category)}
+                    className="text-sm font-semibold text-gray-800 hover:underline text-nowrap"
+                  >
+                    {category.name}
+                  </button>
+
+                  {/* <button
+                    className={`cursor-pointer transition-colors ${wishlist[category._id]
+                        ? "text-red-500"
+                        : "text-gray-500 hover:text-red-300"
+                      }`}
+                    onClick={() => toggleWishlist(category._id)}
+                  >
+                    <Heart
+                      size={18}
+                      fill={wishlist[category._id] ? "red" : "none"}
+                    />
+                  </button> */}
+                </div>
+
+                <div className="flex items-center gap-1 mt-1">
+                  {getStarRating(4.5)}
+                </div>
+
+                <div className="mt-1">
+                  <p className="text-[12px] text-gray-500">
+                    Category: {category.categoryId?.[category.categoryId.length - 1]?.name || "N/A"}
+                  </p>
+                  {/* <p className="text-[12px] text-gray-500">
+                    Material: {category.materialId?.[0]?.name || "N/A"}
+                  </p>
+                  <p className="text-[12px] text-gray-500">
+                    Size: {category?.sizeId?.name || "None"}
+                  </p>
+                  <p className="text-[12px] text-gray-500">
+                    Color: {category?.colorId?.[0]?.name || "None"}
+                  </p> */}
+                  <p className="text-[12px] font-semibold text-teal-600">
+                    $ {category.price || "N/A"}
+                  </p>
+                  <p className="text-[12px] font-semibold text-teal-600">
+                    $ {category.inclPrice || "N/A"}{" "}
+                    <span className="text-xs text-gray-400">incl.</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredCategories.length > itemsPerPage && (
+          <div className="flex justify-end mt-6">
+            <Pagination
+              current={currentPage}
+              onChange={(page) => setCurrentPage(page)}
+              total={filteredCategories.length}
+              pageSize={itemsPerPage}
+              showSizeChanger={false}
             />
           </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-6 justify-items-center">
-        {filteredCategories.map((category) => (
-          <div
-            key={category._id}
-            className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[360px]"
-          >
-
-            <div className="relative h-[200px] w-full group">
-              <Image
-                alt={category.name}
-                src={`${BACKEND_URL}/${category.image?.[0]}`}
-                className="w-full h-full object-cover rounded-lg"
-                width={250}
-                height={200}
-              />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <button
-                  onClick={() => handleModalOpen(category)}
-                  className="bg-white text-gray-800 px-3 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors"
-                >
-                  View Detail
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-2 px-3">
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={() => handleModalOpen(category)}
-                  className="text-sm font-semibold text-gray-800 hover:underline text-nowrap"
-                >
-                  {category.name}
-                </button>
-
-                {/* <button
-                  className={`cursor-pointer transition-colors ${wishlist[category._id]
-                      ? "text-red-500"
-                      : "text-gray-500 hover:text-red-300"
-                    }`}
-                  onClick={() => toggleWishlist(category._id)}
-                >
-                  <Heart
-                    size={18}
-                    fill={wishlist[category._id] ? "red" : "none"}
-                  />
-                </button> */}
-              </div>
-
-              <div className="flex items-center gap-1 mt-1">
-                {getStarRating(4.5)}
-              </div>
-
-              <div className="mt-1">
-                <p className="text-[12px] text-gray-500">
-                  Category: {category.categoryId?.[category.categoryId.length - 1]?.name || "N/A"}
-                </p>
-                {/* <p className="text-[12px] text-gray-500">
-                  Material: {category.materialId?.[0]?.name || "N/A"}
-                </p>
-                <p className="text-[12px] text-gray-500">
-                  Size: {category?.sizeId?.name || "None"}
-                </p>
-                <p className="text-[12px] text-gray-500">
-                  Color: {category?.colorId?.[0]?.name || "None"}
-                </p> */}
-                <p className="text-[12px] font-semibold text-teal-600">
-                  $ {category.price || "N/A"}
-                </p>
-                <p className="text-[12px] font-semibold text-teal-600">
-                  $ {category.inclPrice || "N/A"}{" "}
-                  <span className="text-xs text-gray-400">incl.</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+        )}
       </div>
 
       {/* Product View Model  */}
