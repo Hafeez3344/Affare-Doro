@@ -2,43 +2,42 @@
 
 import Image from "next/image";
 import moment from 'moment-timezone';
+import { FiEye } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import Navbar from "@/components/navbar";
 import { useDispatch } from "react-redux";
 import Sidebar from "@/components/sidebar";
 import { MdEdit, MdDelete } from "react-icons/md";
 import React, { useEffect, useState } from "react";
-import { UploadOutlined } from '@ant-design/icons';
-import { motion, AnimatePresence } from "framer-motion";
+import ViewCategoryModal from "./ViewCategoryModal";
+import AddEditCategoryModal from "./AddEditCategoryModal";
 import { updatePageNavigation } from "@/features/features";
-import { ChevronDown, ChevronUp, ArrowLeft, ArrowRight } from "lucide-react";
-import { Form, Input, Upload, Radio, Button, notification, Select, Modal, Pagination } from 'antd';
+import { Form, notification, Select, Pagination } from 'antd';
 import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
-import { FiEye } from "react-icons/fi";
 
 const { Option } = Select;
 
 const Categories = () => {
+  const itemsPerPage = 10;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isEditMode, setIsEditMode] = useState(false);
   const [categoryPath, setCategoryPath] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [currentParentId, setCurrentParentId] = useState(null);
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [currentParentId, setCurrentParentId] = useState(null);
+  const [viewCategoryPath, setViewCategoryPath] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [viewSubCategories, setViewSubCategories] = useState([]);
   const [isViewDropdownOpen, setIsViewDropdownOpen] = useState(false);
-  const [viewCategoryPath, setViewCategoryPath] = useState([]);
   const [currentViewParentId, setCurrentViewParentId] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
   const paginatedCategories = categories.slice(
     (currentPage - 1) * itemsPerPage,
@@ -433,337 +432,47 @@ const Categories = () => {
           </div>
 
           {/* View Category Modal */}
-          <Modal
-            centered
-            footer={null}
-            width={800}
-            title={<p className="text-[20px] font-[700]">Category Details</p>}
-            open={viewModalOpen}
-            onCancel={() => {
+          <ViewCategoryModal
+            isOpen={viewModalOpen}
+            onClose={() => {
               setViewModalOpen(false);
               setIsViewDropdownOpen(false);
               setViewSubCategories([]);
               setViewCategoryPath([]);
             }}
-          >
-            {selectedCategory && (
-              <div className="flex flex-col gap-6">
-                <div className="flex gap-6">
-                  {/* Left side - Category Details */}
-                  <div className="flex-1 flex flex-col gap-3">
-                    <div className="flex items-center gap-3">
-                      <p className="text-[14px] font-[600] w-[120px]">Category Name:</p>
-                      <p className="text-[14px]">{selectedCategory.name}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <p className="text-[14px] font-[600] w-[120px]">Status:</p>
-                      <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                        {selectedCategory.status || 'Active'}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <p className="text-[14px] font-[600] w-[120px]">Created Date:</p>
-                      <p className="text-[14px]">
-                        {moment.utc(selectedCategory?.createdAt).format('DD MMM YYYY, hh:mm A')}
-                      </p>
-                    </div>
+            selectedCategory={selectedCategory}
+            isViewDropdownOpen={isViewDropdownOpen}
+            setIsViewDropdownOpen={setIsViewDropdownOpen}
+            viewSubCategories={viewSubCategories}
+            viewCategoryPath={viewCategoryPath}
+            handleViewGoBack={handleViewGoBack}
+            handleViewCategorySelect={handleViewCategorySelect}
+          />
 
-                    <div className="flex flex-col gap-2 mt-4">
-                      <p className="text-[14px] font-[600]">Features:</p>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center justify-between">
-                          <p className="text-[14px]">Has Brand:</p>
-                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasBrand ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                            {selectedCategory.hasBrand ? 'Yes' : 'No'}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <p className="text-[14px]">Has Size:</p>
-                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasSize ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                            {selectedCategory.hasSize ? 'Yes' : 'No'}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <p className="text-[14px]">Has Condition:</p>
-                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCondition ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                            {selectedCategory.hasCondition ? 'Yes' : 'No'}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <p className="text-[14px]">Has Color:</p>
-                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasColor ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                            {selectedCategory.hasColor ? 'Yes' : 'No'}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <p className="text-[14px]">Has Material:</p>
-                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasMaterial ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                            {selectedCategory.hasMaterial ? 'Yes' : 'No'}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <p className="text-[14px]">Has Custom Shopping:</p>
-                          <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCustomShopping ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
-                            {selectedCategory.hasCustomShopping ? 'Yes' : 'No'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2 mt-4">
-                      <p className="text-[14px] font-[600]">Sub Categories:</p>
-                      <div
-                        className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-                        onClick={() => setIsViewDropdownOpen(!isViewDropdownOpen)}
-                      >
-                        <span>
-                          {viewCategoryPath.map((c) => c.name).join(" / ")}
-                        </span>
-                        {isViewDropdownOpen ? (
-                          <ChevronUp className="absolute right-2" />
-                        ) : (
-                          <ChevronDown className="absolute right-2" />
-                        )}
-                      </div>
-                      <AnimatePresence>
-                        {isViewDropdownOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
-                          >
-                            {viewCategoryPath.length > 1 && (
-                              <div
-                                className="cursor-pointer p-2 hover:bg-gray-100"
-                                onClick={handleViewGoBack}
-                              >
-                                <ArrowLeft /> Back
-                              </div>
-                            )}
-                            {viewSubCategories.length > 0 ? (
-                              viewSubCategories.map((subCategory) => (
-                                <div
-                                  key={subCategory._id}
-                                  className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                                  onClick={() => handleViewCategorySelect(subCategory)}
-                                >
-                                  <span>{subCategory.name}</span>
-                                  {subCategory.subCategoryCount > 0 && <ArrowRight />}
-                                </div>
-                              ))
-                            ) : (
-                              <div className="p-2 text-gray-500">No subcategories found</div>
-                            )}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-
-                  {/* Right side - Category Image */}
-                  {selectedCategory.image && (
-                    <div className="w-[400px] flex-shrink-0">
-                      <div className="w-full h-[300px]">
-                        <img
-                          src={`http://localhost:8000/${selectedCategory.image.replace(/\\/g, '/')}`}
-                          alt={selectedCategory.name}
-                          className="w-full h-full object-cover rounded-lg shadow-md"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </Modal>
-
-          {/* Modal for Add/Edit Category */}
-          <Modal
-            centered
-            footer={null}
-            width={600}
-            title={<p className="text-[20px] font-[700]">{modalTitle}</p>}
-            open={showModal}
-            onCancel={() => {
+          {/* Add/Edit Category Modal */}
+          <AddEditCategoryModal
+            isOpen={showModal}
+            onClose={() => {
               setShowModal(false);
               setIsEditMode(false);
               form.resetFields();
               setImageFile(null);
               setCategoryPath([]);
             }}
-            closeIcon={<span className="text-gray-500 hover:text-gray-700 text-3xl font-bold w-10 h-10 flex items-center justify-center">×</span>}
-          >
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSubmit}
-            >
-              <Form.Item
-                name="name"
-                label="Category Name"
-                rules={[{ required: true, message: 'Please enter category name' }]}
-              >
-                <Input
-                  placeholder="Enter category name"
-                  className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="category"
-                label="Product Category"
-                rules={[{ required: false, message: "Please select a category" }]}
-              >
-                <div
-                  className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-                  onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-                >
-                  <span>
-                    {categoryPath.length
-                      ? categoryPath.map((c) => c.name).join(" / ")
-                      : "Select Category"}
-                  </span>
-                  {isCategoryDropdownOpen ? (
-                    <ChevronUp className="absolute right-2" />
-                  ) : (
-                    <ChevronDown className="absolute right-2" />
-                  )}
-                </div>
-                <AnimatePresence>
-                  {isCategoryDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
-                    >
-                      {categoryPath.length > 0 && (
-                        <div
-                          className="cursor-pointer p-2 hover:bg-gray-100"
-                          onClick={handleGoBack}
-                        >
-                          <ArrowLeft /> Back
-                        </div>
-                      )}
-                      <div
-                        className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                        onClick={() => handleNewCategory()}
-                      >
-                        <span>New Category</span>
-                      </div>
-                      {(currentParentId ? subCategories : categories).map((category) => (
-                        <div
-                          key={category._id}
-                          className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                          onClick={() => handleCategorySelect(category)}
-                        >
-                          <span>{category.name}</span>
-                          {category.subCategoryCount > 0 && <ArrowRight />}
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Form.Item>
-
-              <Upload
-                maxCount={1}
-                beforeUpload={() => false}
-                listType="picture"
-                accept="image/*"
-                className="w-full"
-              >
-                <Button
-                  icon={<UploadOutlined />}
-                  className="w-full border-[--text-color] text-[--text-color] bg-[rgba(232,187,76,0.08)] hover:border-[--text-color]"
-                >
-                  Upload Image
-                </Button>
-              </Upload>
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                <Form.Item
-                  name="hasBrand"
-                  label="Has Brand"
-                  initialValue={true}
-                >
-                  <Radio.Group>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                <Form.Item
-                  name="hasSize"
-                  label="Has Size"
-                  initialValue={true}
-                >
-                  <Radio.Group>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                <Form.Item
-                  name="hasCondition"
-                  label="Has Condition"
-                  initialValue={true}
-                >
-                  <Radio.Group>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                <Form.Item
-                  name="hasColor"
-                  label="Has Color"
-                  initialValue={true}
-                >
-                  <Radio.Group>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                <Form.Item
-                  name="hasMaterial"
-                  label="Has Material"
-                  initialValue={true}
-                >
-                  <Radio.Group>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                <Form.Item
-                  name="hasCustomShopping"
-                  label="Has Custom Shopping"
-                  initialValue={true}
-                >
-                  <Radio.Group>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </div>
-              <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
-                <Button
-                  onClick={() => setShowModal(false)}
-                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
-                  className="transition-colors"
-                >
-                  Cancel
-                </Button>
-
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
-                  className="transition-colors"
-                >
-                  {submitButtonText}
-                </Button>
-              </div>
-            </Form>
-          </Modal>
+            form={form}
+            loading={loading}
+            isEditMode={isEditMode}
+            categoryPath={categoryPath}
+            isCategoryDropdownOpen={isCategoryDropdownOpen}
+            setIsCategoryDropdownOpen={setIsCategoryDropdownOpen}
+            currentParentId={currentParentId}
+            subCategories={subCategories}
+            categories={categories}
+            handleGoBack={handleGoBack}
+            handleNewCategory={handleNewCategory}
+            handleCategorySelect={handleCategorySelect}
+            handleSubmit={handleSubmit}
+          />
         </div>
       </div>
     </div>
@@ -771,18 +480,3 @@ const Categories = () => {
 };
 
 export default Categories;
-
-const ViewDetails = ({ id, item }) => {
-  return (
-    <div className="absolute h-[auto] py-2 px-[20px] flex flex-col gap-2 text-[var(--text-color-body)] bg-white rounded-[8px] shadow-md border border-gray-100 w-[max-content] left-[-145px] top-[13px]">
-      <div className="flex items-center gap-2 cursor-pointer hover:text-blue-600" onClick={() => handleEdit(item)}>
-        <MdEdit className="w-[20px] h-[20px]" />
-        <p className="text-[14px]">Edit</p>
-      </div>
-      <div className="flex items-center gap-2 cursor-pointer hover:text-red-600" onClick={() => handleDelete(id)}>
-        <MdDelete className="w-[20px] h-[20px]" />
-        <p className="text-[14px]">Delete</p>
-      </div>
-    </div>
-  );
-};
