@@ -127,7 +127,10 @@ const CustomersDetails = () => {
             <div className="w-[65px] h-[65px] rounded-full bg-[#E0D5C9] overflow-hidden">
               <Image alt="" src={customer} className="w-[100%] h-[100%]" />
             </div>
-            <p className="font-[600] mt-3">Park Kim Ju</p>
+            {/* <p className="font-[600] mt-3">Park Kim Ju</p> */}
+            <p className="text-gray-900 text-[14px] font-semibold">
+                            {seller?.username || "Seller Name"}
+                          </p>
             <p className="text-[14px] font-[500] mt-1"><span className="text-[var(--text-color-body)]">ID:CUS</span>120038299</p>
             <div className="w-[100%] flex flex-col gap-2 mt-4">
               <p className="text-[14px] text-[var(--text-color-body)]">Phone Number</p>

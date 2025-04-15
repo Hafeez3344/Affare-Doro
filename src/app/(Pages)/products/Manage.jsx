@@ -104,6 +104,7 @@ const Manage = () => {
 
   return (
     <>
+
       <div className="mb-6">
         <div className="w-full">
           <div className="bg-white h-[50px] rounded-[8px] flex items-center px-[25px] gap-3 shadow-sm">
@@ -288,7 +289,7 @@ const Manage = () => {
               {/* Right side - Product Images */}
               {selectedCategory.image && selectedCategory.image.length > 0 && (
                 <div className="w-[400px] flex-shrink-0">
-                  <div className="relative">
+                  <div className="relative mb-4">
                     <Carousel
                       ref={carouselRef}
                       dots={false}
@@ -321,7 +322,7 @@ const Manage = () => {
                   </div>
 
                   {/* Thumbnails Carousel */}
-                  <div className="relative mt-4">
+                  <div className="relative ">
                     <div className="px-8">
                       <Carousel
                         ref={thumbnailCarouselRef}
