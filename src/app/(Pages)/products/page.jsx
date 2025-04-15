@@ -31,7 +31,7 @@ const Products = () => {
                 <IoSearch className="text-[var(--text-color-body)] text-[20px]" />
                 <input
                   className="flex-1 focus:outline-none text-[15px]"
-                  placeholder="Search Here"
+                  placeholder="Search By Name"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
