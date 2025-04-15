@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import ViewCategoryModal from "./ViewCategoryModal";
 import AddEditCategoryModal from "./AddEditCategoryModal";
 import { updatePageNavigation } from "@/features/features";
-import { Form, notification, Select, Pagination } from 'antd';
+import { Form, notification, Select, Modal, Pagination } from 'antd';
 import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
 
 const { Option } = Select;

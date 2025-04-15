@@ -43,7 +43,10 @@ const Conditions = () => {
     setSelectedCondition(condition);
     setIsEditMode(true);
     setShowModal(true);
-    form.setFieldsValue({ name: condition.name });
+    form.setFieldsValue({ 
+      name: condition.name,
+      subTitle: condition.subTitle 
+    });
   };
 
   const handleDelete = async (id) => {
@@ -151,6 +154,7 @@ const Conditions = () => {
               <thead>
                 <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
                   <th className="p-4 font-[500] text-nowrap">Condition Name</th>
+                  <th className="p-4 font-[500] text-nowrap">Condition Type</th>
                   <th className="p-4 font-[500]">Status</th>
                   <th className="p-4 font-[500]">Created Date</th>
                   <th className="p-4 font-[500]">Action</th>
@@ -161,6 +165,7 @@ const Conditions = () => {
                   paginatedConditions.map((condition) => (
                     <tr key={condition._id} className="text-gray-800 text-sm border-b">
                       <td className="p-4 text-[13px]">{condition.name}</td>
+                      <td className="p-4 text-[13px] text-nowrap">{condition.subTitle}</td>
                       <td className="p-4">
                         <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                           {condition.status || 'Active'}
@@ -230,6 +235,17 @@ const Conditions = () => {
               >
                 <Input
                   placeholder="Enter condition name"
+                  className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="subTitle"
+                label="Condition Type"
+                rules={[{ required: true, message: "Please enter condition type" }]}
+              >
+                <Input
+                  placeholder="Enter condition type"
                   className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
                 />
               </Form.Item>
