@@ -59,7 +59,8 @@ const Packages = () => {
     setShowModal(true);
     form.setFieldsValue({
       name: pkg.name,
-      subTitle: pkg.subTitle
+      subTitle: pkg.subTitle,
+      shippingCharges: pkg.shippingCharges
     });
   };
 
@@ -110,7 +111,8 @@ const Packages = () => {
 
       const submitData = {
         name: values.name,
-        subTitle: values.subTitle
+        subTitle: values.subTitle,
+        shippingCharges: values.shippingCharges
       };
 
       if (isEditMode && selectedPackage?._id) {
@@ -174,6 +176,7 @@ const Packages = () => {
                 <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
                   <th className="p-4 font-[500] text-nowrap">Package Size</th>
                   <th className="p-4 font-[500] text-nowrap">Package Description</th>
+                  <th className="p-4 font-[500] text-nowrap">Shipping Charges</th>
                   <th className="p-4 font-[500]">Status</th>
                   <th className="p-4 font-[500]">Created Date</th>
                   <th className="p-4 font-[500]">Action</th>
@@ -185,6 +188,7 @@ const Packages = () => {
                     <tr key={item._id} className="text-gray-800 text-sm border-b">
                       <td className="p-4 text-[13px]">{item.name}</td>
                       <td className="p-4 text-[13px]">{item.subTitle}</td>
+                      <td className="p-4 text-[13px]">{item.shippingCharges}</td>
                       <td className="p-4">
                         <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                           {item.status || 'Active'}
@@ -265,6 +269,18 @@ const Packages = () => {
               >
                 <Input.TextArea
                   placeholder="Enter description"
+                  className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="shippingCharges"
+                label="Shipping Charges"
+                rules={[{ required: true, message: 'Please enter shipping charges' }]}
+              >
+                <Input
+                  placeholder="Enter shipping charges"
+                  type="number"
                   className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
                 />
               </Form.Item>

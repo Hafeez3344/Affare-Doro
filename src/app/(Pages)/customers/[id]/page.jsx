@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
+import { useParams } from "next/navigation";
 import { updatePageNavigation } from "@/features/features";
+import BACKEND_URL, { getProducts } from "@/api/api";
+import { Modal } from "antd";
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -12,12 +15,62 @@ import grommetIconsMoney from "@/assets/svgs/grommet-icons_money.svg";
 import customer from "@/assets/customer.png"
 
 import { FaArrowRight } from "react-icons/fa6";
+import data from "@/components/customers";
+
+// Function to generate star ratings
+const getStarRating = (rating) => {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 !== 0;
+  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+  return (
+    <span className="text-yellow-500 text-lg">
+      {"★".repeat(fullStars)}
+      {halfStar && "☆"}
+      {"☆".repeat(emptyStars)}
+    </span>
+  );
+};
 
 const CustomersDetails = () => {
   const dispatch = useDispatch();
+  const params = useParams();
+  const [customerData, setCustomerData] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [seller, setSeller] = useState(null);
+
   useEffect(() => {
     dispatch(updatePageNavigation("customers"));
-  }, [dispatch]);
+    // Find customer data based on ID
+    const customer = data.find(item => item.id === parseInt(params.id));
+    setCustomerData(customer);
+
+    // Fetch products
+    const fetchProducts = async () => {
+      const response = await getProducts();
+      if (response.status && Array.isArray(response.data)) {
+        setProducts(response.data);
+        // Set seller from the first product's userId if available
+        if (response.data.length > 0 && response.data[0].userId) {
+          setSeller(response.data[0].userId);
+        }
+      }
+    };
+    fetchProducts();
+  }, [dispatch, params.id]);
+
+  const handleModalOpen = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setSelectedProduct(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -35,8 +88,7 @@ const CustomersDetails = () => {
                   <Image alt="" src={grommetIconsMoney} className="mt-2" />
                   <div>
                     <p className="text-[25px] font-[600]">
-                      $840,820
-                      <span className="text-[var(--text-color-body)]">.84</span>
+                      ${customerData?.totalCost?.toFixed(2) || "0.00"}
                     </p>
                     <p className="text-[12px] text-[var(--text-color-body)]">
                       All time total cost
@@ -78,7 +130,7 @@ const CustomersDetails = () => {
                   </div>
                 </div>
               </div>
-              <div className="px-[20px] py-[30px] bg-white rounded-[8px] shadow-sm xl:col-span-3 flex flex-col lg:flex-row gap-20">
+              {/* <div className="px-[20px] py-[30px] bg-white rounded-[8px] shadow-sm xl:col-span-3 flex flex-col lg:flex-row gap-20">
                 <div className="lg:w-[40%] xl:w-[30%]">
                   <p className="text-[var(--text-color-body)] font-[500]">
                     General Data
@@ -86,68 +138,241 @@ const CustomersDetails = () => {
                   <div className="flex items-center gap-5 text-[15px] mt-4">
                     <p className="w-[120px]">Age</p>
                     <FaArrowRight className="text-[14px] text-[var(--text-color-body)]" />
-                    <p>32</p>
+                    <p>{customerData?.age || "N/A"}</p>
                   </div>
                   <div className="flex items-center gap-5 text-[15px] mt-2">
                     <p className="w-[120px]">Birthday</p>
                     <FaArrowRight className="text-[14px] text-[var(--text-color-body)]" />
-                    <p>01 July 1999</p>
+                    <p>{customerData?.birthday || "N/A"}</p>
                   </div>
                   <div className="flex items-center gap-5 text-[15px] mt-2">
                     <p className="w-[120px]">Gender</p>
                     <FaArrowRight className="text-[14px] text-[var(--text-color-body)]" />
-                    <p>Male</p>
+                    <p>{customerData?.gender || "N/A"}</p>
                   </div>
                 </div>
                 <div className="border border-gray-200"></div>
                 <div className="flex-1">
                   <p className="text-[var(--text-color-body)] font-[500]">
-                    General Data
+                    Contact Information
                   </p>
                   <div className="flex items-center gap-5 text-[15px] mt-4">
-                    <p className="w-[120px]">Age</p>
+                    <p className="w-[120px]">Email</p>
                     <FaArrowRight className="text-[14px] text-[var(--text-color-body)]" />
-                    <p>32</p>
+                    <p>{customerData?.email || "N/A"}</p>
                   </div>
                   <div className="flex items-center gap-5 text-[15px] mt-2">
-                    <p className="w-[120px]">Birthday</p>
+                    <p className="w-[120px]">Phone</p>
                     <FaArrowRight className="text-[14px] text-[var(--text-color-body)]" />
-                    <p>01 July 1999</p>
+                    <p>{customerData?.phone || "N/A"}</p>
                   </div>
                   <div className="flex items-center gap-5 text-[15px] mt-2">
-                    <p className="w-[120px]">Gender</p>
+                    <p className="w-[120px]">Address</p>
                     <FaArrowRight className="text-[14px] text-[var(--text-color-body)]" />
-                    <p>Male</p>
+                    <p>{customerData?.address || "N/A"}</p>
                   </div>
+                </div>
+              </div> */}
+
+              {/* show here the products i am giving you the example of other page code only sow product dynamic */}
+              <div className="xl:col-span-3">
+                <p className="text-[20px] font-[600] mb-6">Products</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6 justify-items-center">
+                  {products.map((product) => (
+                    <div
+                      key={product._id}
+                      className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[360px]"
+                    >
+                      <div className="relative h-[200px] w-full group">
+                        <Image
+                          alt={product.name}
+                          src={`${BACKEND_URL}/${product.image?.[0]}`}
+                          className="w-full h-full object-cover rounded-lg"
+                          width={250}
+                          height={200}
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <button
+                            onClick={() => handleModalOpen(product)}
+                            className="bg-white text-gray-800 px-3 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors"
+                          >
+                            View Detail
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 px-3">
+                        <div className="flex justify-between items-center">
+                          <button
+                            onClick={() => handleModalOpen(product)}
+                            className="text-sm font-semibold text-gray-800 hover:underline text-nowrap"
+                          >
+                            {product.name}
+                          </button>
+                        </div>
+
+                        <div className="flex items-center gap-1 mt-1">
+                          {getStarRating(4.5)}
+                        </div>
+
+                        <div className="mt-1">
+                          <p className="text-[12px] text-gray-500">
+                            Category: {product.categoryId?.[product.categoryId.length - 1]?.name || "N/A"}
+                          </p>
+                          <p className="text-[12px] font-semibold text-teal-600">
+                            $ {product.price || "N/A"}
+                          </p>
+                          <p className="text-[12px] font-semibold text-teal-600">
+                            $ {product.inclPrice || "N/A"}{" "}
+                            <span className="text-xs text-gray-400">incl.</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
+          {/* seller account  */}
           <div className="xl:w-[320px] bg-white rounded-[8px] shadow-sm flex items-center flex-col px-[20px] py-[39px] h-[max-content]">
             <div className="w-[65px] h-[65px] rounded-full bg-[#E0D5C9] overflow-hidden">
-              <Image alt="" src={customer} className="w-[100%] h-[100%]" />
+              <Image 
+                alt={seller?.username || "Seller"} 
+                src={seller?.profileImage ? `${BACKEND_URL}/${seller.profileImage}` : "/default-profile.png"}
+                width={65}
+                height={65}
+                className="w-[100%] h-[100%] object-cover" 
+              />
             </div>
-            {/* <p className="font-[600] mt-3">Park Kim Ju</p> */}
-            <p className="text-gray-900 text-[14px] font-semibold">
-                            {seller?.username || "Seller Name"}
-                          </p>
-            <p className="text-[14px] font-[500] mt-1"><span className="text-[var(--text-color-body)]">ID:CUS</span>120038299</p>
-            <div className="w-[100%] flex flex-col gap-2 mt-4">
-              <p className="text-[14px] text-[var(--text-color-body)]">Phone Number</p>
-              <p className="font-[500] text-[15px]">+18038488482</p>
-            </div>
-            <div className="w-[100%] flex flex-col gap-2 mt-4">
-              <p className="text-[14px] text-[var(--text-color-body)]">Email</p>
-              <p className="font-[500] text-[15px]">kimparkj@gmail.com</p>
-            </div>
+            <p className="text-gray-900 text-[14px] font-semibold mt-3">
+              {seller?.username || "Seller Name"}
+            </p>
+            <p className="text-[14px] font-[500] mt-1">
+              <span className="text-[var(--text-color-body)]">ID: </span>
+              {seller?._id || "N/A"}
+            </p>
 
-            <div className="w-[100%] flex flex-col gap-2 mt-4">
-              <p className="text-[14px] text-[var(--text-color-body)]">Shipping Address</p>
-              <p className="font-[500] text-[15px]">3401 S Malcolm X Blvd, Dallas, TX 75215, United States</p>
+            <div className="w-full mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[14px] text-[var(--text-color-body)]">Rating</p>
+                <div className="flex items-center">
+                  <div className="flex items-center text-yellow-500">
+                    {"★".repeat(Math.floor(seller?.rating || 0))}
+                    {"☆".repeat(5 - Math.floor(seller?.rating || 0))}
+                    <span className="text-gray-900 text-sm ml-2">
+                      ({seller?.reviews || 0} reviews)
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Phone Number</p>
+                <p className="font-[500] text-[15px]">{seller?.phone || "N/A"}</p>
+              </div>
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Email</p>
+                <p className="font-[500] text-[15px]">{seller?.email || "N/A"}</p>
+              </div>
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Address</p>
+                <p className="font-[500] text-[15px]">{seller?.address || "N/A"}</p>
+              </div>
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Total Products</p>
+                <p className="font-[500] text-[15px]">{products.length || 0}</p>
+              </div>
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Account Status</p>
+                <span className={`px-2 py-1 rounded-[20px] text-[11px] w-fit flex items-center justify-center ${
+                  seller?.status === "active" 
+                    ? "bg-[#10CB0026] text-[#0DA000]"
+                    : "bg-[#FF000026] text-[#FF0000]"
+                }`}>
+                  {seller?.status || "Inactive"}
+                </span>
+              </div>
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Member Since</p>
+                <p className="font-[500] text-[15px]">
+                  {seller?.createdAt 
+                    ? new Date(seller.createdAt).toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })
+                    : "N/A"
+                  }
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Product View Modal */}
+      <Modal
+        centered
+        footer={null}
+        width={800}
+        title={<p className="text-[20px] font-[700]">Product Details</p>}
+        open={isModalOpen}
+        onCancel={handleModalClose}
+      >
+        {selectedProduct && (
+          <div className="flex flex-col gap-6">
+            <div className="flex gap-6">
+              {/* Left side - Product Details */}
+              <div className="flex-1 flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <p className="text-[14px] font-[600] w-[120px]">Product Name:</p>
+                  <p className="text-[14px]">{selectedProduct.name}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <p className="text-[14px] font-[600] w-[120px]">Status:</p>
+                  <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                    {selectedProduct.status || "Active"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <p className="text-[14px] font-[600] w-[120px]">Category:</p>
+                  <p className="text-[14px]">{selectedProduct.categoryId?.[selectedProduct.categoryId?.length - 1]?.name || "N/A"}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <p className="text-[14px] font-[600] w-[120px]">Price:</p>
+                  <p className="text-[14px] text-teal-600 font-semibold">${selectedProduct.price || "N/A"}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <p className="text-[14px] font-[600] w-[120px]">Incl. Price:</p>
+                  <p className="text-[14px] text-teal-600 font-semibold">
+                    ${selectedProduct.inclPrice || "N/A"}{" "}
+                    <span className="text-xs text-gray-400">incl.</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Right side - Product Images */}
+              {selectedProduct.image && selectedProduct.image.length > 0 && (
+                <div className="w-[400px] flex-shrink-0">
+                  <div className="w-full h-[300px]">
+                    <img
+                      src={`${BACKEND_URL}/${selectedProduct.image[0]}`}
+                      alt={selectedProduct.name}
+                      className="w-full h-full object-cover rounded-lg shadow-md"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
