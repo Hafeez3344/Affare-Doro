@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { updatePageNavigation } from "@/features/features";
 import BACKEND_URL, { getProducts } from "@/api/api";
-import { Modal } from "antd";
+import { Modal, Pagination } from "antd";
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -40,6 +40,8 @@ const CustomersDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [seller, setSeller] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   useEffect(() => {
     dispatch(updatePageNavigation("customers"));
@@ -60,6 +62,12 @@ const CustomersDetails = () => {
     };
     fetchProducts();
   }, [dispatch, params.id]);
+
+  // Calculate paginated products
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleModalOpen = (product) => {
     setSelectedProduct(product);
@@ -178,7 +186,7 @@ const CustomersDetails = () => {
               <div className="xl:col-span-3">
                 <p className="text-[20px] font-[600] mb-6">Products</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6 justify-items-center">
-                  {products.map((product) => (
+                  {paginatedProducts.map((product) => (
                     <div
                       key={product._id}
                       className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[360px]"
@@ -231,6 +239,17 @@ const CustomersDetails = () => {
                     </div>
                   ))}
                 </div>
+                {products.length > itemsPerPage && (
+                  <div className="flex justify-end mt-6">
+                    <Pagination
+                      current={currentPage}
+                      onChange={(page) => setCurrentPage(page)}
+                      total={products.length}
+                      pageSize={itemsPerPage}
+                      showSizeChanger={false}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
