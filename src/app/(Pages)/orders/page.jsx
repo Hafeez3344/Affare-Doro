@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -15,11 +15,19 @@ import { useRouter } from "next/navigation";
 
 const Orders = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
   const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [selectedTab, setSelectedTab] = useState("all");
+
   useEffect(() => {
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
     dispatch(updatePageNavigation("orders"));
-  }, [dispatch]);
+  }, [auth, dispatch, router]);
+
   const fn_viewDetails = (id) => {
     if (id === selectedCustomer) {
       return setSelectedCustomer(0);

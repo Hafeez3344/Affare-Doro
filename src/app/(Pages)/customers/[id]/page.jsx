@@ -49,14 +49,17 @@ const CustomersDetails = () => {
     const customer = data.find(item => item.id === parseInt(params.id));
     setCustomerData(customer);
 
-    // Fetch products
+    // Fetch products for the specific seller
     const fetchProducts = async () => {
       const response = await getProducts();
       if (response.status && Array.isArray(response.data)) {
-        setProducts(response.data);
-        // Set seller from the first product's userId if available
-        if (response.data.length > 0 && response.data[0].userId) {
-          setSeller(response.data[0].userId);
+        // Filter products by seller ID from URL parameter
+        const sellerProducts = response.data.filter(product => product.userId?._id === params.id);
+        setProducts(sellerProducts);
+        
+        // Set seller from the first product's userId
+        if (sellerProducts.length > 0 && sellerProducts[0].userId) {
+          setSeller(sellerProducts[0].userId);
         }
       }
     };
@@ -285,6 +288,17 @@ const CustomersDetails = () => {
                   </div>
                 </div>
               </div>
+              
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Full Name</p>
+                <p className="font-[500] text-[15px]">{seller?.fullName || "N/A"}</p>
+              </div>
+
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Email Address</p>
+                <p className="font-[500] text-[15px]">{seller?.email || "N/A"}</p>
+              </div>
 
               <div className="w-[100%] flex flex-col gap-2 mt-4">
                 <p className="text-[14px] text-[var(--text-color-body)]">Phone Number</p>
@@ -292,15 +306,21 @@ const CustomersDetails = () => {
               </div>
 
               <div className="w-[100%] flex flex-col gap-2 mt-4">
-                <p className="text-[14px] text-[var(--text-color-body)]">Email</p>
-                <p className="font-[500] text-[15px]">{seller?.email || "N/A"}</p>
+                <p className="text-[14px] text-[var(--text-color-body)]">Country</p>
+                <p className="font-[500] text-[15px]">{seller?.country || "N/A"}</p>
               </div>
 
               <div className="w-[100%] flex flex-col gap-2 mt-4">
-                <p className="text-[14px] text-[var(--text-color-body)]">Address</p>
-                <p className="font-[500] text-[15px]">{seller?.address || "N/A"}</p>
+                <p className="text-[14px] text-[var(--text-color-body)]">City</p>
+                <p className="font-[500] text-[15px]">{seller?.city || "N/A"}</p>
               </div>
 
+              <div className="w-[100%] flex flex-col gap-2 mt-4">
+                <p className="text-[14px] text-[var(--text-color-body)]">Gender</p>
+                <p className="font-[500] text-[15px]">{seller?.gender || "N/A"}</p>
+              </div>
+
+             
               <div className="w-[100%] flex flex-col gap-2 mt-4">
                 <p className="text-[14px] text-[var(--text-color-body)]">Total Products</p>
                 <p className="font-[500] text-[15px]">{products.length || 0}</p>

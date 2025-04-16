@@ -1,24 +1,21 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import Image from "next/image";
+import React, { useEffect } from "react";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
-import { updatePageNavigation } from "@/features/features";
-
 import { GoDotFill } from "react-icons/go";
-
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import salesIcon from "@/assets/svgs/dashboard-sales.svg";
-import ordersIcon from "@/assets/svgs/dashboard-orders.svg";
-import revenueIcon from "@/assets/svgs/dashboard-revenue.svg";
-import returnIcon from "@/assets/svgs/dashboard-return.svg";
-import dashboardTableImg from "@/assets/svgs/dashboard-table-img.svg";
-
 import productOne from "@/assets/dashboard-product-1.png";
 import productTwo from "@/assets/dashboard-product-2.png";
+import { updatePageNavigation } from "@/features/features";
+import ordersIcon from "@/assets/svgs/dashboard-orders.svg";
+import returnIcon from "@/assets/svgs/dashboard-return.svg";
 import productThree from "@/assets/dashboard-product-3.png";
-
+import revenueIcon from "@/assets/svgs/dashboard-revenue.svg";
+import dashboardTableImg from "@/assets/svgs/dashboard-table-img.svg";
 import {
   Chart as ChartJS,
   BarElement,
@@ -27,16 +24,23 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
+
   useEffect(() => {
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
     dispatch(updatePageNavigation("dashboard"));
-  }, [dispatch]);
+  }, [auth, dispatch, router]);
+
   const data = {
     labels: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
     datasets: [

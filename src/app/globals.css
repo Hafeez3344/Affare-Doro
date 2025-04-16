@@ -225,3 +225,28 @@ body {
 .faq-answer.expanded {
   max-height: 200px;
 }
+
+/* Add this to your existing styles */
+.custom-input.ant-input,
+.custom-input .ant-input,
+.custom-input.ant-input-password {
+  border-color: #d9d9d9 !important; /* Default Ant Design border color */
+}
+
+.custom-input.ant-input:hover,
+.custom-input .ant-input:hover,
+.custom-input.ant-input-password:hover,
+.custom-input.ant-input:focus,
+.custom-input .ant-input:focus,
+.custom-input.ant-input-password:focus,
+.custom-input.ant-input-focused,
+.custom-input .ant-input-focused,
+.custom-input.ant-input-password-focused {
+  border-color: rgb(232, 187, 76) !important;
+  box-shadow: 0 0 0 2px rgba(232, 187, 76, 0.2) !important;
+}
+
+.custom-input.ant-input-password .ant-input {
+  border: none !important;
+  box-shadow: none !important;
+}

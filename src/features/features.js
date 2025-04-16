@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   pageNavigation: "",
   showSidebar: true,
+  auth: false,
 };
 
 export const featuresSlice = createSlice({
@@ -14,9 +15,12 @@ export const featuresSlice = createSlice({
     },
     updateSidebar: (state, action) => {
       state.showSidebar = action.payload
-    }
+    },
+    updateAuth: (state, action) => {
+      state.auth = action.payload
+    },
   },
 });
 
-export const { updatePageNavigation, updateSidebar } = featuresSlice.actions;
+export const { updatePageNavigation, updateSidebar, updateAuth } = featuresSlice.actions;
 export const featuresReducer = featuresSlice.reducer;

@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 import { FiEye } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import Navbar from "@/components/navbar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "@/components/sidebar";
 import { MdEdit, MdDelete } from "react-icons/md";
 import React, { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ import AddEditCategoryModal from "./AddEditCategoryModal";
 import { updatePageNavigation } from "@/features/features";
 import { Form, notification, Select, Modal, Pagination } from 'antd';
 import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
+import { useRouter } from "next/navigation";
 
 const { Option } = Select;
 
@@ -21,6 +22,8 @@ const Categories = () => {
   const itemsPerPage = 10;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -45,9 +48,13 @@ const Categories = () => {
   );
 
   useEffect(() => {
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
     dispatch(updatePageNavigation("categories"));
-    fetchCategories(); // Remove the currentPage dependency
-  }, [dispatch]);
+    fetchCategories();
+  }, [auth, dispatch, router]);
 
   const fetchCategories = async () => {
     try {

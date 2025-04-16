@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Button, Select, notification, Modal, Pagination } from 'antd';
 import { createSize, getSizes, updateSize, deleteSize, getCategories } from "@/api/api";
@@ -12,9 +12,12 @@ import tableAction from "@/assets/svgs/table-action.svg";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import moment from 'moment-timezone';
+import { useRouter } from "next/navigation";
 
 const Sizes = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
   const [selectedSize, setSelectedSize] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
@@ -33,9 +36,13 @@ const Sizes = () => {
   );
 
   useEffect(() => {
-    dispatch(updatePageNavigation("size")); // Ensure this matches the exact sidebar label "Size"
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
+    dispatch(updatePageNavigation("size"));
     fetchCategories();
-  }, [dispatch]);
+  }, [auth, dispatch, router]);
 
   useEffect(() => {
     if (selectedCategory) {

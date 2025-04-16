@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Upload, Button, notification, Modal, Pagination } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { createBrand, getBrands, updateBrand, deleteBrand } from "@/api/api";
 import moment from 'moment-timezone';
+import { useRouter } from "next/navigation";
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -19,6 +20,8 @@ import { MdEdit} from "react-icons/md";
 
 const Brands = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
   const [selectedBrand, setSelectedBrand] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -54,9 +57,13 @@ const Brands = () => {
   };
 
   useEffect(() => {
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
     dispatch(updatePageNavigation("brands"));
-    fetchBrands(); // Remove the currentPage dependency
-  }, [dispatch]);
+    fetchBrands();
+  }, [auth, dispatch, router]);
 
   const fn_viewDetails = (id) => {
     if (id === selectedBrand) {

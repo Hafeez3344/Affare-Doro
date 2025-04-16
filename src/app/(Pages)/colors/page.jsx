@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Button, notification, ColorPicker, Modal, Pagination } from 'antd';
 import { createColor, getColors, updateColor, deleteColor } from "@/api/api";
@@ -12,9 +12,12 @@ import tableAction from "@/assets/svgs/table-action.svg";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import moment from 'moment-timezone';
+import { useRouter } from "next/navigation";
 
 const Colors = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
   const [selectedColor, setSelectedColor] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
@@ -31,11 +34,14 @@ const Colors = () => {
   );
 
   useEffect(() => {
-    dispatch(updatePageNavigation("colors")); // Ensure this matches the sidebar label
-    fetchColors(); // Call fetchColors to load the colors
-  }, [dispatch]);
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
+    dispatch(updatePageNavigation("colors"));
+    fetchColors();
+  }, [auth, dispatch, router]);
 
-  // Add the missing fetchColors function
   const fetchColors = async () => {
     try {
       const response = await getColors();

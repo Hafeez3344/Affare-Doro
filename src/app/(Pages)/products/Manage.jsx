@@ -4,6 +4,8 @@ import BACKEND_URL, { getProducts } from "@/api/api";
 import { notification, Modal, Carousel, Pagination } from "antd";
 import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { updatePageNavigation } from "@/features/features";
 
 // Function to generate star ratings
 const getStarRating = (rating) => {
@@ -22,6 +24,8 @@ const getStarRating = (rating) => {
 
 const Manage = ({ searchQuery }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -52,8 +56,13 @@ const Manage = ({ searchQuery }) => {
   };
 
   useEffect(() => {
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
+    dispatch(updatePageNavigation("products"));
     fetchCategories();
-  }, []);
+  }, [auth, router, dispatch]);
 
   // const toggleWishlist = (id) => {
   //   setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -111,6 +120,11 @@ const Manage = ({ searchQuery }) => {
   }, [searchQuery]);
 
   console.log("Categories:", categories);
+
+  // Add function to handle seller profile click
+  const handleSellerClick = (sellerId) => {
+    router.push(`/customers/${sellerId}`);
+  };
 
   return (
     <>
@@ -267,7 +281,7 @@ const Manage = ({ searchQuery }) => {
                 {/* Seller Information */}
                 <div 
                   className="mt-auto pt-4 border-t cursor-pointer group"
-                  onClick={() => router.push('/customers/1')}
+                  onClick={() => handleSellerClick(seller?._id)}
                 >
                   <div className="bg-[#F5F5F5] p-3 rounded-lg transition-all duration-200 hover:bg-[#EBEBEB] hover:shadow-sm">
                     <div className="flex items-center justify-between">

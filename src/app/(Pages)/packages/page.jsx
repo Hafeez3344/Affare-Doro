@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Button, notification, Modal, Pagination } from 'antd';
 import { createPackage, getPackages, updatePackage, deletePackage } from "@/api/api";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -13,6 +14,8 @@ import moment from 'moment-timezone';
 
 const Packages = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const auth = useSelector((state) => state.auth);
   const [packages, setPackages] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
@@ -28,9 +31,13 @@ const Packages = () => {
   );
 
   useEffect(() => {
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
     dispatch(updatePageNavigation("packages"));
     fetchPackages();
-  }, [dispatch]);
+  }, [auth, dispatch, router]);
 
   const fetchPackages = async () => {
     try {
