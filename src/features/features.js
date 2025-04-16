@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const initialState = {
   pageNavigation: "",
   showSidebar: true,
-  auth: false,
+  auth: Cookies.get('token') ? true : false,
 };
 
 export const featuresSlice = createSlice({

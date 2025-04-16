@@ -16,8 +16,9 @@ import {
   HiOutlineQuestionMarkCircle,
 } from "react-icons/hi2";
 import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
-import { updateSidebar } from "@/features/features";
+import { updateSidebar, updateAuth } from "@/features/features";
 import { LuLogOut } from "react-icons/lu";
+import Cookies from "js-cookie";
 
 const Sidebar = ({ showModal }) => {
   const navigate = useRouter();
@@ -29,9 +30,8 @@ const Sidebar = ({ showModal }) => {
   };
 
   const handleLogout = () => {
-    // Clear any stored tokens or user data here
-    localStorage.clear();
-    // Redirect to login page
+    Cookies.remove("token");
+    dispatch(updateAuth(false));
     navigate.push('/login');
   };
 
