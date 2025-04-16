@@ -131,7 +131,9 @@ const Manage = ({ searchQuery }) => {
       <div className="flex flex-col">
         <div className="flex justify-between items-center mb-4">
           <p className="text-sm text-gray-500">
-            Showing {Math.min(currentPage * itemsPerPage, filteredCategories.length)} of {filteredCategories.length} products
+            Showing{" "}
+            {Math.min(currentPage * itemsPerPage, filteredCategories.length)} of{" "}
+            {filteredCategories.length} products
           </p>
         </div>
 
@@ -141,8 +143,7 @@ const Manage = ({ searchQuery }) => {
               key={category._id}
               className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[360px]"
             >
-
-              <div className="relative h-[200px] w-full group"> 
+              <div className="relative h-[200px] w-full group">
                 <Image
                   alt={category.name}
                   src={`${BACKEND_URL}/${category.image?.[0]}`}
@@ -189,7 +190,9 @@ const Manage = ({ searchQuery }) => {
 
                 <div className="mt-1">
                   <p className="text-[12px] text-gray-500">
-                    Category: {category.categoryId?.[category.categoryId.length - 1]?.name || "N/A"}
+                    Category:{" "}
+                    {category.categoryId?.[category.categoryId.length - 1]
+                      ?.name || "N/A"}
                   </p>
                   {/* <p className="text-[12px] text-gray-500">
                     Material: {category.materialId?.[0]?.name || "N/A"}
@@ -241,45 +244,63 @@ const Manage = ({ searchQuery }) => {
               {/* Left side - Product Details */}
               <div className="flex-1 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Product Name:</p>
+                  <p className="text-[15px] font-[600] w-[120px]">
+                    Product Name:
+                  </p>
                   <p className="text-[14px]">{selectedCategory.name}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Status:</p>
-                  <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                    {selectedCategory.status || "Active"}
-                  </span>
+                  <p className="text-[15px] font-[600] w-[120px]">Category:</p>
+                  <p className="text-[14px]">
+                    {selectedCategory.categoryId?.[
+                      selectedCategory?.categoryId?.length - 1
+                    ]?.name || "N/A"}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Category:</p>
-                  <p className="text-[14px]">{selectedCategory.categoryId?.[selectedCategory?.categoryId?.length - 1]?.name || "N/A"}</p>
+                  <p className="text-[15px] font-[600] w-[120px]">Material:</p>
+                  <p className="text-[14px]">
+                    {selectedCategory.materialId?.[
+                      selectedCategory?.materialId?.length - 1
+                    ]?.name || "N/A"}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Material:</p>
-                  <p className="text-[14px]">{selectedCategory.materialId?.[selectedCategory?.materialId?.length - 1]?.name || "N/A"}</p>
+                  <p className="text-[15px] font-[600] w-[120px]">Size:</p>
+                  <p className="text-[14px]">
+                    {selectedCategory.sizeId?.name || "None"}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Size:</p>
-                  <p className="text-[14px]">{selectedCategory.sizeId?.name || "None"}</p>
+                  <p className="text-[15px] font-[600] w-[120px]">Color:</p>
+                  <p className="text-[14px]">
+                    {selectedCategory.colorId?.[0]?.name || "None"}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Color:</p>
-                  <p className="text-[14px]">{selectedCategory.colorId?.[0]?.name || "None"}</p>
+                  <p className="text-[15px] font-[600] w-[120px]">Price:</p>
+                  <p className="text-[14px] text-teal-600 font-semibold">
+                    {selectedCategory.price || "N/A"}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Price:</p>
-                  <p className="text-[14px] text-teal-600 font-semibold">{selectedCategory.price || "N/A"}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[14px] font-[600] w-[120px]">Incl. Price:</p>
+                  <p className="text-[15px] font-[600] w-[120px]">
+                    Incl. Price:
+                  </p>
                   <p className="text-[14px] text-teal-600 font-semibold">
                     {selectedCategory.inclPrice || "N/A"}{" "}
                     <span className="text-xs text-gray-400">incl.</span>
                   </p>
                 </div>
+                <div className="flex items-center gap-3">
+                  <p className="text-[15px] font-[600] w-[120px]">Status:</p>
+                  <span className="px-4 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                    {selectedCategory.status || "Active"}
+                  </span>
+                </div>
 
                 {/* Seller Information */}
-                <div 
+                <div
                   className="mt-auto pt-4 border-t cursor-pointer group"
                   onClick={() => handleSellerClick(seller?._id)}
                 >
@@ -287,7 +308,11 @@ const Manage = ({ searchQuery }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <Image
-                          src={seller?.profileImage ? `${BACKEND_URL}/${seller.profileImage}` : "/default-profile.png"}
+                          src={
+                            seller?.profileImage
+                              ? `${BACKEND_URL}/${seller.profileImage}`
+                              : "/default-profile.png"
+                          }
                           alt={seller?.username || "Seller"}
                           width={45}
                           height={70}
@@ -306,9 +331,9 @@ const Manage = ({ searchQuery }) => {
                           </div>
                         </div>
                       </div>
-                      <ChevronRight 
-                        size={20} 
-                        className="text-gray-600 transition-transform group-hover:translate-x-1" 
+                      <ChevronRight
+                        size={20}
+                        className="text-gray-600 transition-transform group-hover:translate-x-1"
                       />
                     </div>
                   </div>
@@ -363,8 +388,11 @@ const Manage = ({ searchQuery }) => {
                         {selectedCategory.image.map((img, index) => (
                           <div key={index} className="px-1">
                             <div
-                              className={`cursor-pointer rounded-lg overflow-hidden border-2 h-[60px] ${selectedImageIndex === index ? 'border-blue-500' : 'border-transparent'
-                                }`}
+                              className={`cursor-pointer rounded-lg overflow-hidden border-2 h-[60px] ${
+                                selectedImageIndex === index
+                                  ? "border-blue-500"
+                                  : "border-transparent"
+                              }`}
                               onClick={() => {
                                 setSelectedImageIndex(index);
                                 carouselRef.current.goTo(index);
@@ -372,7 +400,9 @@ const Manage = ({ searchQuery }) => {
                             >
                               <img
                                 src={`${BACKEND_URL}/${img}`}
-                                alt={`${selectedCategory.name} - Thumbnail ${index + 1}`}
+                                alt={`${selectedCategory.name} - Thumbnail ${
+                                  index + 1
+                                }`}
                                 className="w-full h-full object-cover"
                               />
                             </div>
