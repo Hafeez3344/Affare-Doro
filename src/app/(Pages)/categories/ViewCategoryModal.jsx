@@ -31,24 +31,24 @@ const ViewCategoryModal = ({
             {/* Left side - Category Details */}
             <div className="flex-1 flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <p className="text-[14px] font-[600] w-[120px]">Category Name:</p>
+                <p className="text-[15px] font-[600] w-[120px]">Category Name:</p>
                 <p className="text-[14px]">{selectedCategory.name}</p>
               </div>
               <div className="flex items-center gap-3">
-                <p className="text-[14px] font-[600] w-[120px]">Status:</p>
+                <p className="text-[15px] font-[600] w-[120px]">Status:</p>
                 <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                   {selectedCategory.status || 'Active'}
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <p className="text-[14px] font-[600] w-[120px]">Created Date:</p>
+                <p className="text-[15px] font-[600] w-[120px]">Created Date:</p>
                 <p className="text-[14px]">
                   {moment.utc(selectedCategory?.createdAt).format('DD MMM YYYY, hh:mm A')}
                 </p>
               </div>
 
               <div className="flex flex-col gap-2 mt-4">
-                <p className="text-[14px] font-[600]">Features:</p>
+                <p className="text-[15px] font-[600]">Features:</p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center justify-between">
                     <p className="text-[14px]">Has Brand:</p>
@@ -90,7 +90,7 @@ const ViewCategoryModal = ({
               </div>
 
               <div className="flex flex-col gap-2 mt-4">
-                <p className="text-[14px] font-[600]">Sub Categories:</p>
+                <p className="text-[15px] font-[600]">Sub Categories:</p>
                 <div
                   className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
                   onClick={() => setIsViewDropdownOpen(!isViewDropdownOpen)}

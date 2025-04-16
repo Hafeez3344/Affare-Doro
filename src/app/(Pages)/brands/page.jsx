@@ -355,17 +355,17 @@ const Brands = () => {
                 {/* Left side details */}
                 <div className="flex flex-col gap-4 flex-1">
                   <div className="flex items-center gap-4">
-                    <p className="text-[14px] font-[600] w-[150px]">Brand Name:</p>
+                    <p className="text-[15px] font-[600] w-[150px]">Brand Name:</p>
                     <p className="text-[14px]">{selectedItem.name}</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="text-[14px] font-[600] w-[150px]">Status:</p>
+                    <p className="text-[15px] font-[600] w-[150px]">Status:</p>
                     <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                       {selectedItem.status || 'Active'}
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="text-[14px] font-[600] w-[150px]">Created Date:</p>
+                    <p className="text-[15px] font-[600] w-[150px]">Created Date:</p>
                     <p className="text-[14px]">
                       {moment.utc(selectedItem?.createdAt).format('DD MMM YYYY, hh:mm A')}
                     </p>
