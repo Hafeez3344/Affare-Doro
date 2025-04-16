@@ -133,6 +133,22 @@ const Sidebar = ({ showModal }) => {
           navigateTo={"settings"}
           navigate={navigate}
         />
+        <SidebarPageTemplate
+          // icon={< className="w-[20px] h-[19px]" />}
+          // label={` Settings`}
+          navigateTo={"settings"}
+          navigate={navigate}
+        />
+        
+        <div 
+          onClick={handleLogout}
+          className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full text-gray-500 bg-transparent border-white mt-[30px]`}
+        >
+          <div className="flex-shrink-0">
+            <LuLogOut className="w-[20px] h-[20px] rotate-180" />
+          </div>
+          <p className="text-[13px] font-[500] whitespace-nowrap">Logout</p>
+        </div>
         {/* <SidebarPageTemplate
           icon={
             <HiOutlineExclamationCircle className="w-[20px] h-[20px] scale-[1.15]" />
@@ -149,15 +165,6 @@ const Sidebar = ({ showModal }) => {
           navigateTo={"help-store"}
           navigate={navigate}
         /> */}
-        <div 
-          onClick={handleLogout}
-          className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full text-gray-500 bg-transparent border-white absolute bottom-0`}
-        >
-          <div className="flex-shrink-0">
-            <LuLogOut className="w-[20px] h-[20px] rotate-180" />
-          </div>
-          <p className="text-[13px] font-[500] whitespace-nowrap">Logout</p>
-        </div>
       </div>
       <button
         className={`${showSidebar ? "hidden" : "absolute"} md:hidden text-[var(--text-color)] left-5 scale-[1.5] top-[77px]`}
