@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { notification } from "antd";
 import React, { useEffect } from "react";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -16,7 +17,6 @@ import returnIcon from "@/assets/svgs/dashboard-return.svg";
 import productThree from "@/assets/dashboard-product-3.png";
 import revenueIcon from "@/assets/svgs/dashboard-revenue.svg";
 import dashboardTableImg from "@/assets/svgs/dashboard-table-img.svg";
-import { notification } from "antd";
 import {
   Chart as ChartJS,
   BarElement,
