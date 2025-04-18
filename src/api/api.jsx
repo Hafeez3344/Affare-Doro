@@ -2,7 +2,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // const BACKEND_URL = "https://affari-doro-backend.shubhexchange.com";
-const BACKEND_URL = "http://localhost:8000"; // Localhost URL for development
+// const BACKEND_URL = "http://localhost:8000"; // Localhost URL for development
+const BACKEND_URL = "http://89.116.134.164:8000"; // Localhost URL for development
+
 
 export default BACKEND_URL;
 // Create axios instance with default config

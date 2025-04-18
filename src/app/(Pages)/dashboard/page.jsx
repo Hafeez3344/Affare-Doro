@@ -36,26 +36,53 @@ const Dashboard = () => {
 
   const [api, contextHolder] = notification.useNotification();
 
+  // useEffect(() => {
+  //   if (!auth) {
+  //     router.push("/login");
+  //     return;
+  //   }
+  //   dispatch(updatePageNavigation("dashboard"));
+
+  //   // Show welcome notification
+  //   api.success({
+  //     message: 'Welcome to Dashboard',
+  //     description: 'You have successfully logged into your admin account.',
+  //     placement: 'topRight',
+  //     duration: 3,
+  //     style: {
+  //       borderRadius: '8px',
+  //       boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+  //     },
+  //   });
+  // }, [auth, dispatch, router, api]);
+
+
   useEffect(() => {
     if (!auth) {
       router.push("/login");
       return;
     }
-    dispatch(updatePageNavigation("dashboard"));
-
-    // Show welcome notification
-    api.success({
-      message: 'Welcome to Dashboard',
-      description: 'You have successfully logged into your admin account.',
-      placement: 'topRight',
-      duration: 3,
-      style: {
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-      },
-    });
+  
+    // Check if the user is visiting the dashboard for the first time
+    if (auth && !sessionStorage.getItem("dashboardWelcomeShown")) {
+      dispatch(updatePageNavigation("dashboard"));
+  
+      // Show welcome notification
+      api.success({
+        message: 'Welcome to Dashboard',
+        description: 'You have successfully logged into your admin account.',
+        placement: 'topRight',
+        duration: 3,
+        style: {
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        },
+      });
+  
+      // Mark the notification as shown
+      sessionStorage.setItem("dashboardWelcomeShown", "true");
+    }
   }, [auth, dispatch, router, api]);
-
   const data = {
     labels: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
     datasets: [
