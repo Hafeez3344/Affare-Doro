@@ -16,6 +16,7 @@ import returnIcon from "@/assets/svgs/dashboard-return.svg";
 import productThree from "@/assets/dashboard-product-3.png";
 import revenueIcon from "@/assets/svgs/dashboard-revenue.svg";
 import dashboardTableImg from "@/assets/svgs/dashboard-table-img.svg";
+import { notification } from "antd";
 import {
   Chart as ChartJS,
   BarElement,
@@ -33,13 +34,27 @@ const Dashboard = () => {
   const router = useRouter();
   const auth = useSelector((state) => state.auth);
 
+  const [api, contextHolder] = notification.useNotification();
+
   useEffect(() => {
     if (!auth) {
       router.push("/login");
       return;
     }
     dispatch(updatePageNavigation("dashboard"));
-  }, [auth, dispatch, router]);
+
+    // Show welcome notification
+    api.success({
+      message: 'Welcome to Dashboard',
+      description: 'You have successfully logged into your admin account.',
+      placement: 'topRight',
+      duration: 3,
+      style: {
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      },
+    });
+  }, [auth, dispatch, router, api]);
 
   const data = {
     labels: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
@@ -79,6 +94,7 @@ const Dashboard = () => {
   };
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
+      {contextHolder}
       <style jsx global>{`
         ::-webkit-scrollbar {
           width: 6px;

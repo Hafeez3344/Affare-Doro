@@ -20,32 +20,51 @@ const LoginPage = () => {
     }
   }, [auth, router]);
 
+  const [api, contextHolder] = notification.useNotification();
+
+  const showNotification = (type, message, description) => {
+    api[type]({
+      message: message,
+      description: description,
+      placement: 'topRight',
+      duration: 3,
+      style: {
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      },
+    });
+  };
+
   const handleSubmit = async (values) => {
     try {
       const response = await adminLogin(values);
       if (response.status) {
-        notification.success({
-          message: "Success",
-          description: response.message,
-        });
+        showNotification(
+          'success',
+          'Login Successful',
+          'Welcome back! You have successfully logged in.'
+        );
         dispatch(updateAuth(true));
         router.push("/dashboard");
       } else {
-        notification.error({
-          message: "Error",
-          description: response.message,
-        });
+        showNotification(
+          'error',
+          'Login Failed',
+          response.message || 'Invalid email or password'
+        );
       }
     } catch (error) {
-      notification.error({
-        message: "Error",
-        description: "Something went wrong",
-      });
+      showNotification(
+        'error',
+        'Error',
+        'Something went wrong. Please try again.'
+      );
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      {contextHolder}
       <div className="w-96 h-[500px] bg-white shadow-lg rounded-xl overflow-hidden p-8 flex flex-col justify-center">
         <div className="text-center mb-6">
           <Title level={3}>Admin Login</Title>
