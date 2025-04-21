@@ -115,8 +115,7 @@ const CustomersDetails = () => {
                   <Image alt="" src={grommetIconsMoney} className="mt-2" />
                   <div>
                     <p className="text-[25px] font-[600]">
-                      $840,820
-                      <span className="text-[var(--text-color-body)]">.84</span>
+                      $00.00
                     </p>
                     <p className="text-[12px] text-[var(--text-color-body)]">
                       All time total cost
@@ -132,8 +131,7 @@ const CustomersDetails = () => {
                   <Image alt="" src={grommetIconsMoney} className="mt-2" />
                   <div>
                     <p className="text-[25px] font-[600]">
-                      $840,820
-                      <span className="text-[var(--text-color-body)]">.84</span>
+                      $00.00
                     </p>
                     <p className="text-[12px] text-[var(--text-color-body)]">
                       All time total cost

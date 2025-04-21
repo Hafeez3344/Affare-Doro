@@ -220,7 +220,9 @@ const Dashboard = () => {
             <div className="xl:w-[45%] bg-white shadow-sm rounded-[10px] px-[20px] py-[25px] flex flex-col gap-5">
               <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
                 <p className="text-[20px] font-[600]">Customer Favorite</p>
-                <button className="w-[135px] h-[32px] text-[var(--text-color-body)] rounded-[4px] border-black border-[1px] py-[6px] px-[12px] text-[13px] font-[500]">
+                <button
+                onClick={() => router.push("/products")}
+                className="w-[135px] h-[32px] text-[var(--text-color-body)] rounded-[4px] border-black border-[1px] py-[6px] px-[12px] text-[13px] font-[500]">
                   See All Products
                 </button>
               </div>
