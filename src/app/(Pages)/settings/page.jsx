@@ -8,6 +8,7 @@ import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 
 import saveChanges from "@/assets/svgs/save-changes.svg";
+import { Input } from "antd";
 
 const Settings = () => {
   const dispatch = useDispatch();
@@ -25,66 +26,31 @@ const Settings = () => {
               <p className="text-[20px] font-[500]">Profile</p>
               <div className="flex flex-col gap-5 pb-2 mt-5">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[#777777]">Your Name</label>
-                  <input
-                    placeholder="John Due"
-                    className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
                   <label className="text-[#777777]">Email Address</label>
                   <input
-                    placeholder="john_due@gmail.com"
+                    placeholder="ABCgmail.com"
                     className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
                   />
                 </div>
+
                 <div className="flex flex-col gap-1">
-                  <label className="text-[#777777]">Phone Number</label>
-                  <input
-                    placeholder="+9856575775"
-                    className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[#777777]">City</label>
-                  <input
-                    placeholder="Select an option"
-                    className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[#777777]">State</label>
-                  <input
-                    placeholder="Select an option"
-                    className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[#777777]">Address</label>
-                  <input
-                    placeholder="Street 23, Apartment Sector"
-                    className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[#777777]">Pin Code</label>
-                  <input
-                    placeholder="Pin Code"
-                    className="focus:outline-none border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[50px] text-[15px]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[#777777]">About</label>
-                  <textarea
-                    placeholder="Write Here"
-                    className="focus:outline-none py-2 border-[2px] border-gray-200 rounded-[8px] px-[15px] h-[100px] text-[15px]"
+                  <label className="text-[#777777]">Password</label>
+                  <Input.Password
+                    type="password"
+                    placeholder="Enter Password"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-300 hover:border-blue-300"
+                    visibilityToggle={true}
                   />
                 </div>
               </div>
             </div>
-            <div>
-                <Image alt="" src={saveChanges} className="mt-8 mb-3 cursor-pointer" />
-              </div>
+            {/* <div>
+              <Image
+                alt=""
+                src={saveChanges}
+                className="mt-8 mb-3 cursor-pointer"
+              />
+            </div> */}
           </div>
         </div>
       </div>

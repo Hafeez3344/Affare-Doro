@@ -3,18 +3,18 @@
 import Image from "next/image";
 import moment from 'moment-timezone';
 import { FiEye } from "react-icons/fi";
-import { IoMdAdd } from "react-icons/io";
 import Navbar from "@/components/navbar";
-import { useDispatch, useSelector } from "react-redux";
+import { IoMdAdd } from "react-icons/io";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import { MdEdit, MdDelete } from "react-icons/md";
 import React, { useEffect, useState } from "react";
 import ViewCategoryModal from "./ViewCategoryModal";
+import { useDispatch, useSelector } from "react-redux";
 import AddEditCategoryModal from "./AddEditCategoryModal";
 import { updatePageNavigation } from "@/features/features";
 import { Form, notification, Select, Modal, Pagination } from 'antd';
 import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
-import { useRouter } from "next/navigation";
 
 const { Option } = Select;
 
@@ -160,13 +160,18 @@ const Categories = () => {
           placement: 'topRight',
           style: { marginTop: '50px' }
         });
-        fetchCategories();
-        setShowModal(false);
+        // Reset all form fields and states
         form.resetFields();
-        setIsEditMode(false);
-        setSelectedItem(null);
+        form.setFieldValue('image', undefined);
         setImageFile(null);
         setCategoryPath([]);
+        setCurrentParentId(null);
+        setSubCategories([]);
+        setIsCategoryDropdownOpen(false);
+        fetchCategories();
+        setShowModal(false);
+        setIsEditMode(false);
+        setSelectedItem(null);
       } else {
         throw new Error(response.message || 'Category creation failed');
       }
@@ -182,6 +187,16 @@ const Categories = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setIsEditMode(false);
+    form.resetFields();
+    form.setFieldValue('image', undefined);
+    setImageFile(null);
+    setCategoryPath([]);
+    setSelectedItem(null);
   };
 
   const normFile = (e) => {
@@ -459,13 +474,7 @@ const Categories = () => {
           {/* Add/Edit Category Modal */}
           <AddEditCategoryModal
             isOpen={showModal}
-            onClose={() => {
-              setShowModal(false);
-              setIsEditMode(false);
-              form.resetFields();
-              setImageFile(null);
-              setCategoryPath([]);
-            }}
+            onClose={handleModalClose}
             form={form}
             loading={loading}
             isEditMode={isEditMode}

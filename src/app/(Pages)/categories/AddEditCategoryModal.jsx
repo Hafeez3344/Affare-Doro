@@ -107,20 +107,25 @@ const AddEditCategoryModal = ({
           </AnimatePresence>
         </Form.Item>
 
-        <Upload
-          maxCount={1}
-          beforeUpload={() => false}
-          listType="picture"
-          accept="image/*"
-          className="w-full"
+        <Form.Item
+          name="image"
+          label="Category Image"
         >
-          <Button
-            icon={<UploadOutlined />}
-            className="w-full border-[--text-color] text-[--text-color] bg-[rgba(232,187,76,0.08)] hover:border-[--text-color]"
+          <Upload
+            maxCount={1}
+            beforeUpload={() => false}
+            listType="picture"
+            accept="image/*"
+            className="w-full"
           >
-            Upload Image
-          </Button>
-        </Upload>
+            <Button
+              icon={<UploadOutlined />}
+              className="w-full border-[--text-color] text-[--text-color] bg-[rgba(232,187,76,0.08)] hover:border-[--text-color]"
+            >
+              Upload Image
+            </Button>
+          </Upload>
+        </Form.Item>
 
         <div className="grid grid-cols-3 gap-2 mt-4">
           <Form.Item

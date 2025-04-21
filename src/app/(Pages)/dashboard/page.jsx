@@ -88,13 +88,13 @@ const Dashboard = () => {
     datasets: [
       {
         label: "Order",
-        data: [5300, 5200, 9300, 13500, 5300, 10200, 1200, 7100],
+        data: [0, 0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "#00A1FF",
         borderRadius: 5,
       },
       {
         label: "Revenue",
-        data: [4500, 4000, 9300, 15000, 4000, 11000, 2000, 8000],
+        data: [0, 0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "#06E775",
         borderRadius: 5,
       },
@@ -136,9 +136,9 @@ const Dashboard = () => {
                 <Image alt="" src={salesIcon} />
               </div>
               <div>
-                <p className="text-[32px] font-[600] text-black">$ 77.21</p>
+                <p className="text-[32px] font-[600] text-black">$ 00.00</p>
                 <p className="text-[12px] font-[500] text-[var(--text-color-body-plus)]">
-                  + 3.16% From last month
+                  + 0 % From last month
                 </p>
               </div>
             </div>
@@ -150,9 +150,9 @@ const Dashboard = () => {
                 <Image alt="" src={ordersIcon} />
               </div>
               <div>
-                <p className="text-[32px] font-[600] text-black">$ 2,107</p>
+                <p className="text-[32px] font-[600] text-black">00</p>
                 <p className="text-[12px] font-[500] text-[var(--text-color-body-minus)]">
-                  - 1.18% From last month
+                  - 0 % From last month
                 </p>
               </div>
             </div>
@@ -164,9 +164,9 @@ const Dashboard = () => {
                 <Image alt="" src={revenueIcon} />
               </div>
               <div>
-                <p className="text-[32px] font-[600] text-black">$ 653</p>
+                <p className="text-[32px] font-[600] text-black">$ 00.00</p>
                 <p className="text-[12px] font-[500] text-[var(--text-color-body-plus)]">
-                  + 2.24% From last month
+                  + 0 % From last month
                 </p>
               </div>
             </div>
@@ -178,9 +178,9 @@ const Dashboard = () => {
                 <Image alt="" src={returnIcon} />
               </div>
               <div>
-                <p className="text-[32px] font-[600] text-black">$ 2,107</p>
+                <p className="text-[32px] font-[600] text-black">00</p>
                 <p className="text-[12px] font-[500] text-[var(--text-color-body-minus)]">
-                  - 1.18% From last month
+                  - 0 % From last month
                 </p>
               </div>
             </div>
@@ -219,10 +219,10 @@ const Dashboard = () => {
                 <div className="flex-1 flex justify-between items-center">
                   <div className="flex flex-col gap-1.5">
                     <p className="font-[500] leading-[24px]">
-                      Lorem ipsum dolor sit amet
+                      Premium Wireless Headphones
                     </p>
                     <p className="text-[14px] text-[var(--text-color-body)]">
-                      12,429 Sales
+                      00 Sales
                     </p>
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -231,7 +231,7 @@ const Dashboard = () => {
                       Available
                     </p>
                     <p className="text-[var(--text-color-body)] text-[11px] ps-[15px]">
-                      135 Stocks
+                      00 Stocks
                     </p>
                   </div>
                 </div>
@@ -241,10 +241,10 @@ const Dashboard = () => {
                 <div className="flex-1 flex justify-between items-center">
                   <div className="flex flex-col gap-1.5">
                     <p className="font-[500] leading-[24px]">
-                      Lorem ipsum dolor sit amet
+                      Smart Watch Series X
                     </p>
                     <p className="text-[14px] text-[var(--text-color-body)]">
-                      12,429 Sales
+                      00 Sales
                     </p>
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -253,7 +253,7 @@ const Dashboard = () => {
                       Available
                     </p>
                     <p className="text-[var(--text-color-body)] text-[11px] ps-[15px]">
-                      135 Stocks
+                      00 Stocks
                     </p>
                   </div>
                 </div>
@@ -263,10 +263,10 @@ const Dashboard = () => {
                 <div className="flex-1 flex justify-between items-center">
                   <div className="flex flex-col gap-1.5">
                     <p className="font-[500] leading-[24px]">
-                      Lorem ipsum dolor sit amet
+                      4K Ultra HD Smart TV
                     </p>
                     <p className="text-[14px] text-[var(--text-color-body)]">
-                      12,429 Sales
+                      00 Sales
                     </p>
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -275,97 +275,142 @@ const Dashboard = () => {
                       Available
                     </p>
                     <p className="text-[var(--text-color-body)] text-[11px] ps-[15px]">
-                      135 Stocks
+                      00 Stocks
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-5">
+                <Image alt="" src={productTwo} className="w-[67px] h-[67px]" />
+                <div className="flex-1 flex justify-between items-center">
+                  <div className="flex flex-col gap-1.5">
+                    <p className="font-[500] leading-[24px]">
+                      Portable Power Bank 20000mAh
+                    </p>
+                    <p className="text-[14px] text-[var(--text-color-body)]">
+                      00 Sales
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <p className="text-[12px] text-[var(--text-color-body-plus)] flex items-center gap-1">
+                      <GoDotFill />
+                      Available
+                    </p>
+                    <p className="text-[var(--text-color-body)] text-[11px] ps-[15px]">
+                      00 Stocks
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-5">
+                <Image alt="" src={productOne} className="w-[67px] h-[67px]" />
+                <div className="flex-1 flex justify-between items-center">
+                  <div className="flex flex-col gap-1.5">
+                    <p className="font-[500] leading-[24px]">
+                      Wireless Gaming Mouse
+                    </p>
+                    <p className="text-[14px] text-[var(--text-color-body)]">
+                      00 Sales
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <p className="text-[12px] text-[var(--text-color-body-plus)] flex items-center gap-1">
+                      <GoDotFill />
+                      Available
+                    </p>
+                    <p className="text-[var(--text-color-body)] text-[11px] ps-[15px]">
+                      00 Stocks
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          
           {/* table */}
-          <div className="dashboard-table bg-white rounded-[10px] shadow-sm px-[20px] py-[25px] mt-[20px] flex flex-col gap-5">
-            <div className="flex mb-1">
-              <p className="min-w-[100px] font-[500] text-[var(--text-color-body)]">
+          <div className="dashboard-table bg-white rounded-[10px] shadow-sm px-[20px] py-[25px] mt-[20px] flex flex-col gap-5 overflow-x-auto">
+            <div className="flex w-full">
+              <p className="w-[10%] font-[500] text-[var(--text-color-body)]">
                 No
               </p>
-              <p className="min-w-[202px] font-[500] text-[var(--text-color-body)]">
+              <p className="w-[20%] font-[500] text-[var(--text-color-body)]">
                 Product Name
               </p>
-              <p className="min-w-[130px] font-[500] text-[var(--text-color-body)]">
+              <p className="w-[12%] font-[500] text-[var(--text-color-body)]">
                 Price
               </p>
-              <p className="min-w-[170px] font-[500] text-[var(--text-color-body)]">
+              <p className="w-[18%] font-[500] text-[var(--text-color-body)]">
                 Customer Name
               </p>
-              <p className="min-w-[150px] font-[500] text-[var(--text-color-body)]">
+              <p className="w-[15%] font-[500] text-[var(--text-color-body)]">
                 Date
               </p>
-              <p className="min-w-[170px] font-[500] text-[var(--text-color-body)]">
+              <p className="w-[15%] font-[500] text-[var(--text-color-body)]">
                 Payment
               </p>
-              <p className="min-w-[120px] font-[500] text-[var(--text-color-body)]">
+              <p className="w-[10%] font-[500] text-[var(--text-color-body)]">
                 Status
               </p>
             </div>
-            <div className="flex">
-              <p className="min-w-[100px] text-[14px]">PK09485</p>
-              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
+            <div className="flex w-full">
+              <p className="w-[10%] text-[14px]">PK00000</p>
+              <p className="w-[20%] text-[14px] flex items-center gap-2">
                 <Image alt="" src={dashboardTableImg} />
-                Electric LED
+                Smart Watch Series X
               </p>
-              <p className="min-w-[130px] text-[14px]">$111.00</p>
-              <p className="min-w-[170px] text-[14px]">John Due</p>
-              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="min-w-[170px] text-[14px]">Transfer</p>
-              <div className="min-w-[120px] text-[14px]">
+              <p className="w-[12%] text-[14px]">$00.00</p>
+              <p className="w-[18%] text-[14px]">Emma Wilson</p>
+              <p className="w-[15%] text-[14px]">00 Jan, 2024</p>
+              <p className="w-[15%] text-[14px]">Credit Card</p>
+              <div className="w-[10%] text-[14px]">
                 <p className="text-[var(--text-color-body-plus)] font-[500] text-[10px] bg-green-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Delivered
                 </p>
               </div>
             </div>
-            <div className="flex">
-              <p className="min-w-[100px] text-[14px]">PK09485</p>
-              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
+            <div className="flex w-full">
+              <p className="w-[10%] text-[14px]">PK00000</p>
+              <p className="w-[20%] text-[14px] flex items-center gap-2">
                 <Image alt="" src={dashboardTableImg} />
-                Electric LED
+                4K Ultra HD Smart TV
               </p>
-              <p className="min-w-[130px] text-[14px]">$111.00</p>
-              <p className="min-w-[170px] text-[14px]">John Due</p>
-              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="min-w-[170px] text-[14px]">Credit Card</p>
-              <div className="min-w-[120px] text-[14px]">
+              <p className="w-[12%] text-[14px]">$00.00</p>
+              <p className="w-[18%] text-[14px]">Michael Chen</p>
+              <p className="w-[15%] text-[14px]">00 Jan, 2024</p>
+              <p className="w-[15%] text-[14px]">Transfer</p>
+              <div className="w-[10%] text-[14px]">
                 <p className="text-[var(--text-color-body-pending)] font-[500] text-[10px] bg-orange-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Pending
                 </p>
               </div>
             </div>
-            <div className="flex">
-              <p className="min-w-[100px] text-[14px]">PK09485</p>
-              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
+            <div className="flex w-full">
+              <p className="w-[10%] text-[14px]">PK00000</p>
+              <p className="w-[20%] text-[14px] flex items-center gap-2">
                 <Image alt="" src={dashboardTableImg} />
-                Electric LED
+                Premium Wireless Headphones
               </p>
-              <p className="min-w-[130px] text-[14px]">$111.00</p>
-              <p className="min-w-[170px] text-[14px]">John Due</p>
-              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="min-w-[170px] text-[14px]">Transfer</p>
-              <div className="min-w-[120px] text-[14px]">
+              <p className="w-[12%] text-[14px]">$00.00</p>
+              <p className="w-[18%] text-[14px]">Sarah Johnson</p>
+              <p className="w-[15%] text-[14px]">00 Jan, 2024</p>
+              <p className="w-[15%] text-[14px]">PayPal</p>
+              <div className="w-[10%] text-[14px]">
                 <p className="text-[var(--text-color-body-plus)] font-[500] text-[10px] bg-green-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Delivered
                 </p>
               </div>
             </div>
-            <div className="flex">
-              <p className="min-w-[100px] text-[14px]">PK09485</p>
-              <p className="min-w-[202px] text-[14px] flex items-center gap-2">
+            <div className="flex w-full">
+              <p className="w-[10%] text-[14px]">PK00000</p>
+              <p className="w-[20%] text-[14px] flex items-center gap-2">
                 <Image alt="" src={dashboardTableImg} />
-                Electric LED
+                Portable Power Bank
               </p>
-              <p className="min-w-[130px] text-[14px]">$111.00</p>
-              <p className="min-w-[170px] text-[14px]">John Due</p>
-              <p className="min-w-[150px] text-[14px]">12 Jan, 2024</p>
-              <p className="min-w-[170px] text-[14px]">Credit Card</p>
-              <div className="min-w-[120px] text-[14px]">
+              <p className="w-[12%] text-[14px]">$00.00</p>
+              <p className="w-[18%] text-[14px]">Alex Martinez</p>
+              <p className="w-[15%] text-[14px]">00 Jan, 2024</p>
+              <p className="w-[15%] text-[14px]">Credit Card</p>
+              <div className="w-[10%] text-[14px]">
                 <p className="text-[var(--text-color-body-pending)] font-[500] text-[10px] bg-orange-100 w-[62px] h-[22px] rounded-[4px] flex justify-center items-center">
                   Pending
                 </p>
