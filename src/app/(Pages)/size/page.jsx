@@ -13,6 +13,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import moment from 'moment-timezone';
 import { useRouter } from "next/navigation";
+import BACKEND_URL from "@/api/api";
 
 const Sizes = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const Sizes = () => {
   const [loading, setLoading] = useState(false);
   const [sizes, setSizes] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -53,7 +55,33 @@ const Sizes = () => {
   const fetchCategories = async () => {
     const response = await getCategories();
     if (response.status) {
-      setCategories(response.data);
+      // Get only main categories (categories without parentId)
+      const mainCategories = response.data.filter(cat => !cat.parentId);
+      setCategories(mainCategories);
+    }
+  };
+
+  const fetchSubCategories = async (categoryId) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/category/viewAll?parentCategoryId=${categoryId}`);
+      const data = await response.json();
+
+      if (data.status === "ok") {
+        setSubCategories(data.data);
+      } else {
+        notification.error({
+          message: "Failed to fetch subcategories",
+          placement: 'topRight',
+          style: { marginTop: '50px' }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+      notification.error({
+        message: 'Failed to fetch subcategories',
+        placement: 'topRight',
+        style: { marginTop: '50px' }
+      });
     }
   };
 
@@ -124,6 +152,13 @@ const Sizes = () => {
     }
   };
 
+  // Add this useEffect to fetch subcategories when a category is selected
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchSubCategories(selectedCategory);
+    }
+  }, [selectedCategory]);
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -135,9 +170,9 @@ const Sizes = () => {
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold text-gray-800">Sizes</h1>
               <Select
-                placeholder="Select Category"
+                placeholder="Select Main Category"
                 style={{ width: 200 }}
-                onChange={setSelectedCategory}
+                onChange={(value) => setSelectedCategory(value)}
                 options={categories.map(cat => ({ label: cat.name, value: cat._id }))}
               />
             </div>
@@ -237,12 +272,12 @@ const Sizes = () => {
             >
               <Form.Item
                 name="categoryId"
-                label="Category"
-                rules={[{ required: true, message: 'Please select category' }]}
+                label="Sub Category"
+                rules={[{ required: true, message: 'Please select sub category' }]}
               >
                 <Select
-                  options={categories.map(cat => ({ label: cat.name, value: cat._id }))}
-                  placeholder="Select category"
+                  options={subCategories.map(cat => ({ label: cat.name, value: cat._id }))}
+                  placeholder="Select sub category"
                   className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
                 />
               </Form.Item>

@@ -24,6 +24,18 @@ const AddEditCategoryModal = ({
   const modalTitle = isEditMode ? "Edit Category" : "Add New Category";
   const submitButtonText = isEditMode ? "Update Category" : "Create Category";
 
+  // Add the normFile function to handle file uploads
+  const normFile = (e) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    if (e?.fileList) {
+      return e.fileList;
+    }
+    return e;
+  };
+
   return (
     <Modal
       centered
@@ -110,8 +122,11 @@ const AddEditCategoryModal = ({
         <Form.Item
           name="image"
           label="Category Image"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
         >
           <Upload
+            name="image"
             maxCount={1}
             beforeUpload={() => false}
             listType="picture"

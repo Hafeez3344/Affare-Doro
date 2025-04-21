@@ -116,42 +116,44 @@ const Categories = () => {
     }
   };
 
+  console.log("imageFile", imageFile);
+
   const handleSubmit = async (values) => {
     try {
       console.log('Form values:', values);
       setLoading(true);
       let response;
 
+      // Get the image file from the form values
+      const imageFile = values.image?.[0]?.originFileObj;
+      console.log("Image file from form:", imageFile);
+
+      const formData = new FormData();
+
+      // Add each field to FormData except image and category
+      Object.keys(values).forEach(key => {
+        if (key !== 'image' && key !== 'category') {
+          formData.append(key, values[key]);
+        }
+      });
+
+      // Add image file to FormData if it exists
+      if (imageFile) {
+        formData.append('image', imageFile);
+        console.log('Added image file to formData:', imageFile);
+      }
+
+      // If we have a selected category, add it to the form data
+      if (categoryPath.length > 0) {
+        const parentId = categoryPath[categoryPath.length - 1]._id;
+        formData.append('parentCategoryId', parentId);
+        console.log('Added parentId to formData:', parentId);
+      }
+
       if (isEditMode) {
-        response = await updateCategory(selectedItem._id, values);
+        response = await updateCategory(selectedItem._id, formData);
       } else {
-        const formData = new FormData();
-
-        // Add each field to FormData
-        Object.keys(values).forEach(key => {
-          if (key !== 'image' && key !== 'category') {
-            formData.append(key, values[key]);
-            console.log(`Added ${key} to formData:`, values[key]);
-          }
-        });
-
-        // Handle image file separately
-        if (imageFile) {
-          formData.append('image', imageFile);
-          console.log('Added image file to formData');
-        }
-
-        // If we have a selected category, add it to the form data
-        if (categoryPath.length > 0) {
-          const parentId = categoryPath[categoryPath.length - 1]._id;
-          formData.append('parentCategoryId', parentId);
-          console.log('Added parentId to formData:', parentId);
-        }
-
-        console.log('Final formData:', Object.fromEntries(formData));
-
         response = await createCategory(formData);
-        console.log('API Response:', response);
       }
 
       if (response.status) {
@@ -160,10 +162,8 @@ const Categories = () => {
           placement: 'topRight',
           style: { marginTop: '50px' }
         });
-        // Reset all form fields and states
+        // Reset form and states
         form.resetFields();
-        form.setFieldValue('image', undefined);
-        setImageFile(null);
         setCategoryPath([]);
         setCurrentParentId(null);
         setSubCategories([]);
@@ -173,16 +173,14 @@ const Categories = () => {
         setIsEditMode(false);
         setSelectedItem(null);
       } else {
-        throw new Error(response.message || 'Category creation failed');
+        throw new Error(response.message || 'Category operation failed');
       }
     } catch (error) {
       console.error('Submit Error:', error);
       notification.error({
-        message: error.message || 'Category creation failed',
+        message: error.message || 'Category operation failed',
         placement: 'topRight',
-        style: {
-          marginTop: '50px'
-        }
+        style: { marginTop: '50px' }
       });
     } finally {
       setLoading(false);
@@ -193,18 +191,19 @@ const Categories = () => {
     setShowModal(false);
     setIsEditMode(false);
     form.resetFields();
-    form.setFieldValue('image', undefined);
     setImageFile(null);
     setCategoryPath([]);
     setSelectedItem(null);
   };
 
   const normFile = (e) => {
+    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
     if (e?.fileList) {
       const file = e.fileList[0]?.originFileObj;
+      console.log('Setting image file:', file);
       setImageFile(file);
       return e.fileList;
     }
