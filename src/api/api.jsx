@@ -386,7 +386,15 @@ export const createSize = async (data) => {
 // ---------------------------- Get Product Sizes API -------------------------------
 export const getSizes = async (categoryId) => {
     try {
-        const response = await api.get(`/size/viewAll?categoryId=${categoryId}`);
+        // If categoryId is not provided, fetch all sizes
+        const url = categoryId 
+            ? `/size/viewAll?categoryId=${categoryId}`
+            : '/size/viewAll';
+            
+        console.log("Fetching sizes with URL:", url);
+        const response = await api.get(url);
+        console.log("Sizes API response:", response);
+        
         return {
             status: true,
             message: "Sizes fetched successfully",

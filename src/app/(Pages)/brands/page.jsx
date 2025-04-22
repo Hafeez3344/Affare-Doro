@@ -9,6 +9,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { createBrand, getBrands, updateBrand, deleteBrand } from "@/api/api";
 import moment from 'moment-timezone';
 import { useRouter } from "next/navigation";
+import BACKEND_URL from '@/api/api';
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -212,7 +213,7 @@ const Brands = () => {
                       <td className="p-4 text-[13px] flex items-center gap-2">
                         {item.image && (
                           <img
-                            src={`http://localhost:8000/${item.image.replace(/\\/g, '/')}`}
+                            src={`${BACKEND_URL}/${item.image}`}
                             alt={item.name}
                             className="w-8 h-8 object-cover rounded-full"
                           />
@@ -299,7 +300,6 @@ const Brands = () => {
                 label="Brand Logo"
                 valuePropName="fileList"
                 getValueFromEvent={normFile}
-                rules={[{ required: true, message: 'Please upload a logo' }]}
               >
                 <Upload
                   maxCount={1}
@@ -377,7 +377,7 @@ const Brands = () => {
                   <div className="w-full md:w-1/2 md:border-l mt-10 md:mt-0 pl-0 md:pl-6 flex justify-center items-center">
                     <div className="relative w-full max-w-[400px]">
                       <img
-                        src={`http://localhost:8000/${selectedItem.image.replace(/\\/g, '/')}`}
+                        src={`${BACKEND_URL}/${selectedItem.image}`}
                         alt={selectedItem.name}
                         className="w-full h-full object-contain"
                       />

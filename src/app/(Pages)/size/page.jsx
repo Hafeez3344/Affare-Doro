@@ -44,6 +44,8 @@ const Sizes = () => {
     }
     dispatch(updatePageNavigation("size"));
     fetchCategories();
+    // Fetch all sizes initially
+    fetchSizes();
   }, [auth, dispatch, router]);
 
   useEffect(() => {
@@ -86,9 +88,18 @@ const Sizes = () => {
   };
 
   const fetchSizes = async (categoryId) => {
+    console.log("Fetching sizes for category:", categoryId);
+    // If no category is selected, fetch all sizes
     const response = await getSizes(categoryId);
+    console.log("Sizes API response:", response);
     if (response.status) {
       setSizes(response.data);
+    } else {
+      notification.error({
+        message: response.message || "Failed to fetch sizes",
+        placement: 'topRight',
+        style: { marginTop: '50px' }
+      });
     }
   };
 
@@ -125,17 +136,30 @@ const Sizes = () => {
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
+      console.log("Submitting size with values:", values);
       const response = isEditMode
         ? await updateSize(selectedItem._id, values)
         : await createSize(values);
 
+      console.log("Size creation/update response:", response);
+      
       if (response.status) {
         notification.success({
           message: `Size ${isEditMode ? 'updated' : 'created'} successfully`,
           placement: 'topRight',
           style: { marginTop: '50px' }
         });
-        fetchSizes(selectedCategory);
+        
+        // If a category is selected, fetch sizes for that category
+        // Otherwise, fetch all sizes
+        if (selectedCategory) {
+          console.log("Fetching sizes for selected category:", selectedCategory);
+          fetchSizes(selectedCategory);
+        } else {
+          console.log("No category selected, fetching all sizes");
+          fetchSizes();
+        }
+        
         setShowModal(false);
         form.resetFields();
         setIsEditMode(false);
