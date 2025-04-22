@@ -193,12 +193,24 @@ const Sizes = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold text-gray-800">Sizes</h1>
-              <Select
-                placeholder="Select Main Category"
-                style={{ width: 200 }}
-                onChange={(value) => setSelectedCategory(value)}
-                options={categories.map(cat => ({ label: cat.name, value: cat._id }))}
-              />
+              <div className="flex gap-4">
+                <Select
+                  placeholder="Select Main Category"
+                  style={{ width: 200 }}
+                  onChange={(value) => {
+                    setSelectedCategory(value);
+                    setSubCategories([]); // Clear subcategories when main category changes
+                  }}
+                  options={categories.map(cat => ({ label: cat.name, value: cat._id }))}
+                />
+                <Select
+                  placeholder="Select Sub Category"
+                  style={{ width: 200 }}
+                  disabled={!selectedCategory}
+                  onChange={(value) => fetchSizes(value)}
+                  options={subCategories.map(cat => ({ label: cat.name, value: cat._id }))}
+                />
+              </div>
             </div>
             <button
               onClick={() => {
