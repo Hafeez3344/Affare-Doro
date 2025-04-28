@@ -166,73 +166,62 @@ const Orders = () => {
                 {filteredOrders?.map((order, index) => (
                   <div
                     key={order?._id}
-                    className="flex flex-col p-4 border rounded-lg shadow-md bg-white"
+                    className="flex flex-col p-6 border rounded-lg shadow-md bg-white h-[600px]"
                   >
-                    <div className="flex items-center space-x-4 w-full">
-                      <div className="w-32 h-32 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
-                        {order.productId && order.productId.length > 0 ? (
-                          <Image
-                            src={`${BACKEND_URL}/${order.productId[0].image?.[0]}`}
-                            alt={order.productId[0].name || "Product"}
-                            width={128}
-                            height={128}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-gray-500">No Image</span>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        {/* <h2 className="text-lg font-semibold">
-                         From user ID : {order?.fromUserId}
-                        </h2> */}
-                        <p className="m-2 text-gray-600">
-                          ${order.total || "0.00"}
-                          <span
-                            className={`ml-5 rounded-lg px-3 py-2 text-sm font-semibold ${getStatusBadgeClass(
-                              order.orderStatus
-                            )}`}
-                          >
-                            {order.orderStatus || "Unknown"}
-                          </span>
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Customer: {order.fullName || "N/A"}
-                        </p>
-                        <p className="text-sm text-gray-500 text-nowrap">
-                          Email: {order.email || "N/A"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Location: {order.city || "N/A"},{" "}
-                          {order.country || "N/A"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Order Date:{" "}
-                          {new Date(order.createdAt).toLocaleDateString(
-                            "en-US",
-                            { day: "2-digit", month: "short", year: "numeric" }
-                          )}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Payment: {order.paymentStatus || "N/A"} (
-                          {order.paymentMethod || "N/A"})
-                        </p>
-                      </div>
+                    {/* Top - Image */}
+                    <div className="w-full h-80 rounded-lg bg-gray-200 overflow-hidden mb-4">
+                      {order.productId && order.productId.length > 0 ? (
+                        <Image
+                          src={`${BACKEND_URL}/${order.productId[0].image?.[0]}`}
+                          alt={order.productId[0].name || "Product"}
+                          width={400}
+                          height={256}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-gray-500">No Image</span>
+                      )}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:space-x-2 mt-4">
-                      <button
-                        onClick={() => showOrderDetails(order)}
-                        className="flex-1 px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-600 cursor-pointer shadow-lg"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => fn_viewDetails(order._id)}
-                        className="flex-1 px-3 py-2 bg-gray-100 text-black rounded-md hover:bg-gray-200 cursor-pointer shadow-lg mt-2 sm:mt-0"
-                      >
-                        Actions
-                      </button>
+                    {/* Bottom - Order Details */}
+                    <div className="flex-1 flex flex-col">
+                      <div className="flex-1">
+                        <div className="space-y-3">
+                          <p className="text-gray-600">
+                            <span className="font-medium">Customer:</span>{" "}
+                            {order.fullName || "N/A"}
+                          </p>
+                          <p className="text-gray-600">
+                            <span className="font-medium">Email:</span>{" "}
+                            {order.email || "N/A"}
+                          </p>
+
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="font-medium">Total:</span>
+                            <span className="text-lg font-semibold text-teal-600">
+                              ${order.total || "0.00"}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <span
+                              className={` rounded-lg px-3 py-1 text-sm font-semibold ${getStatusBadgeClass(
+                                order.orderStatus
+                              )}`}
+                            >
+                              {order.orderStatus || "Unknown"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 mt-6">
+                        <button
+                          onClick={() => showOrderDetails(order)}
+                          className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 cursor-pointer shadow-lg"
+                        >
+                          View Details
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
