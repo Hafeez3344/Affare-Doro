@@ -12,9 +12,11 @@ const Navbar = () => {
       <div className="md:w-[240px] flex justify-center items-center px-5 md:ps-0">
         <Image
           alt=""
-          src={grazleLogo}
+          src={`/Affare Doro Logo Golden.png`}
           className="h-[70px] w-auto"
           placeholder="empty"
+          width={200}
+          height={200}
           priority
         />
       </div>

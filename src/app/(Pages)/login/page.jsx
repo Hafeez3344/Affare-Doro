@@ -26,11 +26,11 @@ const LoginPage = () => {
     api[type]({
       message: message,
       description: description,
-      placement: 'topRight',
+      placement: "topRight",
       duration: 3,
       style: {
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
       },
     });
   };
@@ -40,24 +40,24 @@ const LoginPage = () => {
       const response = await adminLogin(values);
       if (response.status) {
         showNotification(
-          'success',
-          'Login Successful',
-          'Welcome back! You have successfully logged in.'
+          "success",
+          "Login Successful",
+          "Welcome back! You have successfully logged in."
         );
         dispatch(updateAuth(true));
         router.push("/dashboard");
       } else {
         showNotification(
-          'error',
-          'Login Failed',
-          response.message || 'Invalid email or password'
+          "error",
+          "Login Failed",
+          response.message || "Invalid email or password"
         );
       }
     } catch (error) {
       showNotification(
-        'error',
-        'Error',
-        'Something went wrong. Please try again.'
+        "error",
+        "Error",
+        "Something went wrong. Please try again."
       );
     }
   };
@@ -99,7 +99,18 @@ const LoginPage = () => {
             />
           </Form.Item>
           <Form.Item>
-            <Button block type="primary" htmlType="submit" size="large">
+            <Button
+              block
+              type="primary"
+              htmlType="submit"
+              size="large"
+              className="text-white border-white hover:!text-white hover:!border-white hover:!bg-blue-600"
+              style={{
+                backgroundColor: "gray-800",
+                borderColor: "white",
+                color: "white",
+              }}
+            >
               Log in
             </Button>
           </Form.Item>

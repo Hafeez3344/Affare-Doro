@@ -94,6 +94,48 @@ export const getProducts = async () => {
     }
 };
 
+// ---------------------------- Get All Orders API -------------------------------
+export const getAllOrders = async () => {
+    try {
+        const token = Cookies.get('token');
+        if (!token) {
+            // throw new Error("No token found in cookies");
+            alert("No token found in cookies");
+        }
+
+        const response = await api.get('/order/viewAll', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        console.log('API Response:', response);
+        return {
+            status: true,
+            message: "Orders fetched successfully",
+            data: response.data.data,
+        };
+    } catch (error) {
+        console.error('API Error:', error);
+
+        if (error.code === 'ERR_NETWORK') {
+            return {
+                status: false,
+                message: "Unable to connect to server. Please check if the server is running."
+            };
+        }
+
+        if (error?.response?.status === 400) {
+            return { status: false, message: error.response.data.message };
+        }
+
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
+    }
+};
+
 // ---------------------create category api -------------------------------
 export const createCategory = async (data) => {
     try {

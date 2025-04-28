@@ -27,6 +27,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { ShoppingCart } from "lucide-react";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -44,21 +45,21 @@ const Dashboard = () => {
       router.push("/login");
       return;
     }
-  
+
     if (auth && !sessionStorage.getItem("dashboardWelcomeShown")) {
       dispatch(updatePageNavigation("dashboard"));
-  
+
       api.success({
-        message: 'Welcome to Dashboard',
-        description: 'You have successfully logged into your admin account.',
-        placement: 'topRight',
+        message: "Welcome to Dashboard",
+        description: "You have successfully logged into your admin account.",
+        placement: "topRight",
         duration: 3,
         style: {
-          borderRadius: '8px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
         },
       });
-  
+
       sessionStorage.setItem("dashboardWelcomeShown", "true");
     }
   }, [auth, dispatch, router, api]);
@@ -81,9 +82,9 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching products:", error);
         api.error({
-          message: 'Error',
+          message: "Error",
           description: error.message || "Failed to fetch products",
-          placement: 'topRight',
+          placement: "topRight",
         });
       } finally {
         setLoading(false);
@@ -141,57 +142,47 @@ const Dashboard = () => {
             <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
-                  Total Sales
-                </p>
-                <Image alt="" src={salesIcon} />
-              </div>
-              <div>
-                <p className="text-[32px] font-[600] text-black">$ 00.00</p>
-                <p className="text-[12px] font-[500] text-[var(--text-color-body-plus)]">
-                  + 0 % From last month
-                </p>
-              </div>
-            </div>
-            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
-              <div className="flex justify-between">
-                <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
                   Total Orders
                 </p>
                 <Image alt="" src={ordersIcon} />
               </div>
               <div>
                 <p className="text-[32px] font-[600] text-black">00</p>
-                <p className="text-[12px] font-[500] text-[var(--text-color-body-minus)]">
-                  - 0 % From last month
-                </p>
               </div>
             </div>
             <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
-                  Lifetime Revenue
+                  Completed Orders
+                </p>
+                <ShoppingCart size={24} className="text-gray-700" />
+              </div>
+
+              <div>
+                <p className="text-[32px] font-[600] text-black">00</p>
+              </div>
+            </div>
+
+            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+              <div className="flex justify-between">
+                <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
+                  Total Sales
                 </p>
                 <Image alt="" src={revenueIcon} />
               </div>
               <div>
                 <p className="text-[32px] font-[600] text-black">$ 00.00</p>
-                <p className="text-[12px] font-[500] text-[var(--text-color-body-plus)]">
-                  + 0 % From last month
-                </p>
               </div>
             </div>
             <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
                 <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
-                  Return Orders
+                  Cancelled Orders
                 </p>
                 <Image alt="" src={returnIcon} />
               </div>
               <div>
                 <p className="text-[32px] font-[600] text-black">00</p>
-                <p className="text-[12px] font-[500] text-[var(--text-color-body-minus)]">
-                  - 0 % From last month
-                </p>
               </div>
             </div>
           </div>
@@ -221,12 +212,13 @@ const Dashboard = () => {
               <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
                 <p className="text-[20px] font-[600]">Customer Favorite</p>
                 <button
-                onClick={() => router.push("/products")}
-                className="w-[135px] h-[32px] text-[var(--text-color-body)] rounded-[4px] border-black border-[1px] py-[6px] px-[12px] text-[13px] font-[500]">
+                  onClick={() => router.push("/products")}
+                  className="w-[135px] h-[32px] text-[var(--text-color-body)] rounded-[4px] border-black border-[1px] py-[6px] px-[12px] text-[13px] font-[500]"
+                >
                   See All Products
                 </button>
               </div>
-              
+
               {loading ? (
                 <div className="flex justify-center items-center h-[300px]">
                   Loading...
@@ -234,9 +226,13 @@ const Dashboard = () => {
               ) : (
                 favoriteProducts.map((product) => (
                   <div key={product._id} className="flex gap-5">
-                    <Image 
-                      alt={product.name} 
-                      src={product.image?.[0] ? `${BACKEND_URL}/${product.image[0]}` : productOne}
+                    <Image
+                      alt={product.name}
+                      src={
+                        product.image?.[0]
+                          ? `${BACKEND_URL}/${product.image[0]}`
+                          : productOne
+                      }
                       className="w-[67px] h-[67px]"
                       width={67}
                       height={67}
@@ -253,7 +249,7 @@ const Dashboard = () => {
                       <div className="flex flex-col gap-1.5">
                         <p className="text-[12px] text-[var(--text-color-body-plus)] flex items-center gap-1">
                           <GoDotFill />
-                          {product.status || 'Available'}
+                          {product.status || "Available"}
                         </p>
                         <p className="text-[var(--text-color-body)] text-[11px] ps-[15px]">
                           {product.stock || 0} Stocks
@@ -265,7 +261,7 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-          
+
           {/* table */}
           <div className="dashboard-table bg-white rounded-[10px] shadow-sm px-[20px] py-[25px] mt-[20px] flex flex-col gap-5 overflow-x-auto">
             <div className="flex w-full">
