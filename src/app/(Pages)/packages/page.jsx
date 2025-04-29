@@ -11,6 +11,7 @@ import {
   deletePackage,
 } from "@/api/api";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -221,6 +222,13 @@ const Packages = () => {
                       <td className="p-4 text-[13px]">{item.name}</td>
                       <td className="p-4 text-[13px]">{item.subTitle}</td>
                       <td className="p-4 text-[13px]">
+                        <Image
+                          alt=""
+                          src="/dirham-sign.svg"
+                          width={15}
+                          height={15}
+                          className="inline-block mr-1 mb-1"
+                        />
                         {item.shippingCharges}
                       </td>
                       <td className="p-4">

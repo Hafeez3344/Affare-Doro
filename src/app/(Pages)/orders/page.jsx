@@ -193,14 +193,25 @@ const Orders = () => {
                       <div className="flex-1">
                         <div className="space-y-3">
                           <p className="text-gray-600">
-                            <span className="text-[15px] font-[700] text-nowrap">Customer:</span>{" "}
-                            <span className="text-[13px] font-[500]">{order.fullName || "N/A"}</span>
+                            <span className="text-[15px] font-[700] text-nowrap">
+                              Customer:
+                            </span>{" "}
+                            <span className="text-[13px] font-[500]">
+                              {order.fullName || "N/A"}
+                            </span>
                           </p>
 
                           <div className="flex items-center gap-2 mt-2">
                             <span className="font-medium">Total:</span>
                             <span className="text-lg font-semibold text-teal-600">
-                              ${order.total || "0.00"}
+                              <Image
+                                alt=""
+                                src="/dirham-sign.svg"
+                                width={16}
+                                height={16}
+                                className="inline-block mr-1 mb-1"
+                              />
+                              {order.total || "0.00"}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 mt-1">
@@ -286,7 +297,9 @@ const Orders = () => {
               <h3 className="text-lg font-medium mb-3">Product Information</h3>
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
-                  {selectedOrder.productId && selectedOrder.productId.length > 0 && selectedOrder.productId[0].image ? (
+                  {selectedOrder.productId &&
+                  selectedOrder.productId.length > 0 &&
+                  selectedOrder.productId[0].image ? (
                     <Image
                       src={`${BACKEND_URL}/${selectedOrder.productId[0].image}`}
                       alt={selectedOrder.productId[0].name || "Product"}
@@ -316,9 +329,18 @@ const Orders = () => {
                   <p className="font-medium">
                     Product Price:{" "}
                     {selectedOrder.productId &&
-                    selectedOrder.productId.length > 0
-                      ? `$${selectedOrder.productId[0].price || "0.00"}`
-                      : "N/A"}
+                    selectedOrder.productId.length > 0 ? (
+                      <span className="flex items-center">
+                        <Image 
+                          alt="Dirham"
+                          src="/dirham-sign.svg"
+                          width={15}
+                          height={15}
+                          className="inline-block mr-1"
+                        />
+                        {selectedOrder.productId[0].price || "0.00"}
+                      </span>
+                    ) : "N/A"}
                   </p>
                 </div>
               </div>
@@ -327,7 +349,14 @@ const Orders = () => {
             <div className="border rounded-lg p-4">
               <h3 className="text-lg font-medium mb-3">Payment Information</h3>
               <p>
-                <span className="font-medium">Total:</span> $
+                <span className="font-medium">Total:</span>{" "}
+                <Image
+                  alt=""
+                  src="/dirham-sign.svg"
+                  width={15}
+                  height={15}
+                  className="inline-block mr-1 mb-1"
+                />
                 {selectedOrder.total || "0.00"}
               </p>
               <p>

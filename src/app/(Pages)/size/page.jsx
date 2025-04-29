@@ -193,7 +193,7 @@ const Sizes = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold text-gray-800">Sizes</h1>
-              <div className="flex gap-4">
+              {/* <div className="flex gap-4">
                 <Select
                   placeholder="Select Main Category"
                   style={{ width: 200 }}
@@ -210,7 +210,7 @@ const Sizes = () => {
                   onChange={(value) => fetchSizes(value)}
                   options={subCategories.map(cat => ({ label: cat.name, value: cat._id }))}
                 />
-              </div>
+              </div> */}
             </div>
             <button
               onClick={() => {

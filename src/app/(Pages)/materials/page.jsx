@@ -162,7 +162,7 @@ const Materials = () => {
                     <tr key={item._id} className="text-gray-800 text-sm border-b">
                       <td className="p-4 text-[13px]">{item.name}</td>
                       <td className="p-4">
-                        <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                        <span className="px-2 py-1 rounded-[20px] w-20 text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                           {item.status || 'Active'}
                         </span>
                       </td>

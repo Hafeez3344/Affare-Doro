@@ -7,8 +7,6 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 
-
-
 const Manage = ({ searchQuery }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -171,8 +169,6 @@ const Manage = ({ searchQuery }) => {
                   </button> */}
                 </div>
 
-              
-
                 <div className="mt-2">
                   <p className="text-[12px] text-gray-500">
                     Category:{" "}
@@ -189,10 +185,24 @@ const Manage = ({ searchQuery }) => {
                     Color: {category?.colorId?.[0]?.name || "None"}
                   </p> */}
                   <p className="text-[12px] font-semibold text-teal-600 mt-1">
-                    $ {category.price || "N/A"}
+                    <Image
+                      alt=""
+                      src="/dirham-sign.svg"
+                      width={15}
+                      height={15}
+                      className="inline-block mr-1 "
+                    />{" "}
+                    {category.price || "N/A"}
                   </p>
                   <p className="text-[12px] font-semibold text-teal-600 mt-1">
-                    $ {category.inclPrice || "N/A"}{" "}
+                    <Image
+                      alt=""
+                      src="/dirham-sign.svg"
+                      width={15}
+                      height={15}
+                      className="inline-block mr-1 "
+                    />{" "}
+                    {category.inclPrice || "N/A"}{" "}
                     <span className="text-xs text-gray-400">incl.</span>
                   </p>
                 </div>
