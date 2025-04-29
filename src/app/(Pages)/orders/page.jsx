@@ -1,28 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { Modal } from "antd";
 import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
-import { updatePageNavigation } from "@/features/features";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
-import SearchOnTop from "@/components/SearchOnTop";
-import { BiSolidEditAlt } from "react-icons/bi";
-import tableAction from "@/assets/svgs/table-action.svg";
-import { IoEye } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import SearchOnTop from "@/components/SearchOnTop";
 import BACKEND_URL, { getAllOrders } from "@/api/api";
-import { Modal } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { updatePageNavigation } from "@/features/features";
 
 const Orders = () => {
-  const dispatch = useDispatch();
   const router = useRouter();
-  const auth = useSelector((state) => state.auth);
-  const [selectedCustomer, setSelectedCustomer] = useState(0);
-  const [selectedTab, setSelectedTab] = useState("all");
+  const dispatch = useDispatch();
+  const [error, setError] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const auth = useSelector((state) => state.auth);
+  const [selectedTab, setSelectedTab] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
@@ -162,38 +159,42 @@ const Orders = () => {
                 <p className="text-[var(--text-color-body)]">No orders found</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 {filteredOrders?.map((order, index) => (
                   <div
                     key={order?._id}
-                    className="flex flex-col p-6 border rounded-lg shadow-md bg-white h-[600px]"
+                    className="flex flex-col p-1 border rounded-lg shadow-md bg-white h-[360px]"
                   >
                     {/* Top - Image */}
-                    <div className="w-full h-80 rounded-lg bg-gray-200 overflow-hidden mb-4">
+                    <div className="relative h-[200px] w-full group">
                       {order.productId && order.productId.length > 0 ? (
                         <Image
-                          src={`${BACKEND_URL}/${order.productId[0].image?.[0]}`}
+                          src={`${BACKEND_URL}/${order.productId[0].image}`}
                           alt={order.productId[0].name || "Product"}
                           width={400}
                           height={256}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (
                         <span className="text-gray-500">No Image</span>
                       )}
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <button
+                          onClick={() => showOrderDetails(order)}
+                          className="bg-white text-gray-800 px-3 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors"
+                        >
+                          View Details
+                        </button>
+                      </div>
                     </div>
 
                     {/* Bottom - Order Details */}
-                    <div className="flex-1 flex flex-col">
+                    <div className="flex-1 flex flex-col mt-4 p-2">
                       <div className="flex-1">
                         <div className="space-y-3">
                           <p className="text-gray-600">
-                            <span className="font-medium">Customer:</span>{" "}
-                            {order.fullName || "N/A"}
-                          </p>
-                          <p className="text-gray-600">
-                            <span className="font-medium">Email:</span>{" "}
-                            {order.email || "N/A"}
+                            <span className="text-[15px] font-[700] text-nowrap">Customer:</span>{" "}
+                            <span className="text-[13px] font-[500]">{order.fullName || "N/A"}</span>
                           </p>
 
                           <div className="flex items-center gap-2 mt-2">
@@ -202,7 +203,7 @@ const Orders = () => {
                               ${order.total || "0.00"}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-2 mt-1">
                             <span
                               className={` rounded-lg px-3 py-1 text-sm font-semibold ${getStatusBadgeClass(
                                 order.orderStatus
@@ -212,15 +213,6 @@ const Orders = () => {
                             </span>
                           </div>
                         </div>
-                      </div>
-
-                      <div className="flex gap-3 mt-6">
-                        <button
-                          onClick={() => showOrderDetails(order)}
-                          className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 cursor-pointer shadow-lg"
-                        >
-                          View Details
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -293,19 +285,40 @@ const Orders = () => {
             <div className="border rounded-lg p-4 mb-6">
               <h3 className="text-lg font-medium mb-3">Product Information</h3>
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-md bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-500 text-xs">No Image</span>
+                <div className="w-20 h-20 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
+                  {selectedOrder.productId && selectedOrder.productId.length > 0 && selectedOrder.productId[0].image ? (
+                    <Image
+                      src={`${BACKEND_URL}/${selectedOrder.productId[0].image}`}
+                      alt={selectedOrder.productId[0].name || "Product"}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-500 text-xs">No Image</span>
+                  )}
                 </div>
                 <div>
                   <p className="font-medium">
                     Product ID:{" "}
                     {selectedOrder.productId &&
                     selectedOrder.productId.length > 0
-                      ? selectedOrder.productId[0]
+                      ? selectedOrder.productId[0]._id || "N/A"
                       : "N/A"}
                   </p>
-                  <p className="text-gray-600">
-                    Product details will be fetched separately
+                  <p className="font-medium">
+                    Product Name:{" "}
+                    {selectedOrder.productId &&
+                    selectedOrder.productId.length > 0
+                      ? selectedOrder.productId[0].name || "N/A"
+                      : "N/A"}
+                  </p>
+                  <p className="font-medium">
+                    Product Price:{" "}
+                    {selectedOrder.productId &&
+                    selectedOrder.productId.length > 0
+                      ? `$${selectedOrder.productId[0].price || "0.00"}`
+                      : "N/A"}
                   </p>
                 </div>
               </div>

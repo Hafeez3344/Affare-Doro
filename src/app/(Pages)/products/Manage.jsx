@@ -185,7 +185,7 @@ const Manage = ({ searchQuery }) => {
                 </div>
 
                 <div className="flex items-center gap-1 mt-1">
-                  {getStarRating(4.5)}
+                  {getStarRating(0)}
                 </div>
 
                 <div className="mt-1">
