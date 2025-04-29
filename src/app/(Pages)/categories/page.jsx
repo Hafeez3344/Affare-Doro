@@ -400,7 +400,17 @@ const Categories = () => {
                 {paginatedCategories.length > 0 ? (
                   paginatedCategories.map((item) => (
                     <tr key={item._id} className="text-gray-800 text-sm border-b">
-                      <td className="p-4 text-[13px]">{item.name}</td>
+                      {/* <td className="p-4 text-[13px]">{item.name}</td> */}
+                      <td className="p-4 text-[13px] flex items-center gap-2">
+                        {item.image && (
+                          <img
+                            src={`${BACKEND_URL}/${item.image}`}
+                            alt={item.name}
+                            className="w-8 h-8 object-cover rounded-full"
+                          />
+                        )}
+                        {item.name}
+                      </td>
                       <td className="p-4 text-[13px]">{item.subCategoryCount}</td>
                       <td className="p-4">
                         <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">

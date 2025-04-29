@@ -7,20 +7,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 
-// Function to generate star ratings
-const getStarRating = (rating) => {
-  const fullStars = Math.floor(rating);
-  const halfStar = rating % 1 !== 0;
-  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
-  return (
-    <span className="text-yellow-500 text-lg">
-      {"★".repeat(fullStars)}
-      {halfStar && "☆"}
-      {"☆".repeat(emptyStars)}
-    </span>
-  );
-};
 
 const Manage = ({ searchQuery }) => {
   const router = useRouter();
@@ -141,7 +128,7 @@ const Manage = ({ searchQuery }) => {
           {paginatedCategories.map((category) => (
             <div
               key={category._id}
-              className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[360px]"
+              className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[335px]"
             >
               <div className="relative h-[200px] w-full group">
                 <Image
@@ -161,7 +148,7 @@ const Manage = ({ searchQuery }) => {
                 </div>
               </div>
 
-              <div className="mt-2 px-3">
+              <div className="mt-3 px-3">
                 <div className="flex justify-between items-center">
                   <button
                     onClick={() => handleModalOpen(category)}
@@ -184,11 +171,9 @@ const Manage = ({ searchQuery }) => {
                   </button> */}
                 </div>
 
-                <div className="flex items-center gap-1 mt-1">
-                  {getStarRating(0)}
-                </div>
+              
 
-                <div className="mt-1">
+                <div className="mt-2">
                   <p className="text-[12px] text-gray-500">
                     Category:{" "}
                     {category.categoryId?.[category.categoryId.length - 1]
@@ -203,10 +188,10 @@ const Manage = ({ searchQuery }) => {
                   <p className="text-[12px] text-gray-500">
                     Color: {category?.colorId?.[0]?.name || "None"}
                   </p> */}
-                  <p className="text-[12px] font-semibold text-teal-600">
+                  <p className="text-[12px] font-semibold text-teal-600 mt-1">
                     $ {category.price || "N/A"}
                   </p>
-                  <p className="text-[12px] font-semibold text-teal-600">
+                  <p className="text-[12px] font-semibold text-teal-600 mt-1">
                     $ {category.inclPrice || "N/A"}{" "}
                     <span className="text-xs text-gray-400">incl.</span>
                   </p>

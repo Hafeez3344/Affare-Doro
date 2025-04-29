@@ -216,7 +216,8 @@ const Materials = () => {
               setIsEditMode(false);
               form.resetFields();
             }}
-            closeIcon={<span className="text-gray-500 hover:text-gray-700 text-3xl font-bold w-10 h-10 flex items-center justify-center">×</span>}
+            closeIcon={<span className="ant-modal-close-x ">×</span>}
+
           >
             <Form
               form={form}

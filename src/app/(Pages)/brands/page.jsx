@@ -4,12 +4,20 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
-import { Form, Input, Upload, Button, notification, Modal, Pagination } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import {
+  Form,
+  Input,
+  Upload,
+  Button,
+  notification,
+  Modal,
+  Pagination,
+} from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { createBrand, getBrands, updateBrand, deleteBrand } from "@/api/api";
-import moment from 'moment-timezone';
+import moment from "moment-timezone";
 import { useRouter } from "next/navigation";
-import BACKEND_URL from '@/api/api';
+import BACKEND_URL from "@/api/api";
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -17,7 +25,7 @@ import Sidebar from "@/components/sidebar";
 import tableAction from "@/assets/svgs/table-action.svg";
 import { FiEye } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
-import { MdEdit} from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 
 const Brands = () => {
   const dispatch = useDispatch();
@@ -39,20 +47,20 @@ const Brands = () => {
   const fetchBrands = async () => {
     try {
       const response = await getBrands(); // Remove the page parameter if the API doesn't support pagination
-      console.log('API Response:', response); // Debugging line
+      console.log("API Response:", response); // Debugging line
 
       if (response?.status && Array.isArray(response?.data)) {
         setBrands(response.data); // Assuming response.data is the array of brands
       } else {
-        throw new Error(response?.message || 'Unexpected API response');
+        throw new Error(response?.message || "Unexpected API response");
       }
     } catch (error) {
-      console.error('Error fetching brands:', error);
+      console.error("Error fetching brands:", error);
       notification.error({
-        message: 'Failed to fetch brands',
-        description: error.message || 'An unexpected error occurred',
-        placement: 'topRight',
-        style: { marginTop: '50px' },
+        message: "Failed to fetch brands",
+        description: error.message || "An unexpected error occurred",
+        placement: "topRight",
+        style: { marginTop: "50px" },
       });
     }
   };
@@ -88,8 +96,8 @@ const Brands = () => {
       if (response.status) {
         notification.success({
           message: "Brand deleted successfully",
-          placement: 'topRight',
-          style: { marginTop: '50px' }
+          placement: "topRight",
+          style: { marginTop: "50px" },
         });
         fetchBrands();
       } else {
@@ -97,9 +105,9 @@ const Brands = () => {
       }
     } catch (error) {
       notification.error({
-        message: error.message || 'Failed to delete brand',
-        placement: 'topRight',
-        style: { marginTop: '50px' }
+        message: error.message || "Failed to delete brand",
+        placement: "topRight",
+        style: { marginTop: "50px" },
       });
     }
   };
@@ -110,14 +118,14 @@ const Brands = () => {
       const formData = new FormData();
 
       // Add each field to FormData
-      Object.keys(values).forEach(key => {
-        if (key !== 'image') {
+      Object.keys(values).forEach((key) => {
+        if (key !== "image") {
           formData.append(key, values[key]);
         }
       });
 
       if (imageFile) {
-        formData.append('image', imageFile);
+        formData.append("image", imageFile);
       }
 
       let response;
@@ -129,9 +137,11 @@ const Brands = () => {
 
       if (response.status) {
         notification.success({
-          message: isEditMode ? "Brand updated successfully" : "Brand created successfully",
-          placement: 'topRight',
-          style: { marginTop: '50px' }
+          message: isEditMode
+            ? "Brand updated successfully"
+            : "Brand created successfully",
+          placement: "topRight",
+          style: { marginTop: "50px" },
         });
         fetchBrands();
         setShowModal(false);
@@ -140,13 +150,13 @@ const Brands = () => {
         setSelectedItem(null);
         setImageFile(null);
       } else {
-        throw new Error(response.message || 'Brand operation failed');
+        throw new Error(response.message || "Brand operation failed");
       }
     } catch (error) {
       notification.error({
-        message: error.message || 'Brand operation failed',
-        placement: 'topRight',
-        style: { marginTop: '50px' }
+        message: error.message || "Brand operation failed",
+        placement: "topRight",
+        style: { marginTop: "50px" },
       });
     } finally {
       setLoading(false);
@@ -185,10 +195,13 @@ const Brands = () => {
         <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           <div className="flex justify-between items-center mb-6">
-          <h1 className="text-[25px] font-[500] text-gray-800">Brands</h1>
+            <h1 className="text-[25px] font-[500] text-gray-800">Brands</h1>
             <button
               onClick={() => setShowModal(true)}
-              style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)' }}
+              style={{
+                backgroundColor: "rgba(232, 187, 76, 0.08)",
+                color: "rgb(232, 187, 76)",
+              }}
               className="flex items-center gap-2 px-2 py-1 rounded-md transition-colors focus:outline-none"
             >
               <IoMdAdd className="text-xl" />
@@ -199,7 +212,10 @@ const Brands = () => {
           <div className="p-[30px] bg-white rounded-[8px] shadow-sm overflow-x-auto w-full">
             <table className="min-w-full border">
               <thead>
-                <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
+                <tr
+                  style={{ backgroundColor: "rgba(232, 187, 76, 0.08)" }}
+                  className="text-left text-[14px] text-gray-700"
+                >
                   <th className="p-4 font-[500] text-nowrap">Brand Name</th>
                   <th className="p-4 font-[500]">Status</th>
                   <th className="p-4 font-[500]">Created Date</th>
@@ -209,7 +225,10 @@ const Brands = () => {
               <tbody>
                 {paginatedBrands.length > 0 ? (
                   paginatedBrands.map((item) => (
-                    <tr key={item._id} className="text-gray-800 text-sm border-b">
+                    <tr
+                      key={item._id}
+                      className="text-gray-800 text-sm border-b"
+                    >
                       <td className="p-4 text-[13px] flex items-center gap-2">
                         {item.image && (
                           <img
@@ -222,11 +241,13 @@ const Brands = () => {
                       </td>
                       <td className="p-4">
                         <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000] w-[80px]">
-                          {item.status || 'Active'}
+                          {item.status || "Active"}
                         </span>
                       </td>
                       <td className="p-4 text-[13px] text-[#000000B2] whitespace-nowrap">
-                        {moment.utc(item?.createdAt).format('DD MMM YYYY, hh:mm A')}
+                        {moment
+                          .utc(item?.createdAt)
+                          .format("DD MMM YYYY, hh:mm A")}
                       </td>
                       <td className="p-4 flex space-x-2">
                         <button
@@ -243,13 +264,14 @@ const Brands = () => {
                         >
                           <MdEdit />
                         </button>
-                       
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="text-center p-4 text-gray-500">No brands found</td>
+                    <td colSpan="5" className="text-center p-4 text-gray-500">
+                      No brands found
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -277,17 +299,13 @@ const Brands = () => {
               form.resetFields();
               setImageFile(null);
             }}
-            closeIcon={<span className="text-gray-500 hover:text-gray-700 text-3xl font-bold w-10 h-10 flex items-center justify-center">×</span>}
+            closeIcon={<span className="ant-modal-close-x ">×</span>}
           >
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSubmit}
-            >
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
               <Form.Item
                 name="name"
                 label="Brand Name"
-                rules={[{ required: true, message: 'Please enter brand name' }]}
+                rules={[{ required: true, message: "Please enter brand name" }]}
               >
                 <Input
                   placeholder="Enter brand name"
@@ -320,7 +338,11 @@ const Brands = () => {
               <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
                 <Button
                   onClick={() => setShowModal(false)}
-                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
+                  style={{
+                    backgroundColor: "rgba(232, 187, 76, 0.08)",
+                    color: "rgb(232, 187, 76)",
+                    borderColor: "rgb(232, 187, 76)",
+                  }}
                   className="transition-colors"
                 >
                   Cancel
@@ -329,7 +351,11 @@ const Brands = () => {
                   type="primary"
                   htmlType="submit"
                   loading={loading}
-                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
+                  style={{
+                    backgroundColor: "rgba(232, 187, 76, 0.08)",
+                    color: "rgb(232, 187, 76)",
+                    borderColor: "rgb(232, 187, 76)",
+                  }}
                   className="transition-colors"
                 >
                   {submitButtonText}
@@ -355,19 +381,25 @@ const Brands = () => {
                 {/* Left side details */}
                 <div className="flex flex-col gap-4 flex-1">
                   <div className="flex items-center gap-4">
-                    <p className="text-[15px] font-[600] w-[150px]">Brand Name:</p>
+                    <p className="text-[15px] font-[600] w-[150px]">
+                      Brand Name:
+                    </p>
                     <p className="text-[14px]">{selectedItem.name}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <p className="text-[15px] font-[600] w-[150px]">Status:</p>
                     <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                      {selectedItem.status || 'Active'}
+                      {selectedItem.status || "Active"}
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <p className="text-[15px] font-[600] w-[150px]">Created Date:</p>
+                    <p className="text-[15px] font-[600] w-[150px]">
+                      Created Date:
+                    </p>
                     <p className="text-[14px]">
-                      {moment.utc(selectedItem?.createdAt).format('DD MMM YYYY, hh:mm A')}
+                      {moment
+                        .utc(selectedItem?.createdAt)
+                        .format("DD MMM YYYY, hh:mm A")}
                     </p>
                   </div>
                 </div>
