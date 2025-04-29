@@ -1,6 +1,5 @@
 import React from "react";
 
-import grazleLogo from "@/assets/grazle-logo.png";
 import profile from "../assets/profile.jpeg";
 
 import { IoIosNotificationsOutline } from "react-icons/io";
