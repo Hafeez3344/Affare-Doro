@@ -767,6 +767,61 @@ export const deletePackage = async (id) => {
     }
 };
 
+// ---------------------------- Create Bump API -------------------------------
+export const createBump = async (data) => {
+    try {
+      const response = await api.post('/bump/create', data, getAuthHeader());
+      return {
+        status: true,
+        message: "Bump created successfully",
+        data: response.data,
+      };
+    } catch (error) {
+      console.error('API Error:', error);
+      return {
+        status: false,
+        message: error?.response?.data?.message || "An unexpected error occurred"
+      };
+    }
+  };
+
+// ---------------------------- Get Bump Products API -------------------------------
+export const getBumps = async () => {
+  try {
+    const response = await api.get('/bump/viewAll');
+    return {
+      status: true,
+      message: "Bump products fetched successfully",
+      data: response.data.data,
+    };
+  } catch (error) {
+    console.error('API Error:', error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred"
+    };
+  }
+};
+
+
+// ---------------------------- Delete Bump API -------------------------------
+export const deleteBump = async (id) => {
+  try {
+    const response = await api.delete(`/bump/delete/${id}`, getAuthHeader());
+    return {
+      status: true,
+      message: "Bump deleted successfully",
+      data: response.data,
+    };
+  } catch (error) {
+    console.error('API Error:', error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred"
+    };
+  }
+};
+
 
 
 

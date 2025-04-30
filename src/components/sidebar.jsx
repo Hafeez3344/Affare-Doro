@@ -10,7 +10,7 @@ import {
   RiStore2Line,
 } from "react-icons/ri";
 import { IoBagRemoveOutline } from "react-icons/io5";
-import { FiSettings } from "react-icons/fi";
+import { FiSettings, FiShoppingBag } from "react-icons/fi";
 import {
   HiOutlineExclamationCircle,
   HiOutlineQuestionMarkCircle,
@@ -125,6 +125,12 @@ const Sidebar = ({ showModal }) => {
           icon={<Package className="w-[20px] h-[20px]" />}
           label={"Package Size"}
           navigateTo={"packages"}
+          navigate={navigate}
+        />
+          <SidebarPageTemplate
+          icon={<FiShoppingBag  className="w-[20px] h-[20px]" />}
+          label={"Bump Products"}
+          navigateTo={"bump"}
           navigate={navigate}
         />
         <SidebarPageTemplate
