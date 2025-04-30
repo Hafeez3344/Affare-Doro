@@ -14,6 +14,8 @@ import { IoMdAdd } from "react-icons/io";
 import moment from 'moment-timezone';
 import { useRouter } from "next/navigation";
 import BACKEND_URL from "@/api/api";
+import { ChevronUp, ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Sizes = () => {
   const dispatch = useDispatch();
@@ -30,6 +32,9 @@ const Sizes = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [categoryPath, setCategoryPath] = useState([]);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [currentParentId, setCurrentParentId] = useState(null);
   const itemsPerPage = 10;
 
   const paginatedSizes = sizes.slice(
@@ -103,14 +108,66 @@ const Sizes = () => {
     }
   };
 
-  const handleEdit = (item) => {
-    setSelectedItem(item);
-    setIsEditMode(true);
-    setShowModal(true);
-    form.setFieldsValue({
-      name: item.name,
-      categoryId: item.categoryId
-    });
+  const handleModalClose = () => {
+    setShowModal(false);
+    setIsEditMode(false);
+    setSelectedItem(null);
+    setCategoryPath([]);
+    setSubCategories([]);
+    setIsCategoryDropdownOpen(false);
+    setCurrentParentId(null);
+    form.resetFields();
+  };
+
+  const handleAddNew = () => {
+    handleModalClose(); // Reset everything first
+    setTimeout(() => {
+      setShowModal(true);
+      setIsEditMode(false);
+    }, 0);
+  };
+
+  const handleEdit = async (item) => {
+    try {
+      handleModalClose(); // Reset everything first
+      setTimeout(async () => {
+        setSelectedItem(item);
+        setIsEditMode(true);
+        setShowModal(true);
+        
+        // Fetch all categories
+        const response = await fetch(`${BACKEND_URL}/category/viewAll`);
+        const data = await response.json();
+        
+        if (data.status === "ok") {
+          const allCategories = data.data;
+          const path = [];
+          let currentCategory = allCategories.find(cat => cat._id === item.categoryId);
+          
+          while (currentCategory) {
+            path.unshift(currentCategory);
+            if (currentCategory.parentId) {
+              currentCategory = allCategories.find(cat => cat._id === currentCategory.parentId);
+            } else {
+              break;
+            }
+          }
+          
+          setCategoryPath(path);
+          form.setFieldsValue({
+            name: item.name,
+            category: path[path.length - 1]?.name
+          });
+        }
+      }, 0);
+    } catch (error) {
+      console.error('Error in handleEdit:', error);
+      notification.error({
+        message: 'Failed to load category information',
+        placement: 'topRight',
+        style: { marginTop: '50px' }
+      });
+    }
   };
 
   const handleDelete = async (id) => {
@@ -137,9 +194,18 @@ const Sizes = () => {
     try {
       setLoading(true);
       console.log("Submitting size with values:", values);
+      
+      // Get the selected category ID from the category path
+      const selectedCategoryId = categoryPath[categoryPath.length - 1]?._id;
+      
+      const sizeData = {
+        ...values,
+        categoryId: selectedCategoryId
+      };
+
       const response = isEditMode
-        ? await updateSize(selectedItem._id, values)
-        : await createSize(values);
+        ? await updateSize(selectedItem._id, sizeData)
+        : await createSize(sizeData);
 
       console.log("Size creation/update response:", response);
       
@@ -150,20 +216,8 @@ const Sizes = () => {
           style: { marginTop: '50px' }
         });
         
-        // If a category is selected, fetch sizes for that category
-        // Otherwise, fetch all sizes
-        if (selectedCategory) {
-          console.log("Fetching sizes for selected category:", selectedCategory);
-          fetchSizes(selectedCategory);
-        } else {
-          console.log("No category selected, fetching all sizes");
-          fetchSizes();
-        }
-        
-        setShowModal(false);
-        form.resetFields();
-        setIsEditMode(false);
-        setSelectedItem(null);
+        fetchSizes();
+        handleModalClose();
       }
     } catch (error) {
       notification.error({
@@ -183,6 +237,107 @@ const Sizes = () => {
     }
   }, [selectedCategory]);
 
+  // Update the form when editing
+  useEffect(() => {
+    if (isEditMode && selectedItem) {
+      const findCategoryPath = async () => {
+        try {
+          const response = await fetch(`${BACKEND_URL}/category/viewAll`);
+          const data = await response.json();
+          
+          if (data.status === "ok") {
+            const allCategories = data.data;
+            const path = [];
+            let currentCategory = allCategories.find(cat => cat._id === selectedItem.categoryId);
+            
+            while (currentCategory) {
+              path.unshift(currentCategory);
+              if (currentCategory.parentId) {
+                currentCategory = allCategories.find(cat => cat._id === currentCategory.parentId);
+              } else {
+                break;
+              }
+            }
+            
+            setCategoryPath(path);
+            form.setFieldsValue({
+              name: selectedItem.name,
+              category: path[path.length - 1]?.name
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching categories:', error);
+          notification.error({
+            message: 'Failed to load category information',
+            placement: 'topRight',
+            style: { marginTop: '50px' }
+          });
+        }
+      };
+      
+      findCategoryPath();
+    }
+  }, [isEditMode, selectedItem, form]);
+
+  // Add logic to fetch and display subcategories when a main category is selected in the modal
+  const handleCategoryChange = async (value) => {
+    form.setFieldsValue({ subCategoryId: null }); // Reset subcategory field
+    try {
+      const response = await fetch(`${BACKEND_URL}/category/viewAll?parentCategoryId=${value}`);
+      const data = await response.json();
+
+      if (data.status === "ok") {
+        setSubCategories(data.data);
+      } else {
+        setSubCategories([]);
+        notification.error({
+          message: "Failed to fetch subcategories",
+          placement: 'topRight',
+          style: { marginTop: '50px' }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+      setSubCategories([]);
+      notification.error({
+        message: 'Failed to fetch subcategories',
+        placement: 'topRight',
+        style: { marginTop: '50px' }
+      });
+    }
+  };
+
+  const handleCategorySelect = (category) => {
+    if (category.subCategoryCount > 0) {
+      fetchSubCategories(category._id);
+      setCurrentParentId(category._id);
+      setCategoryPath([...categoryPath, category]);
+    } else {
+      setCategoryPath([...categoryPath, category]);
+      setIsCategoryDropdownOpen(false);
+      form.setFieldsValue({ 
+        categoryId: category._id,
+        category: category.name 
+      });
+    }
+  };
+
+  const handleGoBack = () => {
+    if (categoryPath.length > 0) {
+      const newPath = [...categoryPath];
+      newPath.pop();
+      setCategoryPath(newPath);
+
+      if (newPath.length === 0) {
+        setCurrentParentId(null);
+        setSubCategories([]);
+      } else {
+        const parentId = newPath[newPath.length - 1]._id;
+        fetchSubCategories(parentId);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
@@ -193,31 +348,9 @@ const Sizes = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold text-gray-800">Sizes</h1>
-              {/* <div className="flex gap-4">
-                <Select
-                  placeholder="Select Main Category"
-                  style={{ width: 200 }}
-                  onChange={(value) => {
-                    setSelectedCategory(value);
-                    setSubCategories([]); // Clear subcategories when main category changes
-                  }}
-                  options={categories.map(cat => ({ label: cat.name, value: cat._id }))}
-                />
-                <Select
-                  placeholder="Select Sub Category"
-                  style={{ width: 200 }}
-                  disabled={!selectedCategory}
-                  onChange={(value) => fetchSizes(value)}
-                  options={subCategories.map(cat => ({ label: cat.name, value: cat._id }))}
-                />
-              </div> */}
             </div>
             <button
-              onClick={() => {
-                setShowModal(true);
-                setIsEditMode(false);
-                form.resetFields();
-              }}
+              onClick={handleAddNew}
               style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)' }}
               className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors focus:outline-none"
             >
@@ -239,42 +372,38 @@ const Sizes = () => {
                 </tr>
               </thead>
               <tbody>
-                {paginatedSizes.length > 0 ? (
-                  paginatedSizes.map((item) => (
-                    <tr key={item._id} className="text-gray-800 text-sm border-b">
-                      <td className="p-4 text-[13px]">{item.name}</td>
-                      <td className="p-4 text-[13px]">{categories.find(cat => cat._id === item.categoryId)?.name}</td>
-                      <td className="p-4">
-                        <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                          {item.status || 'Active'}
-                        </span>
-                      </td>
-                      <td className="p-4 text-[13px] text-[#000000B2] whitespace-nowrap">
-                        {moment.utc(item?.createdAt).format('DD MMM YYYY, hh:mm A')}
-                      </td>
-                      <td className="p-4 flex space-x-2">
-                        <button
-                          className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
-                          title="Edit"
-                          onClick={() => handleEdit(item)}
-                        >
-                          <MdEdit />
-                        </button>
-                        <button
-                          className="bg-red-100 text-red-600 rounded-full px-2 py-2"
-                          title="Delete"
-                          onClick={() => handleDelete(item._id)}
-                        >
-                          <MdDelete />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="text-center p-4">No sizes found</td>
+                {paginatedSizes.map((item) => (
+                  <tr key={item._id} className="text-gray-800 text-sm border-b">
+                    <td className="p-4 text-[13px]">{item.name}</td>
+                    <td className="p-4 text-[13px]">
+                      {item.categoryId?.name || 'Unknown Category'}
+                    </td>
+                    <td className="p-4">
+                      <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                        {item.status || 'Active'}
+                      </span>
+                    </td>
+                    <td className="p-4 text-[13px] text-[#000000B2] whitespace-nowrap">
+                      {moment.utc(item?.createdAt).format('DD MMM YYYY, hh:mm A')}
+                    </td>
+                    <td className="p-4 flex space-x-2">
+                      <button
+                        className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
+                        title="Edit"
+                        onClick={() => handleEdit(item)}
+                      >
+                        <MdEdit />
+                      </button>
+                      <button
+                        className="bg-red-100 text-red-600 rounded-full px-2 py-2"
+                        title="Delete"
+                        onClick={() => handleDelete(item._id)}
+                      >
+                        <MdDelete />
+                      </button>
+                    </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
             <div className="flex justify-end mt-4">
@@ -294,29 +423,65 @@ const Sizes = () => {
             width={600}
             title={<p className="text-[20px] font-[700]">{isEditMode ? 'Edit Size' : 'Add New Size'}</p>}
             open={showModal}
-            onCancel={() => {
-              setShowModal(false);
-              setIsEditMode(false);
-              form.resetFields();
-            }}
-            closeIcon={<span className="ant-modal-close-x ">×</span>}
-
+            onCancel={handleModalClose}
+            closeIcon={<span className="ant-modal-close-x">×</span>}
+            destroyOnClose={true}
           >
             <Form
               form={form}
               layout="vertical"
               onFinish={handleSubmit}
+              key={isEditMode ? 'edit' : 'add'}
             >
               <Form.Item
-                name="categoryId"
-                label="Sub Category"
-                rules={[{ required: true, message: 'Please select sub category' }]}
+                name="category"
+                label="Product Category"
+                rules={[{ required: true, message: 'Please select a category' }]}
               >
-                <Select
-                  options={subCategories.map(cat => ({ label: cat.name, value: cat._id }))}
-                  placeholder="Select sub category"
-                  className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-                />
+                <div
+                  className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                  onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                >
+                  <span>
+                    {categoryPath.length
+                      ? categoryPath.map((c) => c.name).join(" / ")
+                      : "Select Category"}
+                  </span>
+                  {isCategoryDropdownOpen ? (
+                    <ChevronUp className="absolute right-2" />
+                  ) : (
+                    <ChevronDown className="absolute right-2" />
+                  )}
+                </div>
+                <AnimatePresence>
+                  {isCategoryDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
+                    >
+                      {categoryPath.length > 0 && (
+                        <div
+                          className="cursor-pointer p-2 hover:bg-gray-100"
+                          onClick={handleGoBack}
+                        >
+                          <ArrowLeft /> Back
+                        </div>
+                      )}
+                      {(currentParentId ? subCategories : categories).map((category) => (
+                        <div
+                          key={category._id}
+                          className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
+                          onClick={() => handleCategorySelect(category)}
+                        >
+                          <span>{category.name}</span>
+                          {category.subCategoryCount > 0 && <ArrowRight />}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Form.Item>
 
               <Form.Item
@@ -332,7 +497,7 @@ const Sizes = () => {
 
               <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
                 <Button
-                  onClick={() => setShowModal(false)}
+                  onClick={handleModalClose}
                   style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
                   className="transition-colors"
                 >

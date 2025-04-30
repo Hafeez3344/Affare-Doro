@@ -148,7 +148,7 @@ const Dashboard = () => {
                 <Image alt="" src={ordersIcon} />
               </div>
               <div>
-                <p className="text-[32px] font-[600] text-black">00</p>
+                <p className="text-[27px] font-[500] text-black">00</p>
               </div>
             </div>
             <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
@@ -160,7 +160,7 @@ const Dashboard = () => {
               </div>
 
               <div>
-                <p className="text-[32px] font-[600] text-black">00</p>
+                <p className="text-[27px] font-[500] text-black">00</p>
               </div>
             </div>
 
@@ -172,13 +172,13 @@ const Dashboard = () => {
                 <Image alt="" src={revenueIcon} />
               </div>
               <div>
-                <p className="text-[32px] font-[600] text-black">
+                <p className="text-[27px] font-[500] text-black">
                   <Image
                     alt=""
                     src="/dirham-sign.svg"
                     width={28}
                     height={28}
-                    className="inline-block mr-1 mb-2"
+                    className="inline-block mr-1.5 mb-2"
                   />
                   00.00
                 </p>
@@ -192,7 +192,7 @@ const Dashboard = () => {
                 <Image alt="" src={returnIcon} />
               </div>
               <div>
-                <p className="text-[32px] font-[600] text-black">00</p>
+                <p className="text-[27px] font-[500] text-black">00</p>
               </div>
             </div>
           </div>
@@ -217,7 +217,7 @@ const Dashboard = () => {
                 <Bar data={data} options={options}></Bar>
               </div>
             </div>
-            {/* products */}
+            {/* Recent products */}
             <div className="xl:w-[45%] bg-white shadow-sm rounded-[10px] px-[20px] py-[25px] flex flex-col gap-5">
               <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
                 <p className="text-[20px] font-[600]">Recent Products</p>
@@ -243,7 +243,7 @@ const Dashboard = () => {
                           ? `${BACKEND_URL}/${product.image[0]}`
                           : productOne
                       }
-                      className="w-[67px] h-[67px] object-cover"
+                      className="w-[67px] h-[67px] object-cover rounded-[8px]"
                       width={67}
                       height={67}
                     />

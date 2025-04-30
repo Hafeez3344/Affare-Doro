@@ -126,7 +126,7 @@ const Manage = ({ searchQuery }) => {
           {paginatedCategories.map((category) => (
             <div
               key={category._id}
-              className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[335px]"
+              className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[320px]"
             >
               <div className="relative h-[200px] w-full group">
                 <Image
@@ -169,7 +169,7 @@ const Manage = ({ searchQuery }) => {
                   </button> */}
                 </div>
 
-                <div className="mt-2">
+                <div className="mt-3">
                   <p className="text-[12px] text-gray-500">
                     Category:{" "}
                     {category.categoryId?.[category.categoryId.length - 1]
@@ -184,7 +184,7 @@ const Manage = ({ searchQuery }) => {
                   <p className="text-[12px] text-gray-500">
                     Color: {category?.colorId?.[0]?.name || "None"}
                   </p> */}
-                  <p className="text-[12px] font-semibold text-teal-600 mt-1">
+                  {/* <p className="text-[12px] font-semibold text-teal-600 mt-1">
                     <Image
                       alt=""
                       src="/dirham-sign.svg"
@@ -193,8 +193,8 @@ const Manage = ({ searchQuery }) => {
                       className="inline-block mr-1 "
                     />{" "}
                     {category.price || "N/A"}
-                  </p>
-                  <p className="text-[12px] font-semibold text-teal-600 mt-1">
+                  </p> */}
+                  <p className="text-[12px] font-semibold text-teal-600 mt-3">
                     <Image
                       alt=""
                       src="/dirham-sign.svg"
