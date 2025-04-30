@@ -9,6 +9,8 @@ import SearchOnTop from "@/components/SearchOnTop";
 import BACKEND_URL, { getAllOrders } from "@/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
+import { FiEye } from "react-icons/fi";
+import { Pagination } from "antd";
 
 const Orders = () => {
   const router = useRouter();
@@ -21,6 +23,8 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     if (!auth) {
@@ -72,6 +76,12 @@ const Orders = () => {
     if (selectedTab === "all") return true;
     return order.orderStatus?.toLowerCase() === selectedTab.toLowerCase();
   });
+
+  // Calculate paginated orders
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   // Get status badge color based on order status
   const getStatusBadgeClass = (status) => {
@@ -159,75 +169,79 @@ const Orders = () => {
                 <p className="text-[var(--text-color-body)]">No orders found</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {filteredOrders?.map((order, index) => (
-                  <div
-                    key={order?._id}
-                    className="flex flex-col p-1 border rounded-lg shadow-md bg-white h-[360px]"
-                  >
-                    {/* Top - Image */}
-                    <div className="relative h-[200px] w-full group">
-                      {order.productId && order.productId.length > 0 ? (
-                        <Image
-                          src={`${BACKEND_URL}/${order.productId[0].image}`}
-                          alt={order.productId[0].name || "Product"}
-                          width={400}
-                          height={256}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      ) : (
-                        <span className="text-gray-500">No Image</span>
-                      )}
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <button
-                          onClick={() => showOrderDetails(order)}
-                          className="bg-white text-gray-800 px-3 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors"
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Bottom - Order Details */}
-                    <div className="flex-1 flex flex-col mt-4 p-2">
-                      <div className="flex-1">
-                        <div className="space-y-3">
-                          <p className="text-gray-600">
-                            <span className="text-[15px] font-[700] text-nowrap">
-                              Customer:
-                            </span>{" "}
-                            <span className="text-[13px] font-[500]">
-                              {order.fullName || "N/A"}
-                            </span>
-                          </p>
-
-                          <div className="flex items-center gap-2 mt-2">
-                            <span className="font-medium">Total:</span>
-                            <span className="text-lg font-semibold text-teal-600">
-                              <Image
-                                alt=""
-                                src="/dirham-sign.svg"
-                                width={16}
-                                height={16}
-                                className="inline-block mr-1 mb-1"
+              <div className="p-[3px] bg-white rounded-[8px] shadow-sm overflow-x-auto w-full">
+                <table className="min-w-full border">
+                  <thead>
+                    <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
+                      <th className="p-4 font-[500] text-nowrap">S.No</th>
+                      <th className="p-4 font-[500] text-nowrap">Customer Name</th>
+                      <th className="p-4 font-[500] text-nowrap">Product</th>
+                      <th className="p-4 font-[500]">Total</th>
+                      <th className="p-4 font-[500]">Status</th>
+                      <th className="p-4 font-[500]">Created Date</th>
+                      <th className="p-4 font-[500]">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedOrders?.map((order, index) => (
+                      <tr key={order._id} className="text-gray-800 text-sm border-b">
+                        <td className="p-4 text-[13px]">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                        <td className="p-4 text-[13px]">{order.fullName || "N/A"}</td>
+                        <td className="p-4 text-[13px] flex items-center gap-2">
+                          {order.productId && order.productId.length > 0 ? (
+                            <>
+                              <img
+                                src={`${BACKEND_URL}/${order.productId[0].image}`}
+                                alt={order.productId[0].name || "Product"}
+                                className="w-8 h-8 object-cover rounded-full"
                               />
-                              {order.total || "0.00"}
-                            </span>
+                              <span>{order.productId[0].name || "N/A"}</span>
+                            </>
+                          ) : (
+                            <span className="text-gray-500">No Product</span>
+                          )}
+                        </td>
+                        <td className="p-4 text-[13px]">
+                          <div className="flex items-center">
+                            <Image
+                              alt=""
+                              src="/dirham-sign.svg"
+                              width={16}
+                              height={16}
+                              className="inline-block mr-1 mb-0.5"
+                            />
+                            {order.total || "0.00"}
                           </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span
-                              className={` rounded-lg px-3 py-1 text-sm font-semibold ${getStatusBadgeClass(
-                                order.orderStatus
-                              )}`}
-                            >
-                              {order.orderStatus || "Unknown"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2 py-1 w-[130px] rounded-[20px] text-[11px] flex items-center justify-center ${getStatusBadgeClass(order.orderStatus)}`}>
+                            {order.orderStatus || "Unknown"}
+                          </span>
+                        </td>
+                        <td className="p-4 text-[13px] text-[#000000B2] whitespace-nowrap">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="p-4">
+                          <button
+                            onClick={() => showOrderDetails(order)}
+                            className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
+                            title="View Details"
+                          >
+                            <FiEye />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="flex justify-end mt-4">
+                  <Pagination
+                    current={currentPage}
+                    onChange={(page) => setCurrentPage(page)}
+                    total={filteredOrders.length}
+                    pageSize={itemsPerPage}
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -236,7 +250,7 @@ const Orders = () => {
 
       {/* Order Details Modal */}
       <Modal
-        title={`Order ID #${selectedOrder?._id?.slice(-6) || ""}`}
+        title={` `}
         open={isModalVisible}
         onCancel={handleModalClose}
         footer={null}
