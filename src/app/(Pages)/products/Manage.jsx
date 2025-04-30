@@ -126,7 +126,7 @@ const Manage = ({ searchQuery }) => {
           {paginatedCategories.map((category) => (
             <div
               key={category._id}
-              className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[320px]"
+              className="bg-white shadow-md rounded-xl overflow-hidden py-2 relative w-full max-w-[250px] h-[370px]"
             >
               <div className="relative h-[200px] w-full group">
                 <Image
@@ -169,42 +169,52 @@ const Manage = ({ searchQuery }) => {
                   </button> */}
                 </div>
 
-                <div className="mt-3">
+                <div className="mt-3 mb-3">
                   <p className="text-[12px] text-gray-500">
                     Category:{" "}
                     {category.categoryId?.[category.categoryId.length - 1]
                       ?.name || "N/A"}
                   </p>
-                  {/* <p className="text-[12px] text-gray-500">
-                    Material: {category.materialId?.[0]?.name || "N/A"}
-                  </p>
-                  <p className="text-[12px] text-gray-500">
-                    Size: {category?.sizeId?.name || "None"}
-                  </p>
-                  <p className="text-[12px] text-gray-500">
-                    Color: {category?.colorId?.[0]?.name || "None"}
-                  </p> */}
-                  {/* <p className="text-[12px] font-semibold text-teal-600 mt-1">
-                    <Image
-                      alt=""
-                      src="/dirham-sign.svg"
-                      width={15}
-                      height={15}
-                      className="inline-block mr-1 "
-                    />{" "}
-                    {category.price || "N/A"}
-                  </p> */}
+               
+              
                   <p className="text-[12px] font-semibold text-teal-600 mt-3">
                     <Image
                       alt=""
                       src="/dirham-sign.svg"
-                      width={15}
-                      height={15}
+                      width={16}
+                      height={16}
                       className="inline-block mr-1 "
                     />{" "}
                     {category.inclPrice || "N/A"}{" "}
                     <span className="text-xs text-gray-400">incl.</span>
                   </p>
+                </div>
+
+                {/* Seller Information */}
+                <div
+                  className=" pt-3 border-t cursor-pointer group"
+                  onClick={() => handleSellerClick(category.userId?._id)}
+                >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <Image
+                          src={
+                            seller?.profileImage
+                              ? `${BACKEND_URL}/${seller.profileImage}`
+                              : "/default-profile.png"
+                          }
+                          alt={category.userId?.username || "Seller"}
+                          width={45}
+                          height={70}
+                          className="rounded-full object-cover h-[30px] w-[30px]"
+                        />
+                        <div>
+                          <p className="text-gray-900 text-[14px] font-semibold">
+                            {category.userId?.username || "Seller Name"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>

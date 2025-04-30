@@ -1,7 +1,14 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { Badge, ListChecks, Maximize2, Package, Palette, StoreIcon } from "lucide-react";
+import {
+  Badge,
+  ListChecks,
+  Maximize2,
+  Package,
+  Palette,
+  StoreIcon,
+} from "lucide-react";
 import { RxDashboard } from "react-icons/rx";
 import { LuShoppingBag, LuShoppingBasket } from "react-icons/lu";
 import {
@@ -24,7 +31,7 @@ const Sidebar = ({ showModal }) => {
   const navigate = useRouter();
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.showSidebar);
-  
+
   const fn_sidebarControl = () => {
     dispatch(updateSidebar(!showSidebar));
   };
@@ -32,14 +39,17 @@ const Sidebar = ({ showModal }) => {
   const handleLogout = () => {
     Cookies.remove("token");
     dispatch(updateAuth(false));
-    navigate.push('/login');
+    navigate.push("/login");
   };
 
   return (
     <>
       <div
-        className={`${showSidebar ? "absolute md:relative flex h-[85%] min-h-[550px] md:h-auto" : "absolute md:relative hidden md:flex md:h-auto"
-          } w-[215px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[10px] py-[20px] flex-col gap-0.5 z-[9] ${
+        className={`${
+          showSidebar
+            ? "absolute md:relative flex h-[85%] min-h-[550px] md:h-auto"
+            : "absolute md:relative hidden md:flex md:h-auto"
+        } w-[215px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[10px] py-[20px] flex-col gap-0.5 z-[9] ${
           showModal ? "opacity-50 pointer-events-none" : "opacity-100"
         } relative`}
       >
@@ -86,6 +96,12 @@ const Sidebar = ({ showModal }) => {
           navigate={navigate}
         /> */}
         <SidebarPageTemplate
+          icon={<FiShoppingBag className="w-[20px] h-[20px]" />}
+          label={"Bump Products"}
+          navigateTo={"bump"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
           icon={<LuShoppingBasket className="w-[20px] h-[20px]" />}
           label={"Categories"}
           navigateTo={"categories"}
@@ -127,12 +143,7 @@ const Sidebar = ({ showModal }) => {
           navigateTo={"packages"}
           navigate={navigate}
         />
-          <SidebarPageTemplate
-          icon={<FiShoppingBag  className="w-[20px] h-[20px]" />}
-          label={"Bump Products"}
-          navigateTo={"bump"}
-          navigate={navigate}
-        />
+
         <SidebarPageTemplate
           icon={<FiSettings className="w-[20px] h-[19px]" />}
           label={` Settings`}
@@ -155,7 +166,7 @@ const Sidebar = ({ showModal }) => {
           navigateTo={"help-store"}
           navigate={navigate}
         /> */}
-        <div 
+        <div
           onClick={handleLogout}
           className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full text-gray-500 bg-transparent border-white absolute bottom-0`}
         >
@@ -166,7 +177,9 @@ const Sidebar = ({ showModal }) => {
         </div>
       </div>
       <button
-        className={`${showSidebar ? "hidden" : "absolute"} md:hidden text-[var(--text-color)] left-5 scale-[1.5] top-[77px]`}
+        className={`${
+          showSidebar ? "hidden" : "absolute"
+        } md:hidden text-[var(--text-color)] left-5 scale-[1.5] top-[77px]`}
         onClick={fn_sidebarControl}
       >
         <FaArrowAltCircleRight />
@@ -181,10 +194,11 @@ const SidebarPageTemplate = ({ icon, label, navigateTo, navigate }) => {
   const pageNavigation = useSelector((state) => state.pageNavigation);
   return (
     <div
-      className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full ${pageNavigation === navigateTo
-        ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]"
-        : "text-gray-500 bg-transparent border-white"
-        }`}
+      className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full ${
+        pageNavigation === navigateTo
+          ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]"
+          : "text-gray-500 bg-transparent border-white"
+      }`}
       onClick={() => navigate.push(`/${navigateTo}`)}
     >
       <div className="flex-shrink-0">{icon}</div>

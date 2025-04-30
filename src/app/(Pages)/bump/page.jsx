@@ -161,7 +161,7 @@ const Bump = () => {
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold text-gray-800">Bump Products</h1>
+              <h1 className="text-2xl font-semibold text-gray-800">Bump Prices</h1>
             </div>
             <button
               onClick={handleAddNew}
@@ -169,7 +169,7 @@ const Bump = () => {
               className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors focus:outline-none"
             >
               <IoMdAdd className="text-xl" />
-              Add Bump Product
+              Add Bump Price
             </button>
           </div>
 
@@ -178,10 +178,9 @@ const Bump = () => {
             <table className="min-w-full border">
               <thead>
                 <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
-                  <th className="p-4 font-[500] text-nowrap">Serial ID</th>
+                  <th className="p-4 font-[500] text-nowrap">S.No</th>
                   <th className="p-4 font-[500] text-nowrap">Bump Days</th>
                   <th className="p-4 font-[500]">Percentage</th>
-                  <th className="p-4 font-[500]">Status</th>
                   <th className="p-4 font-[500]">Created Date</th>
                   <th className="p-4 font-[500]">Action</th>
                 </tr>
@@ -192,11 +191,7 @@ const Bump = () => {
                     <td className="p-4 text-[13px]">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                     <td className="p-4 text-[13px]">{item.day} days</td>
                     <td className="p-4 text-[13px]">{item.percentage}%</td>
-                    <td className="p-4">
-                      <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                        ACTIVE
-                      </span>
-                    </td>
+                
                     <td className="p-4 text-[13px] text-[#000000B2] whitespace-nowrap">
                       {moment.utc(item.createdAt).format('DD MMM YYYY, hh:mm A')}
                     </td>
@@ -208,13 +203,7 @@ const Bump = () => {
                       >
                         <MdEdit />
                       </button> */}
-                       <button
-                        className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
-                        title="Edit"
-                        onClick={() => handleView(item)}
-                      >
-                        <FiEye/>
-                      </button>
+                     
                       <button
                         className="bg-red-100 text-red-600 rounded-full px-2 py-2"
                         title="Delete"
