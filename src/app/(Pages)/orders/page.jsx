@@ -72,10 +72,12 @@ const Orders = () => {
   };
 
   // Filter orders based on selected tab
-  const filteredOrders = orders.filter((order) => {
-    if (selectedTab === "all") return true;
-    return order.orderStatus?.toLowerCase() === selectedTab.toLowerCase();
-  });
+  const filteredOrders = orders
+    .filter((order) => {
+      if (selectedTab === "all") return true;
+      return order.orderStatus?.toLowerCase() === selectedTab.toLowerCase();
+    })
+    .reverse(); // Reverse to show latest first
 
   // Calculate paginated orders
   const paginatedOrders = filteredOrders.slice(

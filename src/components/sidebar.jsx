@@ -26,6 +26,7 @@ import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
 import { updateSidebar, updateAuth } from "@/features/features";
 import { LuLogOut } from "react-icons/lu";
 import Cookies from "js-cookie";
+import { StarBorder } from "@mui/icons-material";
 
 const Sidebar = ({ showModal }) => {
   const navigate = useRouter();
@@ -96,7 +97,7 @@ const Sidebar = ({ showModal }) => {
           navigate={navigate}
         /> */}
         <SidebarPageTemplate
-          icon={<FiShoppingBag className="w-[20px] h-[20px]" />}
+          icon={<StarBorder className="w-[20px] h-[20px]" />}
           label={"Bump Products"}
           navigateTo={"bump"}
           navigate={navigate}

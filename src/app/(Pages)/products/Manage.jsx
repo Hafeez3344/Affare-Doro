@@ -90,9 +90,11 @@ const Manage = ({ searchQuery }) => {
   };
 
   // Filter categories based on search query and paginate
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCategories = categories
+    .filter((category) =>
+      category.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .reverse(); // Reverse to show latest first
 
   const paginatedCategories = filteredCategories.slice(
     (currentPage - 1) * itemsPerPage,
@@ -186,7 +188,6 @@ const Manage = ({ searchQuery }) => {
                       className="inline-block mr-1 "
                     />{" "}
                     {category.inclPrice || "N/A"}{" "}
-                    <span className="text-xs text-gray-400">incl.</span>
                   </p>
                 </div>
 
@@ -197,11 +198,10 @@ const Manage = ({ searchQuery }) => {
                 >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
+                        {/* seller image perfect showing  */}
                         <Image
                           src={
-                            seller?.profileImage
-                              ? `${BACKEND_URL}/${seller.profileImage}`
-                              : "/default-profile.png"
+                            category.userId?.image ? category.userId?.image?.includes("uploads") ? `${BACKEND_URL}/${category.userId.image}` : category.userId.image : "/imageLogo2.jpg"
                           }
                           alt={category.userId?.username || "Seller"}
                           width={45}
@@ -313,15 +313,13 @@ const Manage = ({ searchQuery }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <Image
-                          src={
-                            seller?.profileImage
-                              ? `${BACKEND_URL}/${seller.profileImage}`
-                              : "/default-profile.png"
-                          }
+                         src={
+                          seller?.image ? seller?.image?.includes("uploads") ? `${BACKEND_URL}/${seller.image}` : seller.image : "/imageLogo2.jpg"
+                        }
                           alt={seller?.username || "Seller"}
                           width={45}
                           height={70}
-                          className="rounded-full object-cover h-[40px]"
+                          className="rounded-full object-cover h-[40px] w-[40px]"
                         />
                         <div>
                           <p className="text-gray-900 text-[14px] font-semibold">
