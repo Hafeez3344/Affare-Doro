@@ -177,8 +177,7 @@ const Manage = ({ searchQuery }) => {
                     {category.categoryId?.[category.categoryId.length - 1]
                       ?.name || "N/A"}
                   </p>
-               
-              
+
                   <p className="text-[12px] font-semibold text-teal-600 mt-3">
                     <Image
                       alt=""
@@ -196,25 +195,29 @@ const Manage = ({ searchQuery }) => {
                   className=" pt-3 border-t cursor-pointer group"
                   onClick={() => handleSellerClick(category.userId?._id)}
                 >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        {/* seller image perfect showing  */}
-                        <Image
-                          src={
-                            category.userId?.image ? category.userId?.image?.includes("uploads") ? `${BACKEND_URL}/${category.userId.image}` : category.userId.image : "/imageLogo2.jpg"
-                          }
-                          alt={category.userId?.username || "Seller"}
-                          width={45}
-                          height={70}
-                          className="rounded-full object-cover h-[30px] w-[30px]"
-                        />
-                        <div>
-                          <p className="text-gray-900 text-[14px] font-semibold">
-                            {category.userId?.username || "Seller Name"}
-                          </p>
-                        </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      {/* seller image perfect showing  */}
+                      <Image
+                        src={
+                          category.userId?.image
+                            ? category.userId?.image?.includes("uploads")
+                              ? `${BACKEND_URL}/${category.userId.image}`
+                              : category.userId.image
+                            : "/imageLogo2.jpg"
+                        }
+                        alt={category.userId?.username || "Seller"}
+                        width={45}
+                        height={70}
+                        className="rounded-full object-cover h-[30px] w-[30px]"
+                      />
+                      <div>
+                        <p className="text-gray-900 text-[14px] font-semibold">
+                          {category.userId?.username || "Seller Name"}
+                        </p>
                       </div>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -247,7 +250,7 @@ const Manage = ({ searchQuery }) => {
           <div className="flex flex-col gap-6">
             <div className="flex gap-6">
               {/* Left side - Product Details */}
-              <div className="flex-1 flex flex-col gap-3">
+              <div className="flex-1 flex flex-col gap-4">
                 <div className="flex items-center gap-3">
                   <p className="text-[15px] font-[600] w-[120px]">
                     Product Name:
@@ -283,26 +286,88 @@ const Manage = ({ searchQuery }) => {
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">Price:</p>
-                  <p className="text-[14px] text-teal-600 font-semibold">
-                    {selectedCategory.price || "N/A"}
+                  <p className="text-[15px] font-[600] w-[120px]">
+                    Product Price:
                   </p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[27px] font-[500] text-black">
+                      <Image
+                        alt=""
+                        src="/dirham-sign.svg"
+                        width={18}
+                        height={18}
+                        className="inline-block mb-2"
+                      />
+                    </span>
+                    <p className="text-[14px] text-teal-600 font-semibold">
+                      {selectedCategory.price || "N/A"}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <p className="text-[15px] font-[600] w-[120px]">
-                    Incl. Price:
+                    Shipping Cost:
                   </p>
-                  <p className="text-[14px] text-teal-600 font-semibold">
-                    {selectedCategory.inclPrice || "N/A"}{" "}
-                    <span className="text-xs text-gray-400">incl.</span>
-                  </p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[27px] font-[500] text-black">
+                      <Image
+                        alt=""
+                        src="/dirham-sign.svg"
+                        width={18}
+                        height={18}
+                        className="inline-block mb-2"
+                      />
+                    </span>
+                    <p className="text-[14px] text-teal-600 font-semibold">
+                      {selectedCategory.shipPrice || "N/A"}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
+                  <p className="text-[15px] font-[600] w-[120px]">
+                    Protection Fee:
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[27px] font-[500] text-black">
+                      <Image
+                        alt=""
+                        src="/dirham-sign.svg"
+                        width={18}
+                        height={18}
+                        className="inline-block mb-2"
+                      />
+                    </span>
+                    <p className="text-[14px] text-teal-600 font-semibold">
+                      {selectedCategory.inclPrice || "N/A"}
+                      <span className="text-xs text-gray-400"> incl.</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <p className="text-[15px] font-[600] w-[120px]">
+                    Total Price:
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[27px] font-[500] text-black">
+                      <Image
+                        alt=""
+                        src="/dirham-sign.svg"
+                        width={18}
+                        height={18}
+                        className="inline-block mb-2"
+                      />
+                    </span>
+                    <p className="text-[14px] text-teal-600 font-semibold">
+                      {selectedCategory.totalPrice || "N/A"}
+                    </p>
+                  </div>
+                </div>
+                {/* <div className="flex items-center gap-3">
                   <p className="text-[15px] font-[600] w-[120px]">Status:</p>
                   <span className="px-4 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                     {selectedCategory.status || "Active"}
                   </span>
-                </div>
+                </div> */}
 
                 {/* Seller Information */}
                 <div
@@ -313,9 +378,13 @@ const Manage = ({ searchQuery }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <Image
-                         src={
-                          seller?.image ? seller?.image?.includes("uploads") ? `${BACKEND_URL}/${seller.image}` : seller.image : "/imageLogo2.jpg"
-                        }
+                          src={
+                            seller?.image
+                              ? seller?.image?.includes("uploads")
+                                ? `${BACKEND_URL}/${seller.image}`
+                                : seller.image
+                              : "/imageLogo2.jpg"
+                          }
                           alt={seller?.username || "Seller"}
                           width={45}
                           height={70}

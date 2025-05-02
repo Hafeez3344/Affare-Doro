@@ -34,12 +34,12 @@ const ViewCategoryModal = ({
                 <p className="text-[15px] font-[600] w-[120px]">Category Name:</p>
                 <p className="text-[14px]">{selectedCategory.name}</p>
               </div>
-              <div className="flex items-center gap-3">
+              {/* <div className="flex items-center gap-3">
                 <p className="text-[15px] font-[600] w-[120px]">Status:</p>
                 <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                   {selectedCategory.status || 'Active'}
                 </span>
-              </div>
+              </div> */}
               <div className="flex items-center gap-3">
                 <p className="text-[15px] font-[600] w-[120px]">Created Date:</p>
                 <p className="text-[14px]">
@@ -47,7 +47,7 @@ const ViewCategoryModal = ({
                 </p>
               </div>
 
-              <div className="flex flex-col gap-2 mt-4">
+              <div className="flex flex-col gap-2">
                 <p className="text-[15px] font-[600]">Features:</p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ const ViewCategoryModal = ({
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-[14px]">Has Custom Shopping:</p>
+                    <p className="text-[14px]">Has Custom Shipping:</p>
                     <span className={`px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center ${selectedCategory.hasCustomShopping ? "bg-[#10CB0026] text-[#0DA000]" : "bg-[#FF7A8F33] text-[#FF002A]"}`}>
                       {selectedCategory.hasCustomShopping ? 'Yes' : 'No'}
                     </span>

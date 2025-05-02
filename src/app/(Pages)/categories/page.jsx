@@ -162,16 +162,20 @@ const Categories = () => {
           placement: 'topRight',
           style: { marginTop: '50px' }
         });
-        // Reset form and states
+        
+        // Reset all states and close modal
         form.resetFields();
         setCategoryPath([]);
         setCurrentParentId(null);
         setSubCategories([]);
         setIsCategoryDropdownOpen(false);
-        fetchCategories();
         setShowModal(false);
         setIsEditMode(false);
         setSelectedItem(null);
+        setImageFile(null);
+        
+        // Fetch updated categories
+        await fetchCategories();
       } else {
         throw new Error(response.message || 'Category operation failed');
       }
@@ -190,9 +194,12 @@ const Categories = () => {
   const handleModalClose = () => {
     setShowModal(false);
     setIsEditMode(false);
+    setCategoryPath([]);
+    setCurrentParentId(null);
+    setSubCategories([]);
+    setIsCategoryDropdownOpen(false);
     form.resetFields();
     setImageFile(null);
-    setCategoryPath([]);
     setSelectedItem(null);
   };
 
@@ -244,8 +251,12 @@ const Categories = () => {
 
   const handleCategorySelect = (category) => {
     if (category.subCategoryCount > 0) {
+      // If category has subcategories, fetch them and update the path
       fetchSubCategories(category._id);
+      setCurrentParentId(category._id);
+      setCategoryPath([...categoryPath, category]);
     } else {
+      // If category has no subcategories, add it to path and close dropdown
       setCategoryPath([...categoryPath, category]);
       setIsCategoryDropdownOpen(false);
     }
@@ -268,6 +279,11 @@ const Categories = () => {
   };
 
   const handleNewCategory = () => {
+    // Reset everything when creating a new category
+    setCategoryPath([]);
+    setCurrentParentId(null);
+    setSubCategories([]);
+    setIsCategoryDropdownOpen(false);
     setShowModal(true);
     setIsEditMode(false);
     form.resetFields();
@@ -413,7 +429,7 @@ const Categories = () => {
                       </td>
                       <td className="p-4 text-[13px]">{item.subCategoryCount}</td>
                       <td className="p-4">
-                        <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                        <span className="px-2 py-1 w-20 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
                           {item.status || 'Active'}
                         </span>
                       </td>

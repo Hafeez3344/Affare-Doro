@@ -8,7 +8,6 @@ const BACKEND_URL = "https://backend.affaredoro.com";
 
 
 export default BACKEND_URL;
-// Create axios instance with default config
 const api = axios.create({
     baseURL: BACKEND_URL,
     timeout: 5000, 
@@ -222,13 +221,28 @@ export const updateCategory = async (id, data) => {
 // ---------------------------- Delete Category APIs -------------------------------
 export const deleteCategory = async (id) => {
     try {
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                status: false,
+                message: "Please login to perform this action"
+            };
+        }
+
         const response = await api.delete(`/category/delete/${id}`, getAuthHeader());
         return {
             status: true,
             message: "Category deleted successfully",
+            data: response.data,
         };
     } catch (error) {
         console.error('API Error:', error);
+        if (error?.response?.status === 401) {
+            return {
+                status: false,
+                message: "Your session has expired. Please login again."
+            };
+        }
         return {
             status: false,
             message: error?.response?.data?.message || "An unexpected error occurred"
