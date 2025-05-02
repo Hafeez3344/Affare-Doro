@@ -144,11 +144,12 @@ const Categories = () => {
       }
 
       // If we have a selected category, add it to the form data
-      if (categoryPath.length > 0) {
+      if (categoryPath.length > 0 && values.hasCondition) {
         const parentId = categoryPath[categoryPath.length - 1]._id;
         formData.append('parentCategoryId', parentId);
         console.log('Added parentId to formData:', parentId);
       }
+      
 
       if (isEditMode) {
         response = await updateCategory(selectedItem._id, formData);
@@ -190,6 +191,7 @@ const Categories = () => {
       setLoading(false);
     }
   };
+  
 
   const handleModalClose = () => {
     setShowModal(false);
