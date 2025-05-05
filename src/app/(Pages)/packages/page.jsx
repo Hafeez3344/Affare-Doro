@@ -249,13 +249,13 @@ const Packages = () => {
                         >
                           <MdEdit />
                         </button>
-                        <button
+                        {/* <button
                           className="bg-red-100 text-red-600 rounded-full px-2 py-2"
                           title="Delete"
                           onClick={() => handleDelete(item._id)}
                         >
                           <MdDelete />
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                   ))

@@ -54,10 +54,13 @@ export const adminLogin = async (data) => {
 // Configure axios defaults for authorized requests
 const getAuthHeader = () => {
     const token = Cookies.get('token');
+    if (!token) {
+        throw new Error("No authentication token found");
+    }
     return {
         headers: {
             Authorization: `Bearer ${token}`,
-            // Remove forced Content-Type to let axios set it automatically
+            'Content-Type': 'application/json'
         },
     };
 };
@@ -94,15 +97,23 @@ export const getProducts = async () => {
 };
 
 // ---------------------------- Get All Orders API -------------------------------
-export const getAllOrders = async () => {
+export const getAllOrders = async (params = {}) => {
     try {
         const token = Cookies.get('token');
         if (!token) {
-            // throw new Error("No token found in cookies");
             alert("No token found in cookies");
         }
 
-        const response = await api.get('/order/viewAll', {
+        // Construct query parameters
+        const queryParams = new URLSearchParams();
+        if (params.bumpOrder !== undefined) {
+            queryParams.append('bumpOrder', params.bumpOrder);
+        }
+        if (params.status) {
+            queryParams.append('status', params.status);
+        }
+
+        const response = await api.get(`/order/viewAll?${queryParams.toString()}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -134,6 +145,80 @@ export const getAllOrders = async () => {
         };
     }
 };
+
+// ---------------------------- Create Bump API -------------------------------
+export const createBump = async (data) => {
+    try {
+      const response = await api.post('/bump/create', data, getAuthHeader());
+      return {
+        status: true,
+        message: "Bump created successfully",
+        data: response.data,
+      };
+    } catch (error) {
+      console.error('API Error:', error);
+      return {
+        status: false,
+        message: error?.response?.data?.message || "An unexpected error occurred"
+      };
+    }
+  };
+
+// ---------------------------- Get Bump Products API -------------------------------
+export const getBumps = async () => {
+  try {
+    const response = await api.get('/bump/viewAll');
+    return {
+      status: true,
+      message: "Bump products fetched successfully",
+      data: response.data.data,
+    };
+  } catch (error) {
+    console.error('API Error:', error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred"
+    };
+  }
+};
+
+
+// ---------------------------- Delete Bump API -------------------------------
+export const deleteBump = async (id) => {
+  try {
+    const response = await api.delete(`/bump/delete/${id}`, getAuthHeader());
+    return {
+      status: true,
+      message: "Bump deleted successfully",
+      data: response.data,
+    };
+  } catch (error) {
+    console.error('API Error:', error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred"
+    };
+  }
+};
+
+// ----------------------------- Update Bump API -------------------------------
+export const updateBump = async (id, data) => {
+  try {
+    const response = await api.put(`/bump/update/${id}`, data, getAuthHeader());
+    return {
+      status: true,
+      message: "Bump updated successfully",
+      data: response.data,
+    };
+  } catch (error) {
+    console.error('API Error:', error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred"
+    };
+  }
+};
+
 
 // ---------------------create category api -------------------------------
 export const createCategory = async (data) => {
@@ -336,13 +421,44 @@ export const updateBrand = async (id, data) => {
 // ---------------------------- Delete Brand APIs -------------------------------
 export const deleteBrand = async (id) => {
     try {
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                status: false,
+                message: "Please login to perform this action"
+            };
+        }
+
         const response = await api.delete(`/brand/delete/${id}`, getAuthHeader());
         return {
             status: true,
             message: "Brand deleted successfully",
+            data: response.data
         };
     } catch (error) {
         console.error('API Error:', error);
+        
+        if (error?.response?.status === 401) {
+            return {
+                status: false,
+                message: "Your session has expired. Please login again."
+            };
+        }
+
+        if (error?.response?.status === 404) {
+            return {
+                status: false,
+                message: "Brand not found"
+            };
+        }
+
+        if (error.code === 'ERR_NETWORK') {
+            return {
+                status: false,
+                message: "Unable to connect to server. Please check if the server is running."
+            };
+        }
+
         return {
             status: false,
             message: error?.response?.data?.message || "An unexpected error occurred"
@@ -781,60 +897,25 @@ export const deletePackage = async (id) => {
     }
 };
 
-// ---------------------------- Create Bump API -------------------------------
-export const createBump = async (data) => {
+// ---------------------------- Get Dashboard Card Data API -------------------------------
+export const getDashboardCardData = async () => {
     try {
-      const response = await api.post('/bump/create', data, getAuthHeader());
-      return {
-        status: true,
-        message: "Bump created successfully",
-        data: response.data,
-      };
+        const response = await api.get('/order/getAllDataCard', getAuthHeader());
+        return {
+            status: true,
+            message: "Dashboard card data fetched successfully",
+            data: response.data,
+        };
     } catch (error) {
-      console.error('API Error:', error);
-      return {
-        status: false,
-        message: error?.response?.data?.message || "An unexpected error occurred"
-      };
+        console.error('API Error:', error);
+        return {
+            status: false,
+            message: error?.response?.data?.message || "An unexpected error occurred"
+        };
     }
-  };
-
-// ---------------------------- Get Bump Products API -------------------------------
-export const getBumps = async () => {
-  try {
-    const response = await api.get('/bump/viewAll');
-    return {
-      status: true,
-      message: "Bump products fetched successfully",
-      data: response.data.data,
-    };
-  } catch (error) {
-    console.error('API Error:', error);
-    return {
-      status: false,
-      message: error?.response?.data?.message || "An unexpected error occurred"
-    };
-  }
 };
 
 
-// ---------------------------- Delete Bump API -------------------------------
-export const deleteBump = async (id) => {
-  try {
-    const response = await api.delete(`/bump/delete/${id}`, getAuthHeader());
-    return {
-      status: true,
-      message: "Bump deleted successfully",
-      data: response.data,
-    };
-  } catch (error) {
-    console.error('API Error:', error);
-    return {
-      status: false,
-      message: error?.response?.data?.message || "An unexpected error occurred"
-    };
-  }
-};
 
 
 

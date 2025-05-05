@@ -388,7 +388,7 @@ const Categories = () => {
         <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-[25px] font-[500] text-gray-800">Categories</h1>
+            <h1 className="text-2xl font-semibold text-gray-800">Categories</h1>
             <button
               onClick={() => {
                 setShowModal(true);

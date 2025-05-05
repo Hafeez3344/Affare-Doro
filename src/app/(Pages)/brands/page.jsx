@@ -25,7 +25,7 @@ import Sidebar from "@/components/sidebar";
 import tableAction from "@/assets/svgs/table-action.svg";
 import { FiEye } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
-import { MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 const Brands = () => {
   const dispatch = useDispatch();
@@ -91,21 +91,77 @@ const Brands = () => {
   };
 
   const handleDelete = async (id) => {
+    console.log('handleDelete called with ID:', id);
+    if (!id) {
+      console.error('No ID provided for deletion');
+      notification.error({
+        message: "Error",
+        description: "No brand ID provided for deletion",
+        placement: "topRight",
+        style: { marginTop: "50px" },
+      });
+      return;
+    }
+
     try {
-      const response = await deleteBrand(id);
-      if (response.status) {
-        notification.success({
-          message: "Brand deleted successfully",
+      // Check if user is authenticated
+      if (!auth) {
+        console.log('User not authenticated');
+        notification.error({
+          message: "Authentication Error",
+          description: "Please login to perform this action",
           placement: "topRight",
           style: { marginTop: "50px" },
         });
-        fetchBrands();
-      } else {
-        throw new Error(response.message);
+        return;
       }
+
+      console.log('Showing confirmation modal');
+      Modal.confirm({
+        title: 'Delete Brand',
+        content: 'Are you sure you want to delete this brand? This action cannot be undone.',
+        okText: 'Yes, Delete',
+        cancelText: 'No, Cancel',
+        okButtonProps: {
+          style: { backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', color: 'white' }
+        },
+        onOk: async () => {
+          console.log('User confirmed deletion for ID:', id);
+          try {
+            const response = await deleteBrand(id);
+            console.log('Delete API response:', response);
+            if (response.status) {
+              notification.success({
+                message: "Success",
+                description: response.message,
+                placement: "topRight",
+                style: { marginTop: "50px" },
+              });
+              fetchBrands(); // Refresh the list
+            } else {
+              notification.error({
+                message: "Error",
+                description: response.message,
+                placement: "topRight",
+                style: { marginTop: "50px" },
+              });
+            }
+          } catch (error) {
+            console.error('Error in delete API call:', error);
+            notification.error({
+              message: "Error",
+              description: error.message || 'Failed to delete brand',
+              placement: "topRight",
+              style: { marginTop: "50px" },
+            });
+          }
+        }
+      });
     } catch (error) {
+      console.error('Error in handleDelete:', error);
       notification.error({
-        message: error.message || "Failed to delete brand",
+        message: "Error",
+        description: error.message || 'Failed to delete brand',
         placement: "topRight",
         style: { marginTop: "50px" },
       });
@@ -195,7 +251,7 @@ const Brands = () => {
         <Sidebar showModal={showModal} />
         <div className="flex-1 mt-[30px] px-[22px]">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-[25px] font-[500] text-gray-800">Brands</h1>
+            <h1 className="text-2xl font-semibold text-gray-800">Brands</h1>
             <button
               onClick={() => setShowModal(true)}
               style={{
@@ -227,7 +283,7 @@ const Brands = () => {
                   paginatedBrands.map((item) => (
                     <tr
                       key={item._id}
-                      className="text-gray-800 text-sm border-b"
+                      className="text-gray-800 text-sm border-b hover:bg-gray-50"
                     >
                       <td className="p-4 text-[13px] flex items-center gap-2">
                         {item.image && (
@@ -264,6 +320,18 @@ const Brands = () => {
                         >
                           <MdEdit />
                         </button>
+                        <button
+                          className="bg-blue-100 text-red-600 rounded-full px-2 py-2"
+                          title="Delete"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('Delete button clicked for brand:', item);
+                            handleDelete(item._id);
+                          }}
+                        >
+                          <MdDelete />
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -282,6 +350,7 @@ const Brands = () => {
                 onChange={(page) => setCurrentPage(page)}
                 total={brands.length}
                 pageSize={itemsPerPage}
+                showSizeChanger={false}
               />
             </div>
           </div>

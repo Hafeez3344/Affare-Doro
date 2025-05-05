@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Button, notification, Modal, Pagination } from 'antd';
-import { createMaterial, getMaterials, updateMaterial } from "@/api/api";
+import { createMaterial, getMaterials, updateMaterial, deleteMaterial } from "@/api/api";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
@@ -72,13 +72,21 @@ const Materials = () => {
 
   const handleDelete = async (id) => {
     try {
-      // Add deleteMaterial API logic here
-      notification.success({
-        message: "Material deleted successfully",
-        placement: 'topRight',
-        style: { marginTop: '50px' }
-      });
-      fetchMaterials();
+      const response = await deleteMaterial(id);
+      if (response.status) {
+        notification.success({
+          message: response.message,
+          placement: 'topRight',
+          style: { marginTop: '50px' }
+        });
+        fetchMaterials();
+      } else {
+        notification.error({
+          message: response.message,
+          placement: 'topRight',
+          style: { marginTop: '50px' }
+        });
+      }
     } catch (error) {
       notification.error({
         message: 'Failed to delete material',
@@ -235,7 +243,7 @@ const Materials = () => {
                 />
               </Form.Item>
 
-              <Form.Item
+              {/* <Form.Item
                 name="description"
                 label="Description"
                 rules={[{ required: true, message: 'Please enter description' }]}
@@ -244,7 +252,7 @@ const Materials = () => {
                   placeholder="Enter description"
                   className="border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
                 />
-              </Form.Item>
+              </Form.Item> */}
 
               <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
                 <Button

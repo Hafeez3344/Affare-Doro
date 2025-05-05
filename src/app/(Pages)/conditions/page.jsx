@@ -1,29 +1,29 @@
 "use client";
 
+import moment from 'moment-timezone';
+import { IoMdAdd } from "react-icons/io";
+import Navbar from "@/components/navbar";
+import Sidebar from "@/components/sidebar";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Button, notification, Modal, Pagination } from "antd";
 import { createCondition, getConditions, updateCondition, deleteCondition } from "@/api/api";
-import { useRouter } from "next/navigation";
-import Navbar from "@/components/navbar";
-import Sidebar from "@/components/sidebar";
-import { MdEdit, MdDelete } from "react-icons/md";
-import { IoMdAdd } from "react-icons/io";
-import moment from 'moment-timezone';
 
 const Conditions = () => {
-  const dispatch = useDispatch();
+  const itemsPerPage = 10;
   const router = useRouter();
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const auth = useSelector((state) => state.auth);
   const [conditions, setConditions] = useState([]);
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const paginatedConditions = conditions.slice(
     (currentPage - 1) * itemsPerPage,
@@ -189,13 +189,13 @@ const Conditions = () => {
                         >
                           <MdEdit />
                         </button>
-                        {/* <button
+                        <button
                           className="bg-red-100 text-red-600 rounded-full px-2 py-2"
                           title="Delete"
                           onClick={() => handleDelete(condition._id)}
                         >
                           <MdDelete />
-                        </button> */}
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -228,7 +228,7 @@ const Conditions = () => {
               setIsEditMode(false);
               form.resetFields();
             }}
-            closeIcon={<span className="text-gray-500 hover:text-gray-700 text-3xl font-bold w-10 h-10 flex items-center justify-center">×</span>}
+            closeIcon={<span className="ant-modal-close-x ">×</span>}
           >
             <Form
               form={form}

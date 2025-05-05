@@ -2,13 +2,12 @@
 
 import Image from "next/image";
 import { notification } from "antd";
-import React, { useEffect, useState } from "react";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { GoDotFill } from "react-icons/go";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import BACKEND_URL, { getProducts } from "@/api/api";
 import salesIcon from "@/assets/svgs/dashboard-sales.svg";
 import productOne from "@/assets/dashboard-product-1.png";
 import productTwo from "@/assets/dashboard-product-2.png";
@@ -18,6 +17,7 @@ import returnIcon from "@/assets/svgs/dashboard-return.svg";
 import productThree from "@/assets/dashboard-product-3.png";
 import revenueIcon from "@/assets/svgs/dashboard-revenue.svg";
 import dashboardTableImg from "@/assets/svgs/dashboard-table-img.svg";
+import BACKEND_URL, { getProducts, getDashboardCardData } from "@/api/api";
 import {
   Chart as ChartJS,
   BarElement,
@@ -37,6 +37,12 @@ const Dashboard = () => {
   const auth = useSelector((state) => state.auth);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cardData, setCardData] = useState({
+    totalOrders: 0,
+    completedOrders: 0,
+    totalSales: 0,
+    cancelledOrders: 0
+  });
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -64,6 +70,32 @@ const Dashboard = () => {
       sessionStorage.setItem("dashboardWelcomeShown", "true");
     }
   }, [auth, dispatch, router, api]);
+
+  // New useEffect for fetching dashboard card data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await getDashboardCardData();
+        if (response?.status && response?.data) {
+          setCardData({
+            totalOrders: response.data.totalOrder || 0,
+            completedOrders: response.data.completedOrder || 0,
+            totalSales: response.data.totalSale || 0,
+            cancelledOrders: response.data.cancelledOrder || 0
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        api.error({
+          message: "Error",
+          description: error.message || "Failed to fetch dashboard data",
+          placement: "topRight",
+        });
+      }
+    };
+
+    fetchDashboardData();
+  }, [api]);
 
   // New useEffect for fetching favorite products
   useEffect(() => {
@@ -140,33 +172,44 @@ const Dashboard = () => {
         <div className="flex-1 mt-[30px] px-[22px] overflow-y-auto">
           {/* boxes */}
           <div className="flex flex-col sm:flex-row justify-between sm:flex-wrap gap-5">
-            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+            <div className="min-w-[250px] flex-1 h-[140px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
-                <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
+                <p className="text-[22px] font-[500] text-[var(--text-color-body)]">
                   Total Orders
                 </p>
                 <Image alt="" src={ordersIcon} />
               </div>
               <div>
-                <p className="text-[27px] font-[500] text-black">00</p>
+                <p className="text-[27px] font-[500] text-black">{cardData.totalOrders}</p>
               </div>
             </div>
-            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+            <div className="min-w-[250px] flex-1 h-[140px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
-                <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
+                <p className="text-[22px] font-[500] text-[var(--text-color-body)]">
                   Completed Orders
                 </p>
                 <ShoppingCart size={24} className="text-gray-700" />
               </div>
-
               <div>
-                <p className="text-[27px] font-[500] text-black">00</p>
+                <p className="text-[27px] font-[500] text-black">{cardData.completedOrders}</p>
               </div>
             </div>
 
-            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+            <div className="min-w-[250px] flex-1 h-[140px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
               <div className="flex justify-between">
-                <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
+                <p className="text-[22px] font-[500] text-[var(--text-color-body)]">
+                  Cancelled Orders
+                </p>
+                <Image alt="" src={returnIcon} />
+              </div>
+              <div>
+                <p className="text-[27px] font-[500] text-black">{cardData.cancelledOrders}</p>
+              </div>
+            </div>
+
+            <div className="min-w-[250px] flex-1 h-[140px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
+              <div className="flex justify-between">
+                <p className="text-[22px] font-[500] text-[var(--text-color-body)]">
                   Total Sales
                 </p>
                 <Image alt="" src={revenueIcon} />
@@ -180,21 +223,11 @@ const Dashboard = () => {
                     height={28}
                     className="inline-block mr-1.5 mb-2"
                   />
-                  00.00
+                  {cardData.totalSales.toFixed(2)}
                 </p>
               </div>
             </div>
-            <div className="min-w-[250px] flex-1 h-[152px] rounded-[10px] bg-white shadow-sm flex flex-col justify-between p-[20px]">
-              <div className="flex justify-between">
-                <p className="text-[15px] font-[500] text-[var(--text-color-body)]">
-                  Cancelled Orders
-                </p>
-                <Image alt="" src={returnIcon} />
-              </div>
-              <div>
-                <p className="text-[27px] font-[500] text-black">00</p>
-              </div>
-            </div>
+          
           </div>
           {/* graphs and products */}
           <div className="mt-[30px] flex gap-5 flex-col xl:flex-row">
@@ -250,19 +283,28 @@ const Dashboard = () => {
                     <div className="flex-1 flex justify-between items-center">
                       <div className="flex flex-col gap-1.5">
                         <p className="font-[500] leading-[24px]">
-                          {product.name}
+                          {product.name || "Others"}
                         </p>
-                        <p className="text-[14px] text-[var(--text-color-body)]">
-                          {product.sales || 0} Sales
-                        </p>
+
+                        <div className="flex items-center gap-1">
+                          <span className="text-[27px] font-[500] text-black">
+                            <Image
+                              alt=""
+                              src="/dirham-sign.svg"
+                              width={18}
+                              height={18}
+                              className="inline-block mb-2"
+                            />
+                          </span>
+                          <p className="text-[14px] text-teal-600 font-semibold mb-1">
+                            {product.price || "Others"}
+                          </p>
+                        </div>
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <p className="text-[12px] text-[var(--text-color-body-plus)] flex items-center gap-1">
                           <GoDotFill />
                           {product.status || "Available"}
-                        </p>
-                        <p className="text-[var(--text-color-body)] text-[11px] ps-[15px]">
-                          {product.stock || 0} Stocks
                         </p>
                       </div>
                     </div>

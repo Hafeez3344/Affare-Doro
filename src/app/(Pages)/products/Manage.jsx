@@ -238,6 +238,7 @@ const Manage = ({ searchQuery }) => {
       </div>
 
       {/* Product View Model  */}
+      
       <Modal
         centered
         footer={null}
@@ -247,127 +248,127 @@ const Manage = ({ searchQuery }) => {
         onCancel={handleModalClose}
       >
         {selectedCategory && (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 ">
             <div className="flex gap-6">
               {/* Left side - Product Details */}
-              <div className="flex-1 flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">
-                    Product Name:
-                  </p>
-                  <p className="text-[14px]">{selectedCategory.name}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">Category:</p>
-                  <p className="text-[14px]">
-                    {selectedCategory.categoryId?.[
-                      selectedCategory?.categoryId?.length - 1
-                    ]?.name || "N/A"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">Material:</p>
-                  <p className="text-[14px]">
-                    {selectedCategory.materialId?.[
-                      selectedCategory?.materialId?.length - 1
-                    ]?.name || "N/A"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">Size:</p>
-                  <p className="text-[14px]">
-                    {selectedCategory.sizeId?.name || "None"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">Color:</p>
-                  <p className="text-[14px]">
-                    {selectedCategory.colorId?.[0]?.name || "None"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">
-                    Product Price:
-                  </p>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[27px] font-[500] text-black">
-                      <Image
-                        alt=""
-                        src="/dirham-sign.svg"
-                        width={18}
-                        height={18}
-                        className="inline-block mb-2"
-                      />
-                    </span>
-                    <p className="text-[14px] text-teal-600 font-semibold">
-                      {selectedCategory.price || "N/A"}
+              <div className="flex-1 flex flex-col gap-4 mt-2">
+                {/* First Section - Basic Product Details */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <p className="text-[15px] font-[600] w-[120px]">
+                      Product Name:
+                    </p>
+                    <p className="text-[14px]">{selectedCategory.name || "Others"}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <p className="text-[15px] font-[600] w-[120px]">Category:</p>
+                    <p className="text-[14px]">
+                      {selectedCategory.categoryId?.[
+                        selectedCategory?.categoryId?.length - 1
+                      ]?.name || "Others"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <p className="text-[15px] font-[600] w-[120px]">Material:</p>
+                    <p className="text-[14px]">
+                      {selectedCategory.materialId?.[
+                        selectedCategory?.materialId?.length - 1
+                      ]?.name || "Others"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <p className="text-[15px] font-[600] w-[120px]">Size:</p>
+                    <p className="text-[14px]">
+                      {selectedCategory.sizeId?.name || "Others"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <p className="text-[15px] font-[600] w-[120px]">Color:</p>
+                    <p className="text-[14px]">
+                      {selectedCategory.colorId?.[0]?.name || "Others"}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">
-                    Shipping Cost:
-                  </p>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[27px] font-[500] text-black">
-                      <Image
-                        alt=""
-                        src="/dirham-sign.svg"
-                        width={18}
-                        height={18}
-                        className="inline-block mb-2"
-                      />
-                    </span>
-                    <p className="text-[14px] text-teal-600 font-semibold">
-                      {selectedCategory.shipPrice || "N/A"}
+
+                {/* Second Section - Price Details */}
+                <div className="flex flex-col gap-4 pt-4 border-t border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <p className="text-[15px] font-[600] w-[120px]">
+                      Product Price:
                     </p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[27px] font-[500] text-black">
+                        <Image
+                          alt=""
+                          src="/dirham-sign.svg"
+                          width={18}
+                          height={18}
+                          className="inline-block mb-2"
+                        />
+                      </span>
+                      <p className="text-[14px] text-teal-600 font-semibold">
+                        {selectedCategory.price || "Others"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 -mt-4">
+                    <p className="text-[15px] font-[600] w-[120px]">
+                      Shipping Cost:
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[27px] font-[500] text-black">
+                        <Image
+                          alt=""
+                          src="/dirham-sign.svg"
+                          width={18}
+                          height={18}
+                          className="inline-block mb-2"
+                        />
+                      </span>
+                      <p className="text-[14px] text-teal-600 font-semibold">
+                        {selectedCategory.shipPrice || "Others"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 -mt-4">
+                    <p className="text-[15px] font-[600] w-[120px]">
+                      Protection Fee:
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[27px] font-[500] text-black">
+                        <Image
+                          alt=""
+                          src="/dirham-sign.svg"
+                          width={18}
+                          height={18}
+                          className="inline-block mb-2"
+                        />
+                      </span>
+                      <p className="text-[14px] text-teal-600 font-semibold">
+                        {selectedCategory.inclPrice || "Others"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 -mt-4">
+                    <p className="text-[15px] font-[600] w-[120px]">
+                      Total Price:
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[27px] font-[500] text-black">
+                        <Image
+                          alt=""
+                          src="/dirham-sign.svg"
+                          width={18}
+                          height={18}
+                          className="inline-block mb-2"
+                        />
+                      </span>
+                      <p className="text-[14px] text-teal-600 font-semibold">
+                        {selectedCategory.totalPrice || "Others"}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">
-                    Protection Fee:
-                  </p>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[27px] font-[500] text-black">
-                      <Image
-                        alt=""
-                        src="/dirham-sign.svg"
-                        width={18}
-                        height={18}
-                        className="inline-block mb-2"
-                      />
-                    </span>
-                    <p className="text-[14px] text-teal-600 font-semibold">
-                      {selectedCategory.inclPrice || "N/A"}
-                      <span className="text-xs text-gray-400"> incl.</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">
-                    Total Price:
-                  </p>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[27px] font-[500] text-black">
-                      <Image
-                        alt=""
-                        src="/dirham-sign.svg"
-                        width={18}
-                        height={18}
-                        className="inline-block mb-2"
-                      />
-                    </span>
-                    <p className="text-[14px] text-teal-600 font-semibold">
-                      {selectedCategory.totalPrice || "N/A"}
-                    </p>
-                  </div>
-                </div>
-                {/* <div className="flex items-center gap-3">
-                  <p className="text-[15px] font-[600] w-[120px]">Status:</p>
-                  <span className="px-4 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                    {selectedCategory.status || "Active"}
-                  </span>
-                </div> */}
 
                 {/* Seller Information */}
                 <div
@@ -422,11 +423,11 @@ const Manage = ({ searchQuery }) => {
                       afterChange={(current) => setSelectedImageIndex(current)}
                     >
                       {selectedCategory.image.map((img, index) => (
-                        <div key={index} className="w-full h-[300px]">
+                        <div key={index} className="w-full h-[433px]">
                           <img
                             src={`${BACKEND_URL}/${img}`}
                             alt={`${selectedCategory.name} - ${index + 1}`}
-                            className="w-full h-full object-cover rounded-lg shadow-md"
+                            className="w-full h-full object-contain rounded-lg shadow-md"
                           />
                         </div>
                       ))}

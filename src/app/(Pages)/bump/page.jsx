@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Button, Modal, Pagination, notification } from 'antd';
-import { getBumps, createBump, deleteBump } from "@/api/api";
+import { getBumps, createBump, deleteBump, updateBump } from "@/api/api";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -124,7 +124,12 @@ const Bump = () => {
         percentage: values.percentage
       };
 
-      const response = await createBump(bumpData);
+      let response;
+      if (isEditMode && selectedItem) {
+        response = await updateBump(selectedItem._id, bumpData);
+      } else {
+        response = await createBump(bumpData);
+      }
       
       if (response.status) {
         notification.success({
@@ -133,7 +138,7 @@ const Bump = () => {
           style: { marginTop: '50px' }
         });
         handleModalClose();
-        fetchBumps(); // Refresh the list after creation
+        fetchBumps(); // Refresh the list after creation/update
       } else {
         notification.error({
           message: response.message,
@@ -143,7 +148,7 @@ const Bump = () => {
       }
     } catch (error) {
       notification.error({
-        message: error.message || "Failed to create bump",
+        message: error.message || "Failed to process bump",
         placement: 'topRight',
         style: { marginTop: '50px' }
       });
@@ -196,13 +201,13 @@ const Bump = () => {
                       {moment.utc(item.createdAt).format('DD MMM YYYY, hh:mm A')}
                     </td>
                     <td className="p-4 flex space-x-2">
-                      {/* <button
+                      <button
                         className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
                         title="Edit"
                         onClick={() => handleEdit(item)}
                       >
                         <MdEdit />
-                      </button> */}
+                      </button>
                      
                       <button
                         className="bg-red-100 text-red-600 rounded-full px-2 py-2"

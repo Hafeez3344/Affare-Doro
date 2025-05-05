@@ -37,7 +37,19 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const response = await getAllOrders();
+        let params = {};
+        
+        // Set parameters based on selected tab
+        if (selectedTab === "bump") {
+          params.bumpOrder = true;
+        } else if (selectedTab !== "all") {
+          params.bumpOrder = false;
+          params.status = selectedTab;
+        } else {
+          params.bumpOrder = false;
+        }
+
+        const response = await getAllOrders(params);
         if (response.status) {
           setOrders(response.data);
         } else {
@@ -52,7 +64,7 @@ const Orders = () => {
     };
 
     fetchOrders();
-  }, [auth, dispatch, router]);
+  }, [auth, dispatch, router, selectedTab]);
 
   const fn_viewDetails = (id) => {
     if (id === selectedCustomer) {
@@ -109,12 +121,70 @@ const Orders = () => {
       <div className="flex-1 flex">
         <Sidebar />
         <div className="flex-1 mt-[30px] px-[22px]">
-          <SearchOnTop />
+          {/* <SearchOnTop /> */}
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-semibold text-gray-800">Product Orders</p>
+          </div>
 
           {/* Orders Section */}
           <div className="my-[20px] p-[30px] bg-white rounded-[8px] shadow-sm overflow-x-auto w-[94vw] md:w-[67vw] lg:w-[75vw] xl:w-auto">
-            <div className="flex gap-10 mb-[15px] w-[max-content]">
-              <p
+            {/* Mobile View */}
+            <div className="flex flex-col gap-4 mb-[15px] md:hidden">
+              <div
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
+                  selectedTab === "all"
+                    ? "text-[var(--text-color)] border-[var(--text-color)]"
+                    : "text-[var(--text-color-body)] border-transparent"
+                }`}
+                onClick={() => setSelectedTab("all")}
+              >
+                All Orders
+              </div>
+              <div
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
+                  selectedTab === "completed"
+                    ? "text-[var(--text-color)] border-[var(--text-color)]"
+                    : "text-[var(--text-color-body)] border-transparent"
+                }`}
+                onClick={() => setSelectedTab("completed")}
+              >
+                Completed
+              </div>
+              <div
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
+                  selectedTab === "pending"
+                    ? "text-[var(--text-color)] border-[var(--text-color)]"
+                    : "text-[var(--text-color-body)] border-transparent"
+                }`}
+                onClick={() => setSelectedTab("pending")}
+              >
+                Pending
+              </div>
+              <div
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
+                  selectedTab === "cancelled"
+                    ? "text-[var(--text-color)] border-[var(--text-color)]"
+                    : "text-[var(--text-color-body)] border-transparent"
+                }`}
+                onClick={() => setSelectedTab("cancelled")}
+              >
+                Cancelled
+              </div>
+              <div
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
+                  selectedTab === "bump"
+                    ? "text-[var(--text-color)] border-[var(--text-color)]"
+                    : "text-[var(--text-color-body)] border-transparent"
+                }`}
+                onClick={() => setSelectedTab("bump")}
+              >
+                Product Bump Orders
+              </div>
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden md:flex gap-10 mb-[15px] w-[max-content]">
+              <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                   selectedTab === "all"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
@@ -123,8 +193,8 @@ const Orders = () => {
                 onClick={() => setSelectedTab("all")}
               >
                 All Orders
-              </p>
-              <p
+              </div>
+              <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                   selectedTab === "completed"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
@@ -133,8 +203,8 @@ const Orders = () => {
                 onClick={() => setSelectedTab("completed")}
               >
                 Completed
-              </p>
-              <p
+              </div>
+              <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                   selectedTab === "pending"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
@@ -143,8 +213,8 @@ const Orders = () => {
                 onClick={() => setSelectedTab("pending")}
               >
                 Pending
-              </p>
-              <p
+              </div>
+              <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
                   selectedTab === "cancelled"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
@@ -153,7 +223,17 @@ const Orders = () => {
                 onClick={() => setSelectedTab("cancelled")}
               >
                 Cancelled
-              </p>
+              </div>
+              <div
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
+                  selectedTab === "bump"
+                    ? "text-[var(--text-color)] border-[var(--text-color)]"
+                    : "text-[var(--text-color-body)] border-transparent"
+                }`}
+                onClick={() => setSelectedTab("bump")}
+              >
+                Product Bump Orders
+              </div>
             </div>
 
             {loading ? (
