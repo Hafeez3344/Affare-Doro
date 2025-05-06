@@ -91,22 +91,11 @@ const Brands = () => {
   };
 
   const handleDelete = async (id) => {
-    console.log('handleDelete called with ID:', id);
-    if (!id) {
-      console.error('No ID provided for deletion');
-      notification.error({
-        message: "Error",
-        description: "No brand ID provided for deletion",
-        placement: "topRight",
-        style: { marginTop: "50px" },
-      });
-      return;
-    }
-
+    console.log("handleDelete called with ID:", id);
     try {
       // Check if user is authenticated
       if (!auth) {
-        console.log('User not authenticated');
+        console.log("User not authenticated");
         notification.error({
           message: "Authentication Error",
           description: "Please login to perform this action",
@@ -115,53 +104,23 @@ const Brands = () => {
         });
         return;
       }
-
-      console.log('Showing confirmation modal');
-      Modal.confirm({
-        title: 'Delete Brand',
-        content: 'Are you sure you want to delete this brand? This action cannot be undone.',
-        okText: 'Yes, Delete',
-        cancelText: 'No, Cancel',
-        okButtonProps: {
-          style: { backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', color: 'white' }
-        },
-        onOk: async () => {
-          console.log('User confirmed deletion for ID:', id);
-          try {
-            const response = await deleteBrand(id);
-            console.log('Delete API response:', response);
-            if (response.status) {
-              notification.success({
-                message: "Success",
-                description: response.message,
-                placement: "topRight",
-                style: { marginTop: "50px" },
-              });
-              fetchBrands(); // Refresh the list
-            } else {
-              notification.error({
-                message: "Error",
-                description: response.message,
-                placement: "topRight",
-                style: { marginTop: "50px" },
-              });
-            }
-          } catch (error) {
-            console.error('Error in delete API call:', error);
-            notification.error({
-              message: "Error",
-              description: error.message || 'Failed to delete brand',
-              placement: "topRight",
-              style: { marginTop: "50px" },
-            });
-          }
-        }
-      });
+      if(!id){
+        // error
+      };
+      const response = await deleteBrand(id);
+      if(response.status){
+        // Update local state by filtering out the deleted brand
+        setBrands(prevBrands => prevBrands.filter(brand => brand._id !== id));
+        notification.success({
+          message: "Success",
+          description: response.message,
+        });
+      };
     } catch (error) {
-      console.error('Error in handleDelete:', error);
+      console.error("Error in handleDelete:", error);
       notification.error({
         message: "Error",
-        description: error.message || 'Failed to delete brand',
+        description: error.message || "Failed to delete brand",
         placement: "topRight",
         style: { marginTop: "50px" },
       });
@@ -326,7 +285,10 @@ const Brands = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log('Delete button clicked for brand:', item);
+                            console.log(
+                              "Delete button clicked for brand:",
+                              item
+                            );
                             handleDelete(item._id);
                           }}
                         >

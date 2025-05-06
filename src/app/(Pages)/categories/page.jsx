@@ -143,13 +143,12 @@ const Categories = () => {
         console.log('Added image file to formData:', imageFile);
       }
 
-      // If we have a selected category, add it to the form data
-      if (categoryPath.length > 0 && values.hasCondition) {
+      // Set the parent category ID based on the category path
+      if (categoryPath.length > 0) {
         const parentId = categoryPath[categoryPath.length - 1]._id;
         formData.append('parentCategoryId', parentId);
         console.log('Added parentId to formData:', parentId);
       }
-      
 
       if (isEditMode) {
         response = await updateCategory(selectedItem._id, formData);

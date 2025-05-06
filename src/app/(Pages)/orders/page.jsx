@@ -87,6 +87,7 @@ const Orders = () => {
   const filteredOrders = orders
     .filter((order) => {
       if (selectedTab === "all") return true;
+      if (selectedTab === "bump") return order.bumpOrder === true;
       return order.orderStatus?.toLowerCase() === selectedTab.toLowerCase();
     })
     .reverse(); // Reverse to show latest first
@@ -256,7 +257,9 @@ const Orders = () => {
                   <thead>
                     <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
                       <th className="p-4 font-[500] text-nowrap">S.No</th>
-                      <th className="p-4 font-[500] text-nowrap">Customer Name</th>
+                      <th className="p-4 font-[500] text-nowrap">
+                        {selectedTab === "bump" ? "Seller Name" : "Customer Name"}
+                      </th>
                       <th className="p-4 font-[500] text-nowrap">Product</th>
                       <th className="p-4 font-[500]">Total</th>
                       <th className="p-4 font-[500]">Status</th>
@@ -268,7 +271,12 @@ const Orders = () => {
                     {paginatedOrders?.map((order, index) => (
                       <tr key={order._id} className="text-gray-800 text-sm border-b">
                         <td className="p-4 text-[13px]">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                        <td className="p-4 text-[13px]">{order.fullName || "N/A"}</td>
+                        <td className="p-4 text-[13px]">
+                          {selectedTab === "bump" 
+                            ? (order.fromUserId?.fullName || "N/A")
+                            : (order.fullName || "N/A")
+                          }
+                        </td>
                         <td className="p-4 text-[13px] flex items-center gap-2">
                           {order.productId && order.productId.length > 0 ? (
                             <>
@@ -354,19 +362,28 @@ const Orders = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="border rounded-lg p-4">
                 <h3 className="text-lg font-medium mb-3">
-                  Customer Information
+                  {selectedTab === "bump" ? "Seller Information" : "Customer Information"}
                 </h3>
                 <p>
-                  <span className="font-medium">Name:</span>{" "}
-                  {selectedOrder.fullName || "N/A"}
+                  <span className="font-medium">{selectedTab === "bump" ? "Seller Name:" : "Name:"}</span>{" "}
+                  {selectedTab === "bump" 
+                    ? (selectedOrder.fromUserId?.fullName || "N/A")
+                    : (selectedOrder.fullName || "N/A")
+                  }
                 </p>
                 <p>
                   <span className="font-medium">Email:</span>{" "}
-                  {selectedOrder.email || "N/A"}
+                  {selectedTab === "bump"
+                    ? (selectedOrder.fromUserId?.email || "N/A")
+                    : (selectedOrder.email || "N/A")
+                  }
                 </p>
                 <p>
                   <span className="font-medium">Phone:</span>{" "}
-                  {selectedOrder.phone || "N/A"}
+                  {selectedTab === "bump"
+                    ? (selectedOrder.fromUserId?.phone || "N/A")
+                    : (selectedOrder.phone || "N/A")
+                  }
                 </p>
               </div>
 
@@ -408,13 +425,13 @@ const Orders = () => {
                   )}
                 </div>
                 <div>
-                  <p className="font-medium">
+                  {/* <p className="font-medium">
                     Product ID:{" "}
                     {selectedOrder.productId &&
                     selectedOrder.productId.length > 0
                       ? selectedOrder.productId[0]._id || "N/A"
                       : "N/A"}
-                  </p>
+                  </p> */}
                   <p className="font-medium">
                     Product Name:{" "}
                     {selectedOrder.productId &&
@@ -422,20 +439,19 @@ const Orders = () => {
                       ? selectedOrder.productId[0].name || "N/A"
                       : "N/A"}
                   </p>
-                  <p className="font-medium">
+                  <p className="font-medium flex items-center">
                     Product Price:{" "}
-                    {selectedOrder.productId &&
-                    selectedOrder.productId.length > 0 ? (
-                      <span className="flex items-center">
+                    {selectedOrder.productId && selectedOrder.productId.length > 0 ? (
+                      <>
                         <Image 
                           alt="Dirham"
                           src="/dirham-sign.svg"
                           width={15}
                           height={15}
-                          className="inline-block mr-1"
+                          className="inline-block mx-1"
                         />
                         {selectedOrder.productId[0].price || "0.00"}
-                      </span>
+                      </>
                     ) : "N/A"}
                   </p>
                 </div>

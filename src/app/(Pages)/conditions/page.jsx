@@ -1,16 +1,21 @@
 "use client";
 
-import moment from 'moment-timezone';
+import moment from "moment-timezone";
 import { IoMdAdd } from "react-icons/io";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Form, Input, Button, notification, Modal, Pagination } from "antd";
-import { createCondition, getConditions, updateCondition, deleteCondition } from "@/api/api";
+import {
+  createCondition,
+  getConditions,
+  updateCondition,
+  deleteCondition,
+} from "@/api/api";
 
 const Conditions = () => {
   const itemsPerPage = 10;
@@ -50,46 +55,39 @@ const Conditions = () => {
     setSelectedCondition(condition);
     setIsEditMode(true);
     setShowModal(true);
-    form.setFieldsValue({ 
+    form.setFieldsValue({
       name: condition.name,
-      subTitle: condition.subTitle 
+      subTitle: condition.subTitle,
     });
   };
 
   const handleDelete = async (id) => {
     try {
-      Modal.confirm({
-        title: 'Delete Condition',
-        content: 'Are you sure you want to delete this condition? This action cannot be undone.',
-        okText: 'Yes, Delete',
-        cancelText: 'No, Cancel',
-        okButtonProps: {
-          style: { backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', color: 'white' }
-        },
-        onOk: async () => {
-          const response = await deleteCondition(id);
-          if (response.status) {
-            notification.success({
-              message: "Success",
-              description: response.message,
-              placement: "topRight",
-              style: { marginTop: "50px" },
-            });
-            fetchConditions(); // Refresh the list
-          } else {
-            notification.error({
-              message: "Error",
-              description: response.message,
-              placement: "topRight",
-              style: { marginTop: "50px" },
-            });
-          }
-        }
-      });
+      if (!auth) {
+        console.log("User not authenticated");
+        notification.error({
+          message: "Authentication Error",
+          description: "Please login to perform this action",
+          placement: "topRight",
+          style: { marginTop: "50px" },
+        });
+        return;
+      }
+      if (!id) {
+        // error
+      };
+      const response = await deleteCondition(id);
+      if(response.status){
+        setConditions(prevConditions => prevConditions.filter(condition => condition._id !== id));
+        notification.success({
+          message: "Success",
+          description: response.message,
+        });
+      };
     } catch (error) {
       notification.error({
         message: "Error",
-        description: error.message || 'Failed to delete condition',
+        description: error.message || "Failed to delete condition",
         placement: "topRight",
         style: { marginTop: "50px" },
       });
@@ -125,7 +123,9 @@ const Conditions = () => {
     } catch (error) {
       notification.error({
         message: "Error",
-        description: error.message || `Failed to ${isEditMode ? "update" : "create"} condition`,
+        description:
+          error.message ||
+          `Failed to ${isEditMode ? "update" : "create"} condition`,
         placement: "topRight",
         style: { marginTop: "50px" },
       });
@@ -148,7 +148,10 @@ const Conditions = () => {
                 setIsEditMode(false);
                 form.resetFields();
               }}
-              style={{ backgroundColor: "rgba(232, 187, 76, 0.08)", color: "rgb(232, 187, 76)" }}
+              style={{
+                backgroundColor: "rgba(232, 187, 76, 0.08)",
+                color: "rgb(232, 187, 76)",
+              }}
               className="flex items-center gap-2 px-4 py-2 rounded-md transition-colors focus:outline-none"
             >
               <IoMdAdd className="text-xl" />
@@ -159,7 +162,10 @@ const Conditions = () => {
           <div className="p-[30px] bg-white rounded-[8px] shadow-sm overflow-x-auto">
             <table className="min-w-full border">
               <thead>
-                <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
+                <tr
+                  style={{ backgroundColor: "rgba(232, 187, 76, 0.08)" }}
+                  className="text-left text-[14px] text-gray-700"
+                >
                   <th className="p-4 font-[500] text-nowrap">Condition Name</th>
                   <th className="p-4 font-[500] text-nowrap">Condition Type</th>
                   <th className="p-4 font-[500]">Status</th>
@@ -170,16 +176,23 @@ const Conditions = () => {
               <tbody>
                 {paginatedConditions.length > 0 ? (
                   paginatedConditions.map((condition) => (
-                    <tr key={condition._id} className="text-gray-800 text-sm border-b">
+                    <tr
+                      key={condition._id}
+                      className="text-gray-800 text-sm border-b"
+                    >
                       <td className="p-4 text-[13px]">{condition.name}</td>
-                      <td className="p-4 text-[13px] text-nowrap">{condition.subTitle}</td>
+                      <td className="p-4 text-[13px] text-nowrap">
+                        {condition.subTitle}
+                      </td>
                       <td className="p-4">
                         <span className="px-2 py-1 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
-                          {condition.status || 'Active'}
+                          {condition.status || "Active"}
                         </span>
                       </td>
                       <td className="p-4 text-[13px] text-[#000000B2] whitespace-nowrap">
-                        {moment.utc(condition?.createdAt).format('DD MMM YYYY, hh:mm A')}
+                        {moment
+                          .utc(condition?.createdAt)
+                          .format("DD MMM YYYY, hh:mm A")}
                       </td>
                       <td className="p-4 flex space-x-2">
                         <button
@@ -201,7 +214,9 @@ const Conditions = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="text-center p-4">No conditions found.</td>
+                    <td colSpan={4} className="text-center p-4">
+                      No conditions found.
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -221,7 +236,11 @@ const Conditions = () => {
             centered
             footer={null}
             width={600}
-            title={<p className="text-[20px] font-[700]">{isEditMode ? "Edit Condition" : "Add New Condition"}</p>}
+            title={
+              <p className="text-[20px] font-[700]">
+                {isEditMode ? "Edit Condition" : "Add New Condition"}
+              </p>
+            }
             open={showModal}
             onCancel={() => {
               setShowModal(false);
@@ -230,15 +249,13 @@ const Conditions = () => {
             }}
             closeIcon={<span className="ant-modal-close-x ">×</span>}
           >
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSubmit}
-            >
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
               <Form.Item
                 name="name"
                 label="Condition Name"
-                rules={[{ required: true, message: "Please enter condition name" }]}
+                rules={[
+                  { required: true, message: "Please enter condition name" },
+                ]}
               >
                 <Input
                   placeholder="Enter condition name"
@@ -249,7 +266,9 @@ const Conditions = () => {
               <Form.Item
                 name="subTitle"
                 label="Condition Type"
-                rules={[{ required: true, message: "Please enter condition type" }]}
+                rules={[
+                  { required: true, message: "Please enter condition type" },
+                ]}
               >
                 <Input
                   placeholder="Enter condition type"
@@ -260,7 +279,11 @@ const Conditions = () => {
               <div className="flex justify-end gap-3 mt-4 pt-4 border-t">
                 <Button
                   onClick={() => setShowModal(false)}
-                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
+                  style={{
+                    backgroundColor: "rgba(232, 187, 76, 0.08)",
+                    color: "rgb(232, 187, 76)",
+                    borderColor: "rgb(232, 187, 76)",
+                  }}
                   className="transition-colors"
                 >
                   Cancel
@@ -270,7 +293,11 @@ const Conditions = () => {
                   type="primary"
                   htmlType="submit"
                   loading={loading}
-                  style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)', color: 'rgb(232, 187, 76)', borderColor: 'rgb(232, 187, 76)' }}
+                  style={{
+                    backgroundColor: "rgba(232, 187, 76, 0.08)",
+                    color: "rgb(232, 187, 76)",
+                    borderColor: "rgb(232, 187, 76)",
+                  }}
                   className="transition-colors"
                 >
                   {isEditMode ? "Update Condition" : "Create Condition"}

@@ -175,7 +175,7 @@ const Manage = ({ searchQuery }) => {
                   <p className="text-[12px] text-gray-500">
                     Category:{" "}
                     {category.categoryId?.[category.categoryId.length - 1]
-                      ?.name || "N/A"}
+                      ?.name || "Others"}
                   </p>
 
                   <p className="text-[12px] font-semibold text-teal-600 mt-3">
@@ -186,7 +186,7 @@ const Manage = ({ searchQuery }) => {
                       height={16}
                       className="inline-block mr-1 "
                     />{" "}
-                    {category.inclPrice || "N/A"}{" "}
+                    {category.inclPrice || "Others"}{" "}
                   </p>
                 </div>
 
