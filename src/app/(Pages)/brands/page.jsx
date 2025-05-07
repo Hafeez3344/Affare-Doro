@@ -252,10 +252,12 @@ const Brands = () => {
                     >
                       <td className="p-4 text-[13px] flex items-center gap-2">
                         {item.image && (
-                          <img
+                          <Image
                             src={`${BACKEND_URL}/${item.image}`}
                             alt={item.name}
                             className="w-8 h-8 object-cover rounded-full"
+                            width={32}
+                            height={32}
                           />
                         )}
                         {item.name}
@@ -445,9 +447,11 @@ const Brands = () => {
                 {selectedItem.image && (
                   <div className="w-full md:w-1/2 md:border-l mt-10 md:mt-0 pl-0 md:pl-6 flex justify-center items-center">
                     <div className="relative w-full max-w-[400px]">
-                      <img
+                      <Image
                         src={`${BACKEND_URL}/${selectedItem.image}`}
                         alt={selectedItem.name}
+                        width={400}
+                        height={400}
                         className="w-full h-full object-contain"
                       />
                     </div>

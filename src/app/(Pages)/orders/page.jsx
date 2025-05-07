@@ -280,9 +280,11 @@ const Orders = () => {
                         <td className="p-4 text-[13px] flex items-center gap-2">
                           {order.productId && order.productId.length > 0 ? (
                             <>
-                              <img
+                              <Image
                                 src={`${BACKEND_URL}/${order.productId[0].image}`}
                                 alt={order.productId[0].name || "Product"}
+                                width={32}
+                                height={32}
                                 className="w-8 h-8 object-cover rounded-full"
                               />
                               <span>{order.productId[0].name || "N/A"}</span>

@@ -420,9 +420,11 @@ const Categories = () => {
                       {/* <td className="p-4 text-[13px]">{item.name}</td> */}
                       <td className="p-4 text-[13px] flex items-center gap-2">
                         {item.image && (
-                          <img
+                          <Image
                             src={`${BACKEND_URL}/${item.image}`}
                             alt={item.name}
+                            width={32}
+                            height={32}
                             className="w-8 h-8 object-cover rounded-full"
                           />
                         )}

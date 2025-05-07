@@ -424,10 +424,12 @@ const Manage = ({ searchQuery }) => {
                     >
                       {selectedCategory.image.map((img, index) => (
                         <div key={index} className="w-full h-[433px]">
-                          <img
+                          <Image
                             src={`${BACKEND_URL}/${img}`}
                             alt={`${selectedCategory.name} - ${index + 1}`}
                             className="w-full h-full object-contain rounded-lg shadow-md"
+                            width={400}
+                            height={400}
                           />
                         </div>
                       ))}
@@ -471,12 +473,14 @@ const Manage = ({ searchQuery }) => {
                                 carouselRef.current.goTo(index);
                               }}
                             >
-                              <img
+                              <Image
                                 src={`${BACKEND_URL}/${img}`}
                                 alt={`${selectedCategory.name} - Thumbnail ${
                                   index + 1
                                 }`}
                                 className="w-full h-full object-cover"
+                                width={400}
+                                height={400}
                               />
                             </div>
                           </div>

@@ -398,9 +398,11 @@ const CustomersDetails = () => {
               {selectedProduct.image && selectedProduct.image.length > 0 && (
                 <div className="w-[400px] flex-shrink-0">
                   <div className="w-full h-[300px]">
-                    <img
+                    <Image
                       src={`${BACKEND_URL}/${selectedProduct.image[0]}`}
                       alt={selectedProduct.name}
+                      width={400}
+                      height={400}
                       className="w-full h-full object-cover rounded-lg shadow-md"
                     />
                   </div>

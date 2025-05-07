@@ -144,9 +144,11 @@ const ViewCategoryModal = ({
             {selectedCategory.image && (
               <div className="w-[400px] flex-shrink-0">
                 <div className="w-full h-[300px]">
-                  <img
+                  <Image
                     src={`${BACKEND_URL}/${selectedCategory.image}`}
                     alt={selectedCategory.name}
+                    width={400}
+                    height={400}
                     className="w-full h-full object-cover rounded-lg shadow-md"
                   />
                 </div>
