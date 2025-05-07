@@ -343,7 +343,20 @@ export const deleteCategory = async (id) => {
 // ---------------------create Brand api -------------------------------
 export const createBrand = async (data) => {
   try {
-    const response = await api.post("/brand/create", data, getAuthHeader());
+    const token = Cookies.get("token");
+    if (!token) {
+      return {
+        status: false,
+        message: "Please login to perform this action",
+      };
+    }
+
+    const response = await api.post("/brand/create", data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return {
       status: true,
       message: "Brand created successfully",
@@ -406,11 +419,32 @@ export const getBrands = async () => {
 // ---------------------------- Brand APIs -------------------------------
 export const updateBrand = async (id, data) => {
   try {
-    const response = await api.put(
-      `/brand/update/${id}`,
-      data,
-      getAuthHeader()
-    );
+    const token = Cookies.get("token");
+    if (!token) {
+      return {
+        status: false,
+        message: "Please login to perform this action",
+      };
+    }
+
+    if (!id) {
+      return {
+        status: false,
+        message: "Brand ID is required",
+      };
+    }
+
+    const response = await api.put(`/brand/update/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (!response.data) {
+      throw new Error("No response data received from server");
+    }
+
     return {
       status: true,
       message: "Brand updated successfully",
@@ -418,6 +452,35 @@ export const updateBrand = async (id, data) => {
     };
   } catch (error) {
     console.error("API Error:", error);
+
+    if (error.code === "ERR_NETWORK") {
+      return {
+        status: false,
+        message: "Unable to connect to server. Please check if the server is running.",
+      };
+    }
+
+    if (error?.response?.status === 401) {
+      return {
+        status: false,
+        message: "Your session has expired. Please login again.",
+      };
+    }
+
+    if (error?.response?.status === 404) {
+      return {
+        status: false,
+        message: "Brand not found",
+      };
+    }
+
+    if (error?.response?.status === 400) {
+      return {
+        status: false,
+        message: error.response.data.message || "Invalid request data",
+      };
+    }
+
     return {
       status: false,
       message: error?.response?.data?.message || "An unexpected error occurred",

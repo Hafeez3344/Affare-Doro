@@ -127,20 +127,37 @@ const Brands = () => {
     }
   };
 
+  const normFile = (e) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    if (e?.fileList && e.fileList.length > 0) {
+      const file = e.fileList[0]?.originFileObj;
+      if (file) {
+        setImageFile(file);
+        return e.fileList;
+      }
+    }
+    return e;
+  };
+
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
       const formData = new FormData();
 
-      // Add each field to FormData
-      Object.keys(values).forEach((key) => {
-        if (key !== "image") {
-          formData.append(key, values[key]);
-        }
-      });
+      // Add name to FormData
+      formData.append("name", values.name);
 
+      // Handle image file
       if (imageFile) {
+        console.log("Image file being added to FormData:", imageFile);
         formData.append("image", imageFile);
+      }
+
+      // Log FormData contents for debugging
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
       }
 
       let response;
@@ -168,6 +185,7 @@ const Brands = () => {
         throw new Error(response.message || "Brand operation failed");
       }
     } catch (error) {
+      console.error("Error in handleSubmit:", error);
       notification.error({
         message: error.message || "Brand operation failed",
         placement: "topRight",
@@ -176,18 +194,6 @@ const Brands = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    if (e?.fileList) {
-      const file = e.fileList[0]?.originFileObj;
-      setImageFile(file);
-      return e.fileList;
-    }
-    return e;
   };
 
   const handleViewBrand = (brand) => {
