@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updatePageNavigation } from "@/features/features";
 import {
   Form,
   Input,
@@ -13,36 +12,35 @@ import {
   Modal,
   Pagination,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { createBrand, getBrands, updateBrand, deleteBrand } from "@/api/api";
 import moment from "moment-timezone";
-import { useRouter } from "next/navigation";
 import BACKEND_URL from "@/api/api";
-
-import Navbar from "@/components/navbar";
-import Sidebar from "@/components/sidebar";
-
-import tableAction from "@/assets/svgs/table-action.svg";
 import { FiEye } from "react-icons/fi";
+import Navbar from "@/components/navbar";
 import { IoMdAdd } from "react-icons/io";
+import Sidebar from "@/components/sidebar";
+import { useRouter } from "next/navigation";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { UploadOutlined } from "@ant-design/icons";
+import tableAction from "@/assets/svgs/table-action.svg";
+import { updatePageNavigation } from "@/features/features";
+import { createBrand, getBrands, updateBrand, deleteBrand } from "@/api/api";
 
 const Brands = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const auth = useSelector((state) => state.auth);
-  const [selectedBrand, setSelectedBrand] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [brands, setBrands] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
+  const router = useRouter();
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const auth = useSelector((state) => state.auth);
+  const [totalPages, setTotalPages] = useState(1);
+  const [imageFile, setImageFile] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState(0);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const fetchBrands = async () => {
     try {

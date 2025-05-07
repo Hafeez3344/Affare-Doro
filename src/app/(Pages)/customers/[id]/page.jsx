@@ -1,21 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
-import { useParams } from "next/navigation";
-import { updatePageNavigation } from "@/features/features";
-import BACKEND_URL, { getProducts } from "@/api/api";
 import { Modal, Pagination } from "antd";
-
 import Navbar from "@/components/navbar";
-import Sidebar from "@/components/sidebar";
-
-import grommetIconsMoney from "@/assets/svgs/grommet-icons_money.svg";
-import customer from "@/assets/customer.png"
-
-import { FaArrowRight } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
 import data from "@/components/customers";
+import Sidebar from "@/components/sidebar";
+import { useParams } from "next/navigation";
+import customer from "@/assets/customer.png"
+import { FaArrowRight } from "react-icons/fa6";
+import React, { useEffect, useState } from "react";
+import BACKEND_URL, { getProducts } from "@/api/api";
+import { updatePageNavigation } from "@/features/features";
+import grommetIconsMoney from "@/assets/svgs/grommet-icons_money.svg";
 
 // Function to generate star ratings
 const getStarRating = (rating) => {

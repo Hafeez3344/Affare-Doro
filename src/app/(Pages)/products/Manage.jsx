@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import BACKEND_URL, { getProducts } from "@/api/api";
-import { notification, Modal, Carousel, Pagination } from "antd";
-import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import BACKEND_URL, { getProducts } from "@/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
+import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { notification, Modal, Carousel, Pagination } from "antd";
 
 const Manage = ({ searchQuery }) => {
+  const itemsPerPage = 10;
   const router = useRouter();
   const dispatch = useDispatch();
+  const carouselRef = React.useRef();
+  const [seller, setSeller] = useState(null);
+  const thumbnailCarouselRef = React.useRef();
+  const [wishlist, setWishlist] = useState({});
   const auth = useSelector((state) => state.auth);
   const [categories, setCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [seller, setSeller] = useState(null);
-  const [wishlist, setWishlist] = useState({});
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const carouselRef = React.useRef();
-  const thumbnailCarouselRef = React.useRef();
 
   const fetchCategories = async () => {
     try {

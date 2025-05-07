@@ -1,30 +1,30 @@
 "use client";
 import { Modal } from "antd";
 import Image from "next/image";
+import { Pagination } from "antd";
+import { FiEye } from "react-icons/fi";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import SearchOnTop from "@/components/SearchOnTop";
+import React, { useEffect, useState } from "react";
 import BACKEND_URL, { getAllOrders } from "@/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
-import { FiEye } from "react-icons/fi";
-import { Pagination } from "antd";
 
 const Orders = () => {
+  const itemsPerPage = 20;
   const router = useRouter();
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const auth = useSelector((state) => state.auth);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedTab, setSelectedTab] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
 
   useEffect(() => {
     if (!auth) {

@@ -1,10 +1,10 @@
 import React from 'react';
-import moment from 'moment-timezone';
-import Image from 'next/image';
 import { Modal } from 'antd';
+import Image from 'next/image';
+import moment from 'moment-timezone';
+import BACKEND_URL from '@/api/api';
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp, ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
-import BACKEND_URL from '@/api/api';
 
 const ViewCategoryModal = ({ 
   isOpen, 
