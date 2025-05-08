@@ -283,6 +283,36 @@ export const getCategories = async () => {
   }
 };
 
+export const fn_getFormattedCategories = async () => {
+  try {
+    const response = await api.get("/category/get-format");
+    return {
+      status: true,
+      message: "Categories fetched successfully",
+      data: response?.data,
+    };
+  } catch (error) {
+    console.error("API Error:", error);
+
+    if (error.code === "ERR_NETWORK") {
+      return {
+        status: false,
+        message:
+          "Unable to connect to server. Please check if the server is running.",
+      };
+    }
+
+    if (error?.response?.status === 400) {
+      return { status: false, message: error.response.data.message };
+    }
+
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};
+
 // ---------------------------- Update Category APIs -------------------------------
 export const updateCategory = async (id, data) => {
   try {
@@ -317,7 +347,7 @@ export const deleteCategory = async (id) => {
     }
 
     const response = await api.delete(
-      `/category/delete/${id}`,
+      `/category/delete-category/${id}`,
       getAuthHeader()
     );
     return {

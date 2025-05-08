@@ -1,35 +1,51 @@
 "use client";
 
 import Image from "next/image";
-import { Form, notification } from 'antd';
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
+import moment from 'moment-timezone';
+import { FiEye } from "react-icons/fi";
 import Navbar from "@/components/navbar";
+import { IoMdAdd } from "react-icons/io";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import { MdEdit, MdDelete } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import ViewCategoryModal from "./ViewCategoryModal";
+import { useDispatch, useSelector } from "react-redux";
 import AddEditCategoryModal from "./AddEditCategoryModal";
 import { updatePageNavigation } from "@/features/features";
+import { Form, notification, Select, Modal, Pagination } from 'antd';
+import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory } from "@/api/api";
 
-import { MdEdit, MdDelete } from "react-icons/md";
-import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from "react-icons/io";
-import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory, fn_getFormattedCategories } from "@/api/api";
+const { Option } = Select;
 
 const Categories = () => {
-
+  const itemsPerPage = 10;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const router = useRouter();
   const auth = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isEditMode, setIsEditMode] = useState(false);
   const [categoryPath, setCategoryPath] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [currentParentId, setCurrentParentId] = useState(null);
+  const [viewCategoryPath, setViewCategoryPath] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [viewSubCategories, setViewSubCategories] = useState([]);
+  const [isViewDropdownOpen, setIsViewDropdownOpen] = useState(false);
+  const [currentViewParentId, setCurrentViewParentId] = useState(null);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+
+  const paginatedCategories = categories.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   useEffect(() => {
     if (!auth) {
@@ -38,19 +54,7 @@ const Categories = () => {
     }
     dispatch(updatePageNavigation("categories"));
     fetchCategories();
-    fn_getFormattedCategory();
   }, [auth, dispatch, router]);
-
-  const [loader, setLoader] = useState(true);
-  const [formattedCategory, setFormattedCategory] = useState([]);
-
-  const fn_getFormattedCategory = async () => {
-    const response = await fn_getFormattedCategories();
-    setLoader(false);
-    if (response?.status) {
-      setFormattedCategory(response?.data);
-    };
-  };
 
   const fetchCategories = async () => {
     try {
@@ -72,6 +76,47 @@ const Categories = () => {
       });
     }
   };
+
+  const fn_viewDetails = (id) => {
+    if (id === selectedCategory) {
+      return setSelectedCategory(0);
+    }
+    setSelectedCategory(id);
+  };
+
+  const handleEdit = (item) => {
+    setSelectedItem(item);
+    setIsEditMode(true);
+    setShowModal(true);
+    form.setFieldsValue({
+      name: item.name,
+      // Set other fields as needed
+    });
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteCategory(id);
+      if (response.status) {
+        notification.success({
+          message: "Category deleted successfully",
+          placement: 'topRight',
+          style: { marginTop: '50px' }
+        });
+        fetchCategories();
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      notification.error({
+        message: error.message || 'Failed to delete category',
+        placement: 'topRight',
+        style: { marginTop: '50px' }
+      });
+    }
+  };
+
+  console.log("imageFile", imageFile);
 
   const handleSubmit = async (values) => {
     try {
@@ -117,11 +162,20 @@ const Categories = () => {
           placement: 'topRight',
           style: { marginTop: '50px' }
         });
-
+        
+        // Reset all states and close modal
         form.resetFields();
+        setCategoryPath([]);
+        setCurrentParentId(null);
+        setSubCategories([]);
+        setIsCategoryDropdownOpen(false);
         setShowModal(false);
-        setLoader(true);
-        await fn_getFormattedCategory();
+        setIsEditMode(false);
+        setSelectedItem(null);
+        setImageFile(null);
+        
+        // Fetch updated categories
+        await fetchCategories();
       } else {
         throw new Error(response.message || 'Category operation failed');
       }
@@ -136,17 +190,7 @@ const Categories = () => {
       setLoading(false);
     }
   };
-
-  const handleEditCategory = (category) => {
-    alert(category?._id)
-    setIsEditMode(true);
-    setShowModal(true);
-    setSelectedItem(category);
-    form.setFieldsValue({
-        name: category.name, // Auto-fill name
-        image: category.image ? [{ url: `${BACKEND_URL}/${category.image}` }] : [], // Auto-fill image
-    });
-  };
+  
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -156,7 +200,22 @@ const Categories = () => {
     setSubCategories([]);
     setIsCategoryDropdownOpen(false);
     form.resetFields();
+    setImageFile(null);
     setSelectedItem(null);
+  };
+
+  const normFile = (e) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    if (e?.fileList) {
+      const file = e.fileList[0]?.originFileObj;
+      console.log('Setting image file:', file);
+      setImageFile(file);
+      return e.fileList;
+    }
+    return e;
   };
 
   const fetchSubCategories = async (categoryId) => {
@@ -231,6 +290,52 @@ const Categories = () => {
     form.resetFields();
   };
 
+  const handleViewCategory = async (category) => {
+    setSelectedCategory(category);
+    setViewModalOpen(true);
+    setIsViewDropdownOpen(false);
+    setViewCategoryPath([category]);
+    await fetchViewSubCategories(category._id);
+  };
+
+  const handleViewCategorySelect = async (category) => {
+    if (category.subCategoryCount > 0) {
+      setViewCategoryPath([...viewCategoryPath, category]);
+      await fetchViewSubCategories(category._id);
+    }
+  };
+
+  const handleViewGoBack = async () => {
+    if (viewCategoryPath.length > 1) {
+      const newPath = [...viewCategoryPath];
+      newPath.pop();
+      setViewCategoryPath(newPath);
+
+      const parentId = newPath[newPath.length - 1]._id;
+      await fetchViewSubCategories(parentId);
+    }
+  };
+
+  const fetchViewSubCategories = async (categoryId) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/category/viewAll?parentCategoryId=${categoryId}`);
+      const data = await response.json();
+
+      if (data.status === "ok") {
+        setViewSubCategories(data.data);
+        setCurrentViewParentId(categoryId);
+      } else {
+        setViewSubCategories([]);
+      }
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+      setViewSubCategories([]);
+    }
+  };
+
+  const modalTitle = isEditMode ? "Edit Category" : "Add New Category";
+  const submitButtonText = isEditMode ? "Update Category" : "Create Category";
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50" style={{ fontFamily: '"Poppins", sans-serif' }}>
       <style jsx global>{`
@@ -296,17 +401,105 @@ const Categories = () => {
               Add Category
             </button>
           </div>
-
-          <div className="p-[30px] bg-white rounded-[8px] shadow-sm overflow-x-auto w-full mt-[20px] flex flex-col gap-[10px]">
-            {!loader ? formattedCategory?.length > 0 ? (
-              <CategoryTree categories={formattedCategory} fn_getFormattedCategory={fn_getFormattedCategory} handleEditCategory={handleEditCategory} />
-            ) : (
-              <p className="text-center text-gray-600 text-[14px]">No Data Found</p>
-            ) : (
-              <p className="text-center text-gray-600 text-[14px]">Loading...</p>
-            )}
+          {/* ---------------------Category Table----------------------- */}
+          <div className="p-[30px] bg-white rounded-[8px] shadow-sm overflow-x-auto w-full">
+            <table className="min-w-full border">
+              <thead>
+                <tr style={{ backgroundColor: 'rgba(232, 187, 76, 0.08)' }} className="text-left text-[14px] text-gray-700">
+                  <th className="p-4 font-[500] text-nowrap">Category Name</th>
+                  <th className="p-4 font-[500] text-nowrap">Sub Categories</th>
+                  <th className="p-4 font-[500]">Status</th>
+                  <th className="p-4 font-[500]">Created Date</th>
+                  <th className="p-4 font-[500]">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedCategories.length > 0 ? (
+                  paginatedCategories.map((item) => (
+                    <tr key={item._id} className="text-gray-800 text-sm border-b">
+                      {/* <td className="p-4 text-[13px]">{item.name}</td> */}
+                      <td className="p-4 text-[13px] flex items-center gap-2">
+                        {item.image && (
+                          <Image
+                            src={`${BACKEND_URL}/${item.image}`}
+                            alt={item.name}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 object-cover rounded-full"
+                          />
+                        )}
+                        {item.name}
+                      </td>
+                      <td className="p-4 text-[13px]">{item.subCategoryCount}</td>
+                      <td className="p-4">
+                        <span className="px-2 py-1 w-20 rounded-[20px] text-[11px] flex items-center justify-center bg-[#10CB0026] text-[#0DA000]">
+                          {item.status || 'Active'}
+                        </span>
+                      </td>
+                      <td className="p-4 text-[13px] text-[#000000B2] whitespace-nowrap">
+                        {moment.utc(item?.createdAt).format('DD MMM YYYY, hh:mm A')}
+                      </td>
+                      <td className="p-4 flex space-x-2">
+                        <button
+                          className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
+                          title="View"
+                          onClick={() => handleViewCategory(item)}
+                        >
+                          <FiEye />
+                        </button>
+                        <button
+                          className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
+                          title="Edit"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <MdEdit />
+                        </button>
+                        <button
+                          className="bg-red-100 text-red-600 rounded-full px-2 py-2"
+                          title="Delete"
+                          onClick={() => handleDelete(item._id)}
+                        >
+                          <MdDelete />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center p-4 text-gray-500">No categories found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <div className="flex justify-end mt-4">
+              <Pagination
+                current={currentPage}
+                onChange={(page) => setCurrentPage(page)}
+                total={categories.length}
+                pageSize={itemsPerPage}
+              />
+            </div>
           </div>
 
+          {/* View Category Modal */}
+          <ViewCategoryModal
+            isOpen={viewModalOpen}
+            onClose={() => {
+              setViewModalOpen(false);
+              setIsViewDropdownOpen(false);
+              setViewSubCategories([]);
+              setViewCategoryPath([]);
+            }}
+            selectedCategory={selectedCategory}
+            isViewDropdownOpen={isViewDropdownOpen}
+            setIsViewDropdownOpen={setIsViewDropdownOpen}
+            viewSubCategories={viewSubCategories}
+            viewCategoryPath={viewCategoryPath}
+            handleViewGoBack={handleViewGoBack}
+            handleViewCategorySelect={handleViewCategorySelect}
+          />
+
+          {/* Add/Edit Category Modal */}
           <AddEditCategoryModal
             isOpen={showModal}
             onClose={handleModalClose}
@@ -323,7 +516,6 @@ const Categories = () => {
             handleNewCategory={handleNewCategory}
             handleCategorySelect={handleCategorySelect}
             handleSubmit={handleSubmit}
-            selectedItem={selectedItem}
           />
         </div>
       </div>
@@ -332,74 +524,3 @@ const Categories = () => {
 };
 
 export default Categories;
-
-const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory, level = 0 }) => {
-  const [expanded, setExpanded] = useState({});
-
-  const toggleExpand = (e, id) => {
-    e.stopPropagation();
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const fn_deleteCategory = async (e, id) => {
-    e.stopPropagation();
-    const res = await deleteCategory(id);
-    if (res?.status) {
-      fn_getFormattedCategory();
-      notification.success({
-        message: 'Category Deleted',
-        placement: 'topRight',
-        style: { marginTop: '50px' }
-      });
-    }
-  };
-
-  return (
-    <>
-      {categories.map((cat) => (
-        <div key={cat._id} onClick={(e) => cat?.subCategory?.length > 0 ? toggleExpand(e, cat._id) : e.stopPropagation()}>
-          <div
-            className="flex items-center justify-between h-[55px] px-[20px] rounded-[10px] cursor-pointer mb-2 text-[14px]"
-            style={{
-              backgroundColor: "rgba(232, 187, 76, 0.07)",
-              marginLeft: `${level * 50}px`,
-            }}
-          >
-            <div className="flex items-center gap-[15px]">
-              <Image
-                src={cat?.image !== "" ? `${BACKEND_URL}/${cat?.image}` : "/dummy_image.png"}
-                alt={cat?.name}
-                width={32}
-                height={32}
-                className="w-8 h-8 object-cover rounded-full border border-yellow-300"
-              />
-              <p>{cat?.name}</p>
-            </div>
-            <div className="flex items-center gap-[15px]">
-              <MdEdit className="text-[20px] text-blue-600" onClick={(e) => {e.stopPropagation(); handleEditCategory(cat)}} />
-              <MdDelete className="text-[20px] text-red-600" onClick={(e) => fn_deleteCategory(e, cat?._id)} />
-              {cat?.subCategory?.length > 0 ? (
-                <div>
-                  {expanded[cat._id] ? (
-                    <IoIosArrowUp className="text-xl" />
-                  ) : (
-                    <IoIosArrowDown className="text-xl" />
-                  )}
-                </div>
-              ) : (
-                <div className="w-[28px] mr-[-9px]">
-                  -
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Recursive Rendering of Subcategories */}
-          {expanded[cat._id] && cat.subCategory?.length > 0 && (
-            <CategoryTree categories={cat.subCategory} fn_getFormattedCategory={fn_getFormattedCategory} handleEditCategory={handleEditCategory} level={level + 1} />
-          )}
-        </div>
-      ))}
-    </>
-  );
-};
