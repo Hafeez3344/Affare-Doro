@@ -138,7 +138,6 @@ const Categories = () => {
   };
 
   const handleEditCategory = (category) => {
-    alert(category?._id)
     setIsEditMode(true);
     setShowModal(true);
     setSelectedItem(category);

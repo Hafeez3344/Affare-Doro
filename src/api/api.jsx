@@ -223,7 +223,12 @@ export const updateBump = async (id, data) => {
 // ---------------------create category api -------------------------------
 export const createCategory = async (data) => {
   try {
-    const response = await api.post(`/category/create`, data, getAuthHeader());
+    const token = Cookies.get("token");
+    const response = await api.post(`/category/create`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    });
     return {
       status: true,
       message: "Category created successfully",
@@ -316,10 +321,12 @@ export const fn_getFormattedCategories = async () => {
 // ---------------------------- Update Category APIs -------------------------------
 export const updateCategory = async (id, data) => {
   try {
-    const response = await api.put(
-      `/category/update/${id}`,
-      data,
-      getAuthHeader()
+    const token = Cookies.get("token");
+    const response = await api.put(`/category/update/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    }
     );
     return {
       status: true,
