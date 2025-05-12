@@ -197,9 +197,9 @@ const AddEditCategoryModal = ({
             </Radio.Group>
           </Form.Item>
           <Form.Item
-            name="hasCustomShopping"
+            name="hasCustomShipping"
             label="Has Custom Shipping"
-            initialValue={selectedItem?.hasCustomShopping ?? true}
+            initialValue={selectedItem?.hasCustomShipping ?? true}
           >
             <Radio.Group>
               <Radio value={true}>Yes</Radio>

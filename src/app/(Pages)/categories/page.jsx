@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import AddEditCategoryModal from "./AddEditCategoryModal";
+import DeleteCategoryModal from "./DeleteCategoryModal";
 import { updatePageNavigation } from "@/features/features";
 
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -58,7 +59,7 @@ const Categories = () => {
       console.log('API Response:', response);
 
       if (response?.status && Array.isArray(response?.data)) {
-        setCategories(response.data); // Assuming response.data is the array of categories
+        setCategories(response.data);
       } else {
         throw new Error(response?.message || 'Unexpected API response');
       }
@@ -93,6 +94,7 @@ const Categories = () => {
       });
 
       // Add image file to FormData if it exists
+      
       if (imageFile) {
         formData.append('image', imageFile);
         console.log('Added image file to formData:', imageFile);
@@ -118,10 +120,24 @@ const Categories = () => {
           style: { marginTop: '50px' }
         });
 
+        // Reset form and close modal
         form.resetFields();
         setShowModal(false);
         setLoader(true);
-        await fn_getFormattedCategory();
+        
+        // Refresh both formatted categories and regular categories
+        await Promise.all([
+          fn_getFormattedCategory(),
+          fetchCategories()
+        ]);
+        
+        // Reset all states
+        setCategoryPath([]);
+        setCurrentParentId(null);
+        setSubCategories([]);
+        setIsCategoryDropdownOpen(false);
+        setIsEditMode(false);
+        setSelectedItem(null);
       } else {
         throw new Error(response.message || 'Category operation failed');
       }
@@ -142,8 +158,14 @@ const Categories = () => {
     setShowModal(true);
     setSelectedItem(category);
     form.setFieldsValue({
-        name: category.name, // Auto-fill name
-        image: category.image ? [{ url: `${BACKEND_URL}/${category.image}` }] : [], // Auto-fill image
+        name: category.name,
+        image: category.image ? [{ url: `${BACKEND_URL}/${category.image}` }] : [],
+        hasBrand: category.hasBrand,
+        hasSize: category.hasSize,
+        hasCondition: category.hasCondition,
+        hasColor: category.hasColor,
+        hasMaterial: category.hasMaterial,
+        hasCustomShipping: category.hasCustomShipping,
     });
   };
 
@@ -334,22 +356,46 @@ export default Categories;
 
 const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory, level = 0 }) => {
   const [expanded, setExpanded] = useState({});
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const toggleExpand = (e, id) => {
     e.stopPropagation();
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const fn_deleteCategory = async (e, id) => {
+  const handleDeleteClick = (e, category) => {
     e.stopPropagation();
-    const res = await deleteCategory(id);
-    if (res?.status) {
-      fn_getFormattedCategory();
-      notification.success({
-        message: 'Category Deleted',
+    setCategoryToDelete(category);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!categoryToDelete) return;
+    
+    setDeleteLoading(true);
+    try {
+      const res = await deleteCategory(categoryToDelete._id);
+      if (res?.status) {
+        fn_getFormattedCategory();
+        notification.success({
+          message: 'Category Deleted',
+          placement: 'topRight',
+          style: { marginTop: '50px' }
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Failed to delete category',
+        description: error.message,
         placement: 'topRight',
         style: { marginTop: '50px' }
       });
+    } finally {
+      setDeleteLoading(false);
+      setDeleteModalOpen(false);
+      setCategoryToDelete(null);
     }
   };
 
@@ -376,7 +422,7 @@ const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory,
             </div>
             <div className="flex items-center gap-[15px]">
               <MdEdit className="text-[20px] text-blue-600" onClick={(e) => {e.stopPropagation(); handleEditCategory(cat)}} />
-              <MdDelete className="text-[20px] text-red-600" onClick={(e) => fn_deleteCategory(e, cat?._id)} />
+              <MdDelete className="text-[20px] text-red-600" onClick={(e) => handleDeleteClick(e, cat)} />
               {cat?.subCategory?.length > 0 ? (
                 <div>
                   {expanded[cat._id] ? (
@@ -399,6 +445,17 @@ const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory,
           )}
         </div>
       ))}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteCategoryModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setCategoryToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        loading={deleteLoading}
+      />
     </>
   );
 };
