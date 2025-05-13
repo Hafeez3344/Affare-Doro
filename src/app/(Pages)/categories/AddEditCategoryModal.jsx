@@ -20,7 +20,7 @@ const AddEditCategoryModal = ({
   handleNewCategory,
   handleCategorySelect,
   handleSubmit,
-  selectedItem, // Receive selectedItem
+  selectedItem, 
 }) => {
   const modalTitle = isEditMode ? "Edit Category" : "Add New Category";
   const submitButtonText = isEditMode ? "Update Category" : "Create Category";
@@ -149,7 +149,7 @@ const AddEditCategoryModal = ({
           <Form.Item
             name="hasBrand"
             label="Has Brand"
-            initialValue={selectedItem?.hasBrand ?? true}
+            initialValue={isEditMode ? selectedItem?.hasBrand : true}
           >
             <Radio.Group>
               <Radio value={true}>Yes</Radio>
@@ -159,7 +159,7 @@ const AddEditCategoryModal = ({
           <Form.Item
             name="hasSize"
             label="Has Size"
-            initialValue={selectedItem?.hasSize ?? true}
+            initialValue={isEditMode ? selectedItem?.hasSize : true}
           >
             <Radio.Group>
               <Radio value={true}>Yes</Radio>
@@ -169,7 +169,7 @@ const AddEditCategoryModal = ({
           <Form.Item
             name="hasCondition"
             label="Has Condition"
-            initialValue={selectedItem?.hasCondition ?? true}
+            initialValue={isEditMode ? selectedItem?.hasCondition : true}
           >
             <Radio.Group>
               <Radio value={true}>Yes</Radio>
@@ -179,7 +179,7 @@ const AddEditCategoryModal = ({
           <Form.Item
             name="hasColor"
             label="Has Color"
-            initialValue={selectedItem?.hasColor ?? true}
+            initialValue={isEditMode ? selectedItem?.hasColor : true}
           >
             <Radio.Group>
               <Radio value={true}>Yes</Radio>
@@ -189,7 +189,7 @@ const AddEditCategoryModal = ({
           <Form.Item
             name="hasMaterial"
             label="Has Material"
-            initialValue={selectedItem?.hasMaterial ?? true}
+            initialValue={isEditMode ? selectedItem?.hasMaterial : true}
           >
             <Radio.Group>
               <Radio value={true}>Yes</Radio>
@@ -199,7 +199,7 @@ const AddEditCategoryModal = ({
           <Form.Item
             name="hasCustomShipping"
             label="Has Custom Shipping"
-            initialValue={selectedItem?.hasCustomShipping ?? true}
+            initialValue={isEditMode ? selectedItem?.hasCustomShipping : true}
           >
             <Radio.Group>
               <Radio value={true}>Yes</Radio>

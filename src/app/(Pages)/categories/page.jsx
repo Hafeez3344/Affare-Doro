@@ -1,18 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import Navbar from "@/components/navbar";
 import { Form, notification } from 'antd';
+import Sidebar from "@/components/sidebar";
 import { useRouter } from "next/navigation";
+import { MdEdit, MdDelete } from "react-icons/md";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import Navbar from "@/components/navbar";
-import Sidebar from "@/components/sidebar";
-import AddEditCategoryModal from "./AddEditCategoryModal";
 import DeleteCategoryModal from "./DeleteCategoryModal";
+import AddEditCategoryModal from "./AddEditCategoryModal";
 import { updatePageNavigation } from "@/features/features";
-
-import { MdEdit, MdDelete } from "react-icons/md";
 import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from "react-icons/io";
 import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory, fn_getFormattedCategories } from "@/api/api";
 
