@@ -186,7 +186,7 @@ const Manage = ({ searchQuery }) => {
                       height={16}
                       className="inline-block mr-1 "
                     />{" "}
-                    {category.inclPrice || "Others"}{" "}
+                    {category.totalPrice || "Others"}{" "}
                   </p>
                 </div>
 
