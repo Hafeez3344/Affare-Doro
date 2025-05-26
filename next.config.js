@@ -10,6 +10,12 @@ const nextConfig = {
         pathname: '/**', // Allow all paths
       },
       {
+        protocol: 'http',
+        hostname: '*',
+        port: '8500', // Ensure the port matches your backend server
+        pathname: '/**', // Allow all paths
+      },
+      {
         protocol: 'https',
         hostname: 'affari-doro-backend.shubhexchange.com',
         pathname: '/**', // Allow all paths

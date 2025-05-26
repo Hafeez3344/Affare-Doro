@@ -1,9 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-// const BACKEND_URL = "https://affari-doro-backend.shubhexchange.com";
-// const BACKEND_URL = "http://localhost:8000"; // Localhost URL for development
-// const BACKEND_URL = "http://89.116.134.164:8000"; // Localhost URL for development
+// const BACKEND_URL = "http://89.116.134.164:8500";
 const BACKEND_URL = "https://backend.affaredoro.com";
 
 export default BACKEND_URL;
@@ -1057,3 +1055,21 @@ export const getDashboardCardData = async () => {
     };
   }
 };
+
+export const fn_updateCategoryOrderingApi = async (data) => {
+  try {
+    const response = await api.put("/category/update-ordering", data, getAuthHeader());
+    if (response?.status === 200) {
+      return {
+        status: true,
+        message: "Ordering Updated"
+      };
+    };
+  } catch (error) {
+    console.error("API Error:", error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+}

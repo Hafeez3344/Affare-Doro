@@ -20,7 +20,7 @@ const AddEditCategoryModal = ({
   handleNewCategory,
   handleCategorySelect,
   handleSubmit,
-  selectedItem, 
+  selectedItem,
 }) => {
   const modalTitle = isEditMode ? "Edit Category" : "Add New Category";
   const submitButtonText = isEditMode ? "Update Category" : "Create Category";
@@ -69,56 +69,58 @@ const AddEditCategoryModal = ({
             label="Product Category"
             rules={[{ required: false, message: "Please select a category" }]}
           >
-            <div
-              className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
-              onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-            >
-              <span>
-                {categoryPath.length
-                  ? categoryPath.map((c) => c.name).join(" / ")
-                  : "Select Category"}
-              </span>
-              {isCategoryDropdownOpen ? (
-                <ChevronUp className="absolute right-2" />
-              ) : (
-                <ChevronDown className="absolute right-2" />
-              )}
-            </div>
-            <AnimatePresence>
-              {isCategoryDropdownOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
-                >
-                  {categoryPath.length > 0 && (
-                    <div
-                      className="cursor-pointer p-2 hover:bg-gray-100"
-                      onClick={handleGoBack}
-                    >
-                      <ArrowLeft /> Back
-                    </div>
-                  )}
-                  <div
-                    className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                    onClick={() => handleNewCategory()}
+            <>
+              <div
+                className="relative border p-2 rounded cursor-pointer flex items-center justify-between border-[--text-color] focus:border-[--text-color] hover:border-[--text-color] focus:shadow-[0_0_0_2px_rgba(232,187,76,0.2)]"
+                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+              >
+                <span>
+                  {categoryPath.length
+                    ? categoryPath.map((c) => c.name).join(" / ")
+                    : "Select Category"}
+                </span>
+                {isCategoryDropdownOpen ? (
+                  <ChevronUp className="absolute right-2" />
+                ) : (
+                  <ChevronDown className="absolute right-2" />
+                )}
+              </div>
+              <AnimatePresence>
+                {isCategoryDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="border p-2 rounded mt-2 bg-white category-dropdown max-h-[200px] overflow-y-auto"
                   >
-                    <span>New Category</span>
-                  </div>
-                  {(currentParentId ? subCategories : categories).map((category) => (
+                    {categoryPath.length > 0 && (
+                      <div
+                        className="cursor-pointer p-2 hover:bg-gray-100"
+                        onClick={handleGoBack}
+                      >
+                        <ArrowLeft /> Back
+                      </div>
+                    )}
                     <div
-                      key={category._id}
                       className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
-                      onClick={() => handleCategorySelect(category)}
+                      onClick={() => handleNewCategory()}
                     >
-                      <span>{category.name}</span>
-                      {category.subCategoryCount > 0 && <ArrowRight />}
+                      <span>New Category</span>
                     </div>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    {(currentParentId ? subCategories : categories).map((category) => (
+                      <div
+                        key={category._id}
+                        className="cursor-pointer p-2 hover:bg-gray-100 flex justify-between items-center"
+                        onClick={() => handleCategorySelect(category)}
+                      >
+                        <span>{category.name}</span>
+                        {category.subCategoryCount > 0 && <ArrowRight />}
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>
           </Form.Item>
         )}
 

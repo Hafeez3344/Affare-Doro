@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Navbar from "@/components/navbar";
-import { Form, notification } from 'antd';
 import Sidebar from "@/components/sidebar";
 import { useRouter } from "next/navigation";
+import { Form, notification, Select } from 'antd';
 import { MdEdit, MdDelete } from "react-icons/md";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import DeleteCategoryModal from "./DeleteCategoryModal";
 import AddEditCategoryModal from "./AddEditCategoryModal";
 import { updatePageNavigation } from "@/features/features";
 import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from "react-icons/io";
-import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory, fn_getFormattedCategories } from "@/api/api";
+import BACKEND_URL, { createCategory, getCategories, updateCategory, deleteCategory, fn_getFormattedCategories, fn_updateCategoryOrderingApi } from "@/api/api";
 
 const Categories = () => {
 
@@ -92,7 +92,7 @@ const Categories = () => {
       });
 
       // Add image file to FormData if it exists
-      
+
       if (imageFile) {
         formData.append('image', imageFile);
         console.log('Added image file to formData:', imageFile);
@@ -122,13 +122,13 @@ const Categories = () => {
         form.resetFields();
         setShowModal(false);
         setLoader(true);
-        
+
         // Refresh both formatted categories and regular categories
         await Promise.all([
           fn_getFormattedCategory(),
           fetchCategories()
         ]);
-        
+
         // Reset all states
         setCategoryPath([]);
         setCurrentParentId(null);
@@ -156,14 +156,14 @@ const Categories = () => {
     setShowModal(true);
     setSelectedItem(category);
     form.setFieldsValue({
-        name: category.name,
-        image: category.image ? [{ url: `${BACKEND_URL}/${category.image}` }] : [],
-        hasBrand: category.hasBrand,
-        hasSize: category.hasSize,
-        hasCondition: category.hasCondition,
-        hasColor: category.hasColor,
-        hasMaterial: category.hasMaterial,
-        hasCustomShipping: category.hasCustomShipping,
+      name: category.name,
+      image: category.image ? [{ url: `${BACKEND_URL}/${category.image}` }] : [],
+      hasBrand: category.hasBrand,
+      hasSize: category.hasSize,
+      hasCondition: category.hasCondition,
+      hasColor: category.hasColor,
+      hasMaterial: category.hasMaterial,
+      hasCustomShipping: category.hasCustomShipping,
     });
   };
 
@@ -353,10 +353,11 @@ const Categories = () => {
 export default Categories;
 
 const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory, level = 0 }) => {
+
   const [expanded, setExpanded] = useState({});
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const toggleExpand = (e, id) => {
     e.stopPropagation();
@@ -371,7 +372,7 @@ const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory,
 
   const handleDeleteConfirm = async () => {
     if (!categoryToDelete) return;
-    
+
     setDeleteLoading(true);
     try {
       const res = await deleteCategory(categoryToDelete._id);
@@ -397,9 +398,21 @@ const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory,
     }
   };
 
+  const fn_sortPayment = async (id, order) => {
+    const response = await fn_updateCategoryOrderingApi({ categoryId: id, newOrdering: order });
+    if (response?.status) {
+      notification.success({
+        message: 'Category Ordering Updated',
+        placement: 'topRight',
+        style: { marginTop: '50px' }
+      });
+      fn_getFormattedCategory();
+    }
+  };
+
   return (
     <>
-      {categories.map((cat) => (
+      {categories.map((cat, idx) => (
         <div key={cat._id} onClick={(e) => cat?.subCategory?.length > 0 ? toggleExpand(e, cat._id) : e.stopPropagation()}>
           <div
             className="flex items-center justify-between h-[55px] px-[20px] rounded-[10px] cursor-pointer mb-2 text-[14px]"
@@ -409,17 +422,27 @@ const CategoryTree = ({ categories, fn_getFormattedCategory, handleEditCategory,
             }}
           >
             <div className="flex items-center gap-[15px]">
+              <p>{cat?.ordering || idx + 1}</p>
               <Image
-                src={cat?.image !== "" ? `${BACKEND_URL}/${cat?.image}` : "/dummy_image.png"}
-                alt={cat?.name}
                 width={32}
                 height={32}
+                alt={cat?.name}
                 className="w-8 h-8 object-cover rounded-full border border-yellow-300"
+                src={cat?.image !== "" ? `${BACKEND_URL}/${cat?.image}` : "/dummy_image.png"}
               />
               <p>{cat?.name}</p>
             </div>
             <div className="flex items-center gap-[15px]">
-              <MdEdit className="text-[20px] text-blue-600" onClick={(e) => {e.stopPropagation(); handleEditCategory(cat)}} />
+              <p className="text-[12px] font-[500] me-[-8px]">Move to:</p>
+              <Select
+                size="small"
+                style={{ width: 55 }}
+                value={cat?.ordering || idx + 1}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => fn_sortPayment(cat._id, e)}
+                options={categories?.map((item, index) => ({ label: item?.ordering || index + 1, value: item?.ordering || index + 1, disabled: item._id === cat._id }))}
+              />
+              <MdEdit className="text-[20px] text-blue-600" onClick={(e) => { e.stopPropagation(); handleEditCategory(cat) }} />
               <MdDelete className="text-[20px] text-red-600" onClick={(e) => handleDeleteClick(e, cat)} />
               {cat?.subCategory?.length > 0 ? (
                 <div>
