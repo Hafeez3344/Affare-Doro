@@ -1,18 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { Modal, Pagination } from "antd";
+import { Modal, notification, Pagination } from "antd";
 import Navbar from "@/components/navbar";
 import { useDispatch } from "react-redux";
 import data from "@/components/customers";
 import Sidebar from "@/components/sidebar";
 import { useParams } from "next/navigation";
-import customer from "@/assets/customer.png"
-import { FaArrowRight } from "react-icons/fa6";
 import React, { useEffect, useState } from "react";
 import BACKEND_URL, { getProducts } from "@/api/api";
 import { updatePageNavigation } from "@/features/features";
 import grommetIconsMoney from "@/assets/svgs/grommet-icons_money.svg";
+import { MdBlock } from "react-icons/md";
+import { CgUnblock } from "react-icons/cg";
+import { IoClose } from "react-icons/io5";
+import axios from "axios";
 
 // Function to generate star ratings
 const getStarRating = (rating) => {
@@ -40,6 +42,25 @@ const CustomersDetails = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
+  // New state for block functionality
+  const [showBlockTextarea, setShowBlockTextarea] = useState(false);
+  const [blockReason, setBlockReason] = useState("");
+
+  const [api, contextHolder] = notification.useNotification();
+
+  const showNotification = (type, message, description) => {
+    api[type]({
+      message: message,
+      description: description,
+      placement: "topRight",
+      duration: 3,
+      style: {
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+      },
+    });
+  };
+
   useEffect(() => {
     dispatch(updatePageNavigation("customers"));
     // Find customer data based on ID
@@ -47,21 +68,22 @@ const CustomersDetails = () => {
     setCustomerData(customer);
 
     // Fetch products for the specific seller
-    const fetchProducts = async () => {
-      const response = await getProducts();
-      if (response.status && Array.isArray(response.data)) {
-        // Filter products by seller ID from URL parameter
-        const sellerProducts = response.data.filter(product => product.userId?._id === params.id);
-        setProducts(sellerProducts);
-        
-        // Set seller from the first product's userId
-        if (sellerProducts.length > 0 && sellerProducts[0].userId) {
-          setSeller(sellerProducts[0].userId);
-        }
-      }
-    };
     fetchProducts();
   }, [dispatch, params.id]);
+
+  const fetchProducts = async () => {
+    const response = await getProducts();
+    if (response.status && Array.isArray(response.data)) {
+      // Filter products by seller ID from URL parameter
+      const sellerProducts = response.data.filter(product => product.userId?._id === params.id);
+      setProducts(sellerProducts);
+
+      // Set seller from the first product's userId
+      if (sellerProducts.length > 0 && sellerProducts[0].userId) {
+        setSeller(sellerProducts[0].userId);
+      }
+    }
+  };
 
   // Calculate paginated products
   const paginatedProducts = products.slice(
@@ -79,8 +101,63 @@ const CustomersDetails = () => {
     setIsModalOpen(false);
   };
 
+  const fn_controlUser = async (state, id, blockReason = "") => {
+    try {
+      const requestBody = { state };
+      if (blockReason) {
+        requestBody.blockReason = blockReason;
+      }
+
+      const response = await axios.post(`${BACKEND_URL}/admin/userBlock/${id}`, requestBody);
+      if (response?.status === 200 || response?.status === 201) {
+        showNotification(
+          "success",
+          "Update Successfully",
+          "User status updated successfully."
+        );
+        // Reset block form state
+        setShowBlockTextarea(false);
+        setBlockReason("");
+        fetchProducts();
+      }
+    } catch (error) {
+      console.log(error);
+      showNotification(
+        "error",
+        "Update Failed",
+        error?.response?.data?.message || "Network Error"
+      );
+    }
+  }
+
+  const handleBlockClick = () => {
+    setShowBlockTextarea(true);
+  };
+
+  const handleCancelBlock = () => {
+    setShowBlockTextarea(false);
+    setBlockReason("");
+  };
+
+  const handleConfirmBlock = () => {
+    if (blockReason.trim()) {
+      fn_controlUser(true, seller._id, blockReason);
+    } else {
+      showNotification(
+        "error",
+        "Block Reason Required",
+        "Please provide a reason for blocking the user."
+      );
+    }
+  };
+
+  const handleUnblockClick = () => {
+    fn_controlUser(false, seller._id);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
+      {contextHolder}
       <Navbar />
       <div className="flex-1 flex">
         <Sidebar />
@@ -254,12 +331,12 @@ const CustomersDetails = () => {
           {/* seller account  */}
           <div className="xl:w-[320px] bg-white rounded-[8px] shadow-sm flex items-center flex-col px-[20px] py-[39px] h-[max-content]">
             <div className="w-[65px] h-[65px] rounded-full bg-[#E0D5C9] overflow-hidden">
-              <Image 
-                alt={seller?.username || "Seller"} 
+              <Image
+                alt={seller?.username || "Seller"}
                 src={seller?.profileImage ? `${BACKEND_URL}/${seller.profileImage}` : "/default-profile.png"}
                 width={65}
                 height={65}
-                className="w-[100%] h-[100%] object-cover" 
+                className="w-[100%] h-[100%] object-cover"
               />
             </div>
             <p className="text-gray-900 text-[14px] font-semibold mt-3">
@@ -283,7 +360,53 @@ const CustomersDetails = () => {
                   </div>
                 </div>
               </div>
-              
+
+              {seller?.block
+                ? (
+                  <div className="py-[15px]">
+                    <button
+                      className="w-full h-[40px] bg-yellow-500 text-black font-[500] text-[15px] rounded-[10px]"
+                      onClick={handleUnblockClick}
+                    >
+                      <CgUnblock className="inline-block text-black mr-1 mt-[-2px]" size={19} /> UnBlock
+                    </button>
+                  </div>
+                )
+                : (
+                  <div className="py-[15px]">
+                    {!showBlockTextarea ? (
+                      <button
+                        className="w-full h-[40px] bg-yellow-500 text-black font-[500] text-[15px] rounded-[10px]"
+                        onClick={handleBlockClick}
+                      >
+                        <MdBlock className="inline-block text-black mr-1 mt-[-2px]" size={18} /> Block
+                      </button>
+                    ) : (
+                      <div className="space-y-3">
+                        <button
+                          className="w-full h-[40px] bg-gray-500 text-white font-[500] text-[15px] rounded-[10px] flex items-center justify-center"
+                          onClick={handleCancelBlock}
+                        >
+                          <IoClose className="inline-block text-white mr-1 mt-[-2px]" size={18} /> Cancel
+                        </button>
+                        <textarea
+                          value={blockReason}
+                          onChange={(e) => setBlockReason(e.target.value)}
+                          placeholder="Enter block reason..."
+                          className="w-full h-[80px] p-3 border border-gray-300 rounded-[10px] text-[14px] resize-none focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        />
+                        <button
+                          className="w-full h-[40px] bg-red-500 text-white font-[500] text-[15px] rounded-[10px] flex items-center justify-center"
+                          onClick={handleConfirmBlock}
+                        >
+                          <MdBlock className="inline-block text-white mr-1 mt-[-2px]" size={18} /> Block User
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )
+              }
+
 
               <div className="w-[100%] flex flex-col gap-2 mt-4">
                 <p className="text-[14px] text-[var(--text-color-body)]">Full Name</p>
@@ -315,32 +438,31 @@ const CustomersDetails = () => {
                 <p className="font-[500] text-[15px]">{seller?.gender || "N/A"}</p>
               </div>
 
-             
+
               <div className="w-[100%] flex flex-col gap-2 mt-4">
                 <p className="text-[14px] text-[var(--text-color-body)]">Total Products</p>
                 <p className="font-[500] text-[15px]">{products.length || 0}</p>
               </div>
 
-              <div className="w-[100%] flex flex-col gap-2 mt-4">
+              {/* <div className="w-[100%] flex flex-col gap-2 mt-4">
                 <p className="text-[14px] text-[var(--text-color-body)]">Account Status</p>
-                <span className={`px-2 py-1 rounded-[20px] text-[11px] w-fit flex items-center justify-center ${
-                  seller?.status === "active" 
-                    ? "bg-[#10CB0026] text-[#0DA000]"
-                    : "bg-[#FF000026] text-[#FF0000]"
-                }`}>
+                <span className={`px-2 py-1 rounded-[20px] text-[11px] w-fit flex items-center justify-center ${seller?.status === "active"
+                  ? "bg-[#10CB0026] text-[#0DA000]"
+                  : "bg-[#FF000026] text-[#FF0000]"
+                  }`}>
                   {seller?.status || "Inactive"}
                 </span>
-              </div>
+              </div> */}
 
               <div className="w-[100%] flex flex-col gap-2 mt-4">
                 <p className="text-[14px] text-[var(--text-color-body)]">Member Since</p>
                 <p className="font-[500] text-[15px]">
-                  {seller?.createdAt 
+                  {seller?.createdAt
                     ? new Date(seller.createdAt).toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })
                     : "N/A"
                   }
                 </p>
