@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updatePageNavigation } from "@/features/features";
 import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { notification, Modal, Carousel, Pagination } from "antd";
+import { MdBlock } from "react-icons/md";
 
 const Manage = ({ searchQuery }) => {
   const itemsPerPage = 10;
@@ -48,6 +49,21 @@ const Manage = ({ searchQuery }) => {
     dispatch(updatePageNavigation("products"));
     fetchCategories();
   }, [auth, router, dispatch]);
+
+  const [api, contextHolder] = notification.useNotification();
+
+  const showNotification = (type, message, description) => {
+    api[type]({
+      message: message,
+      description: description,
+      placement: "topRight",
+      duration: 3,
+      style: {
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+      },
+    });
+  };
 
   // const toggleWishlist = (id) => {
   //   setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -113,9 +129,44 @@ const Manage = ({ searchQuery }) => {
     router.push(`/customers/${sellerId}`);
   };
 
+  const fn_controlProduct = async (id, value) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/admin/productBlock/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.token}`,
+        },
+        body: JSON.stringify({ state: value }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'ok') {
+        showNotification(
+          "success",
+          "Product Updated",
+          "Product Updated Successfully"
+        );
+        setIsModalOpen(false);
+        fetchCategories();
+      } else {
+        throw new Error(data.message || "Failed to update product");
+      }
+    } catch (error) {
+      console.log(error);
+      showNotification(
+        "error",
+        "Product Updation Failed",
+        response.message || "Network Error"
+      );
+    }
+  }
+
   return (
     <>
       <div className="flex flex-col">
+        {contextHolder}
         <div className="flex justify-between items-center mb-4">
           <p className="text-sm text-gray-500">
             Showing{" "}
@@ -152,9 +203,9 @@ const Manage = ({ searchQuery }) => {
                 <div className="flex justify-between items-center">
                   <button
                     onClick={() => handleModalOpen(category)}
-                    className="text-sm font-semibold text-gray-800 hover:underline text-nowrap"
+                    className="text-sm font-semibold text-gray-800 hover:underline text-nowrap flex justify-between w-full"
                   >
-                    {category.name}
+                    {category.name} {category?.block && <MdBlock className="inline-block text-red-600" size={25} />}
                   </button>
 
                   {/* <button
@@ -238,7 +289,7 @@ const Manage = ({ searchQuery }) => {
       </div>
 
       {/* Product View Model  */}
-      
+
       <Modal
         centered
         footer={null}
@@ -368,6 +419,28 @@ const Manage = ({ searchQuery }) => {
                       </p>
                     </div>
                   </div>
+                  <div className="flex items-center gap-3 -mt-4">
+                    <p className="text-[14px] font-[600] w-[120px]">
+                      {selectedCategory?.block ? "Unblock Product:" : "Block Product:"}
+                    </p>
+                    <div className="flex items-center gap-1">
+                      {selectedCategory?.block ? (
+                        <button
+                          className="w-[150px] h-[35px] bg-orange-500 hover:bg-orange-600 text-white rounded-[8px] text-[13px] font-[500]"
+                          onClick={() => fn_controlProduct(selectedCategory._id, false)}
+                        >
+                          <MdBlock className="inline-block me-1 mt-[-3px]" size={18} />Unblock Product
+                        </button>
+                      ) : (
+                        <button
+                          className="w-[150px] h-[35px] bg-red-500 hover:bg-red-600 text-white rounded-[8px] text-[13px] font-[500]"
+                          onClick={() => fn_controlProduct(selectedCategory._id, true)}
+                        >
+                          <MdBlock className="inline-block me-1 mt-[-3px]" size={18} />Block Product
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Seller Information */}
@@ -463,11 +536,10 @@ const Manage = ({ searchQuery }) => {
                         {selectedCategory.image.map((img, index) => (
                           <div key={index} className="px-1">
                             <div
-                              className={`cursor-pointer rounded-lg overflow-hidden border-2 h-[60px] ${
-                                selectedImageIndex === index
-                                  ? "border-blue-500"
-                                  : "border-transparent"
-                              }`}
+                              className={`cursor-pointer rounded-lg overflow-hidden border-2 h-[60px] ${selectedImageIndex === index
+                                ? "border-blue-500"
+                                : "border-transparent"
+                                }`}
                               onClick={() => {
                                 setSelectedImageIndex(index);
                                 carouselRef.current.goTo(index);
@@ -475,9 +547,8 @@ const Manage = ({ searchQuery }) => {
                             >
                               <Image
                                 src={`${BACKEND_URL}/${img}`}
-                                alt={`${selectedCategory.name} - Thumbnail ${
-                                  index + 1
-                                }`}
+                                alt={`${selectedCategory.name} - Thumbnail ${index + 1
+                                  }`}
                                 className="w-full h-full object-cover"
                                 width={400}
                                 height={400}
