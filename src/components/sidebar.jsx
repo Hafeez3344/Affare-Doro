@@ -46,13 +46,11 @@ const Sidebar = ({ showModal }) => {
   return (
     <>
       <div
-        className={`${
-          showSidebar
+        className={`${showSidebar
             ? "absolute md:relative flex h-[85%] min-h-[550px] md:h-auto"
             : "absolute md:relative hidden md:flex md:h-auto"
-        } w-[215px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[10px] py-[20px] flex-col gap-0.5 z-[9] ${
-          showModal ? "opacity-50 pointer-events-none" : "opacity-100"
-        } relative`}
+          } w-[215px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[10px] py-[20px] flex-col gap-0.5 z-[9] ${showModal ? "opacity-50 pointer-events-none" : "opacity-100"
+          } relative`}
       >
         <button
           className="absolute md:hidden text-[var(--text-color)] right-5 scale-[1.5] top-2"
@@ -82,6 +80,12 @@ const Sidebar = ({ showModal }) => {
           icon={<IoBagRemoveOutline className="w-[21px] h-[21px]" />}
           label={"Orders"}
           navigateTo={"orders"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<StarBorder className="w-[20px] h-[20px]" />}
+          label={"KYCs"}
+          navigateTo={"kyc"}
           navigate={navigate}
         />
         {/* <SidebarPageTemplate
@@ -178,9 +182,8 @@ const Sidebar = ({ showModal }) => {
         </div>
       </div>
       <button
-        className={`${
-          showSidebar ? "hidden" : "absolute"
-        } md:hidden text-[var(--text-color)] left-5 scale-[1.5] top-[77px]`}
+        className={`${showSidebar ? "hidden" : "absolute"
+          } md:hidden text-[var(--text-color)] left-5 scale-[1.5] top-[77px]`}
         onClick={fn_sidebarControl}
       >
         <FaArrowAltCircleRight />
@@ -195,11 +198,10 @@ const SidebarPageTemplate = ({ icon, label, navigateTo, navigate }) => {
   const pageNavigation = useSelector((state) => state.pageNavigation);
   return (
     <div
-      className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full ${
-        pageNavigation === navigateTo
+      className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full ${pageNavigation === navigateTo
           ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]"
           : "text-gray-500 bg-transparent border-white"
-      }`}
+        }`}
       onClick={() => navigate.push(`/${navigateTo}`)}
     >
       <div className="flex-shrink-0">{icon}</div>

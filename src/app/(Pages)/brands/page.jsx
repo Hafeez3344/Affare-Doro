@@ -102,11 +102,11 @@ const Brands = () => {
         });
         return;
       }
-      if(!id){
+      if (!id) {
         // error
       };
       const response = await deleteBrand(id);
-      if(response.status){
+      if (response.status) {
         // Update local state by filtering out the deleted brand
         setBrands(prevBrands => prevBrands.filter(brand => brand._id !== id));
         notification.success({
