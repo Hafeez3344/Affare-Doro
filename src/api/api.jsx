@@ -1073,3 +1073,39 @@ export const fn_updateCategoryOrderingApi = async (data) => {
     };
   }
 }
+
+// ---------------------------- Send OTP for Admin Credentials Update -------------------------------
+export const sendOTPForCredentialsUpdate = async (email) => {
+  try {
+    const response = await api.post("/admin/send-otp", { email }, getAuthHeader());
+    return {
+      status: true,
+      message: "OTP sent successfully",
+      data: response.data,
+    };
+  } catch (error) {
+    console.error("API Error:", error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};
+
+// ---------------------------- Update Admin Credentials -------------------------------
+export const updateAdminCredentials = async (data) => {
+  try {
+    const response = await api.post("/admin/verify-otp", data, getAuthHeader());
+    return {
+      status: true,
+      message: "Credentials updated successfully",
+      data: response.data,
+    };
+  } catch (error) {
+    console.error("API Error:", error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};

@@ -27,6 +27,7 @@ import { updateSidebar, updateAuth } from "@/features/features";
 import { LuLogOut } from "react-icons/lu";
 import Cookies from "js-cookie";
 import { StarBorder } from "@mui/icons-material";
+import { GoVerified } from "react-icons/go";
 
 const Sidebar = ({ showModal }) => {
   const navigate = useRouter();
@@ -47,8 +48,8 @@ const Sidebar = ({ showModal }) => {
     <>
       <div
         className={`${showSidebar
-            ? "absolute md:relative flex h-[85%] min-h-[550px] md:h-auto"
-            : "absolute md:relative hidden md:flex md:h-auto"
+          ? "absolute md:relative flex h-[85%] min-h-[550px] md:h-auto"
+          : "absolute md:relative hidden md:flex md:h-auto"
           } w-[215px] bg-white rounded-tr-[8px] mt-[30px] shadow-2xl md:shadow-md px-[10px] py-[20px] flex-col gap-0.5 z-[9] ${showModal ? "opacity-50 pointer-events-none" : "opacity-100"
           } relative`}
       >
@@ -83,7 +84,7 @@ const Sidebar = ({ showModal }) => {
           navigate={navigate}
         />
         <SidebarPageTemplate
-          icon={<StarBorder className="w-[20px] h-[20px]" />}
+          icon={<GoVerified className="w-[20px] h-[20px]" />}
           label={"KYCs"}
           navigateTo={"kyc"}
           navigate={navigate}
@@ -199,8 +200,8 @@ const SidebarPageTemplate = ({ icon, label, navigateTo, navigate }) => {
   return (
     <div
       className={`flex h-[48px] items-center gap-3 px-[10px] hover:text-[var(--text-color)] cursor-pointer hover:bg-[var(--bg-color)] border-l-[2px] hover:border-[var(--text-color)] w-full ${pageNavigation === navigateTo
-          ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]"
-          : "text-gray-500 bg-transparent border-white"
+        ? "text-[var(--text-color)] bg-[var(--bg-color)] border-[var(--text-color)]"
+        : "text-gray-500 bg-transparent border-white"
         }`}
       onClick={() => navigate.push(`/${navigateTo}`)}
     >
