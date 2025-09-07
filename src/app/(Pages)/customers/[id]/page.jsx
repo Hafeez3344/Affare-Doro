@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import data from "@/components/customers";
 import Sidebar from "@/components/sidebar";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import BACKEND_URL, { getProducts } from "@/api/api";
 import { updatePageNavigation } from "@/features/features";
 import grommetIconsMoney from "@/assets/svgs/grommet-icons_money.svg";
@@ -69,9 +69,9 @@ const CustomersDetails = () => {
 
     // Fetch products for the specific seller
     fetchProducts();
-  }, [dispatch, params.id]);
+  }, [dispatch, params.id, fetchProducts]);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     const response = await getProducts();
     if (response.status && Array.isArray(response.data)) {
       // Filter products by seller ID from URL parameter
@@ -83,7 +83,7 @@ const CustomersDetails = () => {
         setSeller(sellerProducts[0].userId);
       }
     }
-  };
+  }, [params.id]);
 
   // Calculate paginated products
   const paginatedProducts = products.slice(

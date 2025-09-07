@@ -190,10 +190,11 @@ const Settings = () => {
         open={isOTPModalVisible}
         onCancel={handleOTPCancel}
         footer={[
-          <button className="border w-[100px] text-[13px] font-[500] rounded-[5px] h-[35px]" onClick={handleOTPCancel}>
+          <button key="cancel" className="border w-[100px] text-[13px] font-[500] rounded-[5px] h-[35px]" onClick={handleOTPCancel}>
             Cancel
           </button>,
           <button
+            key="verify"
             className={`cursor-pointer ms-[15px] w-[150px] text-[12px] font-[500] rounded-[7px] h-[35px] ${otp.length !== 4 ? "bg-gray-200 opacity-50 cursor-not-allowed" : "bg-[#E8BB4C] cursor-pointer"}`}
             onClick={handleOTPSubmit}
             disabled={otp.length !== 4 || isOTPLoading}

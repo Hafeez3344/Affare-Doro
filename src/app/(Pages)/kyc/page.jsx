@@ -4,7 +4,7 @@ import axios from "axios";
 import Image from "next/image";
 import moment from "moment-timezone";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal, Pagination, Input, Button, notification } from "antd";
 
@@ -34,16 +34,7 @@ const KYC = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageModalOpen, setImageModalOpen] = useState(false);
 
-    useEffect(() => {
-        if (!auth) {
-            router.push("/login");
-            return;
-        }
-        dispatch(updatePageNavigation("kyc"));
-        fn_fetchKYCs();
-    }, [auth, dispatch, router, currentPage]);
-
-    const fn_fetchKYCs = async () => {
+    const fn_fetchKYCs = useCallback(async () => {
         try {
             setLoading(true);
             const response = await axios.get(`${BACKEND_URL}/kyc/getAll?page=${currentPage}&limit=${itemsPerPage}`);
@@ -64,7 +55,16 @@ const KYC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentPage, itemsPerPage]);
+
+    useEffect(() => {
+        if (!auth) {
+            router.push("/login");
+            return;
+        }
+        dispatch(updatePageNavigation("kyc"));
+        fn_fetchKYCs();
+    }, [auth, dispatch, router, currentPage, fn_fetchKYCs]);
 
     const handleViewKYC = (kyc) => {
         setSelectedKYC(kyc);
