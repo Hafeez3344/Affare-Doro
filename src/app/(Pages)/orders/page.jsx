@@ -38,7 +38,7 @@ const Orders = () => {
       try {
         setLoading(true);
         let params = {};
-        
+
         // Set parameters based on selected tab
         if (selectedTab === "bump") {
           params.bumpOrder = true;
@@ -132,51 +132,46 @@ const Orders = () => {
             {/* Mobile View */}
             <div className="flex flex-col gap-4 mb-[15px] md:hidden">
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
-                  selectedTab === "all"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "all"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("all")}
               >
                 All Orders
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
-                  selectedTab === "completed"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "completed"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("completed")}
               >
                 Completed
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
-                  selectedTab === "pending"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "pending"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("pending")}
               >
                 Pending
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
-                  selectedTab === "cancelled"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "cancelled"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("cancelled")}
               >
                 Cancelled
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${
-                  selectedTab === "bump"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "bump"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("bump")}
               >
                 Product Bump Orders
@@ -186,51 +181,46 @@ const Orders = () => {
             {/* Desktop View */}
             <div className="hidden md:flex gap-10 mb-[15px] w-[max-content]">
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
-                  selectedTab === "all"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "all"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("all")}
               >
                 All Orders
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
-                  selectedTab === "completed"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "completed"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("completed")}
               >
                 Completed
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
-                  selectedTab === "pending"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "pending"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("pending")}
               >
                 Pending
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
-                  selectedTab === "cancelled"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "cancelled"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("cancelled")}
               >
                 Cancelled
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${
-                  selectedTab === "bump"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "bump"
                     ? "text-[var(--text-color)] border-[var(--text-color)]"
                     : "text-[var(--text-color-body)] border-transparent"
-                }`}
+                  }`}
                 onClick={() => setSelectedTab("bump")}
               >
                 Product Bump Orders
@@ -272,7 +262,7 @@ const Orders = () => {
                       <tr key={order._id} className="text-gray-800 text-sm border-b">
                         <td className="p-4 text-[13px]">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                         <td className="p-4 text-[13px]">
-                          {selectedTab === "bump" 
+                          {selectedTab === "bump"
                             ? (order.fromUserId?.fullName || "N/A")
                             : (order.fullName || "N/A")
                           }
@@ -368,7 +358,7 @@ const Orders = () => {
                 </h3>
                 <p>
                   <span className="font-medium">{selectedTab === "bump" ? "Seller Name:" : "Name:"}</span>{" "}
-                  {selectedTab === "bump" 
+                  {selectedTab === "bump"
                     ? (selectedOrder.fromUserId?.fullName || "N/A")
                     : (selectedOrder.fullName || "N/A")
                   }
@@ -413,8 +403,8 @@ const Orders = () => {
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
                   {selectedOrder.productId &&
-                  selectedOrder.productId.length > 0 &&
-                  selectedOrder.productId[0].image ? (
+                    selectedOrder.productId.length > 0 &&
+                    selectedOrder.productId[0].image ? (
                     <Image
                       src={`${BACKEND_URL}/${selectedOrder.productId[0].image}`}
                       alt={selectedOrder.productId[0].name || "Product"}
@@ -437,7 +427,7 @@ const Orders = () => {
                   <p className="font-medium">
                     Product Name:{" "}
                     {selectedOrder.productId &&
-                    selectedOrder.productId.length > 0
+                      selectedOrder.productId.length > 0
                       ? selectedOrder.productId[0].name || "N/A"
                       : "N/A"}
                   </p>
@@ -445,7 +435,7 @@ const Orders = () => {
                     Product Price:{" "}
                     {selectedOrder.productId && selectedOrder.productId.length > 0 ? (
                       <>
-                        <Image 
+                        <Image
                           alt="Dirham"
                           src="/dirham-sign.svg"
                           width={15}

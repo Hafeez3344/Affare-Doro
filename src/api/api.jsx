@@ -146,6 +146,92 @@ export const getAllOrders = async (params = {}) => {
   }
 };
 
+// ---------------------------- Get All Orders API -------------------------------
+export const getAllReturnOrders = async (status) => {
+  try {
+    const token = Cookies.get("token");
+    if (!token) {
+      alert("No token found in cookies");
+    }
+
+    const response = await api.get(`/return-order/getAll?status=${status}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      status: true,
+      message: "Return Orders fetched successfully",
+      data: response.data.data,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};
+
+// ---------------------------- Get Return Order by ID API -------------------------------
+export const getReturnOrderById = async (id) => {
+  try {
+    const token = Cookies.get("token");
+    if (!token) {
+      alert("No token found in cookies");
+    }
+
+    const response = await api.get(`/return-order/get/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      status: true,
+      message: "Return Order fetched successfully",
+      data: response.data.data,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};
+
+// ---------------------------- Approve/Reject Return Order API -------------------------------
+export const updateReturnOrderStatus = async (id, action) => {
+  try {
+    const token = Cookies.get("token");
+    if (!token) {
+      alert("No token found in cookies");
+    }
+
+    const endpoint = action === 'approve' ? `/return-order/approve/${id}` : `/return-order/reject/${id}`;
+    const response = await api.put(endpoint, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const actionText = action === 'approve' ? 'approved' : 'rejected';
+    return {
+      status: true,
+      message: `Return Order ${actionText} successfully`,
+      data: response.data.data,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};
+
+// ---------------------------- Legacy Approve Return Order API (for backward compatibility) -------------------------------
+export const approveReturnOrder = async (id) => {
+  return updateReturnOrderStatus(id, 'approve');
+};
+
 // ---------------------------- Create Bump API -------------------------------
 export const createBump = async (data) => {
   try {

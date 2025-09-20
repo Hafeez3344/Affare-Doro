@@ -1,35 +1,23 @@
 import React from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  Badge,
-  ListChecks,
-  Maximize2,
-  Package,
-  Palette,
-  StoreIcon,
-} from "lucide-react";
-import { RxDashboard } from "react-icons/rx";
-import { LuShoppingBag, LuShoppingBasket } from "react-icons/lu";
-import {
-  RiUserStarLine,
-  RiDiscountPercentLine,
-  RiStore2Line,
-} from "react-icons/ri";
-import { IoBagRemoveOutline } from "react-icons/io5";
-import { FiSettings, FiShoppingBag } from "react-icons/fi";
-import {
-  HiOutlineExclamationCircle,
-  HiOutlineQuestionMarkCircle,
-} from "react-icons/hi2";
-import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
-import { updateSidebar, updateAuth } from "@/features/features";
-import { LuLogOut } from "react-icons/lu";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 import { StarBorder } from "@mui/icons-material";
+import { IoBagRemoveOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { LuShoppingBag, LuShoppingBasket } from "react-icons/lu";
+import { Badge, ListChecks, Maximize2, Package, Palette, StoreIcon } from "lucide-react";
+
+import { LuLogOut } from "react-icons/lu";
 import { GoVerified } from "react-icons/go";
+import { FiSettings } from "react-icons/fi";
+import { RxDashboard } from "react-icons/rx";
+import { TbTruckReturn } from "react-icons/tb";
+import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
+
+import { updateSidebar, updateAuth } from "@/features/features";
 
 const Sidebar = ({ showModal }) => {
+
   const navigate = useRouter();
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.showSidebar);
@@ -81,6 +69,12 @@ const Sidebar = ({ showModal }) => {
           icon={<IoBagRemoveOutline className="w-[21px] h-[21px]" />}
           label={"Orders"}
           navigateTo={"orders"}
+          navigate={navigate}
+        />
+        <SidebarPageTemplate
+          icon={<TbTruckReturn className="w-[21px] h-[21px]" />}
+          label={"Return Orders"}
+          navigateTo={"return-orders"}
           navigate={navigate}
         />
         <SidebarPageTemplate
