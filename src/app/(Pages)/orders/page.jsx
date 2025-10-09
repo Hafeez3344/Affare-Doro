@@ -1,12 +1,12 @@
 "use client";
-import { Modal } from "antd";
+import Cookies from "js-cookie";
+import { Modal, Tooltip } from "antd";
 import Image from "next/image";
 import { Pagination } from "antd";
-import { FiEye } from "react-icons/fi";
+import { FiEye, FiDollarSign, FiInfo } from "react-icons/fi";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { useRouter } from "next/navigation";
-import SearchOnTop from "@/components/SearchOnTop";
 import React, { useEffect, useState } from "react";
 import BACKEND_URL, { getAllOrders } from "@/api/api";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,8 +23,12 @@ const Orders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTab, setSelectedTab] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [selectedCustomer, setSelectedCustomer] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isBankModalVisible, setIsBankModalVisible] = useState(false);
+  const [sellerBanks, setSellerBanks] = useState([]);
+  const [bankLoading, setBankLoading] = useState(false);
+  const [selectedOrderForBank, setSelectedOrderForBank] = useState(null);
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
 
   useEffect(() => {
     if (!auth) {
@@ -66,13 +70,6 @@ const Orders = () => {
     fetchOrders();
   }, [auth, dispatch, router, selectedTab]);
 
-  const fn_viewDetails = (id) => {
-    if (id === selectedCustomer) {
-      return setSelectedCustomer(0);
-    }
-    setSelectedCustomer(id);
-  };
-
   const showOrderDetails = (order) => {
     setSelectedOrder(order);
     setIsModalVisible(true);
@@ -83,14 +80,116 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
+  const handleBankModalClose = () => {
+    setIsBankModalVisible(false);
+    setSellerBanks([]);
+    setSelectedOrderForBank(null);
+  };
+
+  // Check if 24 hours have passed since order was delivered
+  const has24HoursPassed = (updatedAt) => {
+    const updatedDate = new Date(updatedAt);
+    const currentDate = new Date();
+    const hoursDifference = (currentDate - updatedDate) / (1000 * 60 * 60);
+    return hoursDifference >= 24;
+  };
+
+  // Handle withdraw sent action
+  const handleWithdrawSent = async () => {
+    if (!selectedOrderForBank) return;
+
+    const sellerId = selectedOrderForBank.toUserId?._id;
+    const orderId = selectedOrderForBank._id;
+    const amount = selectedOrderForBank.total;
+
+    if (!sellerId || !orderId || !amount) {
+      console.error("Missing required data for withdraw");
+      return;
+    }
+
+    setWithdrawLoading(true);
+
+    try {
+      const token = Cookies.get("token");
+      const response = await fetch(`${BACKEND_URL}/users/walletUpdate`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          sellerId,
+          orderId,
+          amount,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok || data.status) {
+        // Close modal
+        handleBankModalClose();
+
+        // Refresh orders
+        const params = {};
+        if (selectedTab === "bump") {
+          params.bumpOrder = true;
+        } else if (selectedTab !== "all") {
+          params.bumpOrder = false;
+          params.status = selectedTab;
+        } else {
+          params.bumpOrder = false;
+        }
+
+        const ordersResponse = await getAllOrders(params);
+        if (ordersResponse.status) {
+          setOrders(ordersResponse.data);
+        }
+      } else {
+        console.error("Failed to update wallet:", data.message);
+      }
+    } catch (err) {
+      console.error("Error updating wallet:", err);
+    } finally {
+      setWithdrawLoading(false);
+    }
+  };
+
+  const handleTransferFunds = async (order) => {
+    console.log(order.toUserId?._id);
+    const userId = order.toUserId?._id;
+
+    if (!userId) {
+      console.error("No toUserId found in order");
+      return;
+    }
+    setSelectedOrderForBank(order);
+    setIsBankModalVisible(true);
+    setBankLoading(true);
+
+    try {
+      const response = await fetch(`https://backend.affaredoro.com/bank/userBank/${userId}?active=true`);
+      const data = await response.json();
+
+      if (data.status === "ok" && data.data) {
+        setSellerBanks(data.data);
+      } else {
+        setSellerBanks([]);
+      }
+    } catch (err) {
+      console.error("Error fetching seller banks:", err);
+      setSellerBanks([]);
+    } finally {
+      setBankLoading(false);
+    }
+  };
+
   // Filter orders based on selected tab
-  const filteredOrders = orders
-    .filter((order) => {
-      if (selectedTab === "all") return true;
-      if (selectedTab === "bump") return order.bumpOrder === true;
-      return order.orderStatus?.toLowerCase() === selectedTab.toLowerCase();
-    })
-    .reverse(); // Reverse to show latest first
+  const filteredOrders = orders.filter((order) => {
+    if (selectedTab === "all") return true;
+    if (selectedTab === "bump") return order.bumpOrder === true;
+    return order.orderStatus?.toLowerCase() === selectedTab.toLowerCase();
+  }).reverse(); // Reverse to show latest first
 
   // Calculate paginated orders
   const paginatedOrders = filteredOrders.slice(
@@ -101,7 +200,7 @@ const Orders = () => {
   // Get status badge color based on order status
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
-      case "completed":
+      case "delivered":
         return "bg-green-100 text-green-800";
       case "pending":
         return "bg-yellow-100 text-yellow-800";
@@ -133,26 +232,26 @@ const Orders = () => {
             <div className="flex flex-col gap-4 mb-[15px] md:hidden">
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "all"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("all")}
               >
                 All Orders
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "completed"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "delivered"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
-                onClick={() => setSelectedTab("completed")}
+                onClick={() => setSelectedTab("delivered")}
               >
-                Completed
+                Delivered
               </div>
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "pending"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("pending")}
               >
@@ -160,8 +259,8 @@ const Orders = () => {
               </div>
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "cancelled"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("cancelled")}
               >
@@ -169,8 +268,8 @@ const Orders = () => {
               </div>
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] text-center ${selectedTab === "bump"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("bump")}
               >
@@ -182,26 +281,26 @@ const Orders = () => {
             <div className="hidden md:flex gap-10 mb-[15px] w-[max-content]">
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "all"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("all")}
               >
                 All Orders
               </div>
               <div
-                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "completed"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "delivered"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
-                onClick={() => setSelectedTab("completed")}
+                onClick={() => setSelectedTab("delivered")}
               >
-                Completed
+                Delivered
               </div>
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "pending"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("pending")}
               >
@@ -209,8 +308,8 @@ const Orders = () => {
               </div>
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "cancelled"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("cancelled")}
               >
@@ -218,8 +317,8 @@ const Orders = () => {
               </div>
               <div
                 className={`cursor-pointer hover:text-[var(--text-color)] font-[500] border-b-[2px] hover:border-[var(--text-color)] ${selectedTab === "bump"
-                    ? "text-[var(--text-color)] border-[var(--text-color)]"
-                    : "text-[var(--text-color-body)] border-transparent"
+                  ? "text-[var(--text-color)] border-[var(--text-color)]"
+                  : "text-[var(--text-color-body)] border-transparent"
                   }`}
                 onClick={() => setSelectedTab("bump")}
               >
@@ -259,7 +358,11 @@ const Orders = () => {
                   </thead>
                   <tbody>
                     {paginatedOrders?.map((order, index) => (
-                      <tr key={order._id} className="text-gray-800 text-sm border-b">
+                      <tr
+                        key={order._id}
+                        className={`text-gray-800 text-sm border-b ${order.paidByAdmin ? "bg-gray-100" : ""
+                          }`}
+                      >
                         <td className="p-4 text-[13px]">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                         <td className="p-4 text-[13px]">
                           {selectedTab === "bump"
@@ -304,13 +407,37 @@ const Orders = () => {
                           {new Date(order.createdAt).toLocaleDateString()}
                         </td>
                         <td className="p-4">
-                          <button
-                            onClick={() => showOrderDetails(order)}
-                            className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
-                            title="View Details"
-                          >
-                            <FiEye />
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => showOrderDetails(order)}
+                              className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
+                              title="View Details"
+                            >
+                              <FiEye />
+                            </button>
+                            {!order.paidByAdmin && order.orderStatus?.toLowerCase() === "delivered" && (
+                              <>
+                                {has24HoursPassed(order.updatedAt) ? (
+                                  <button
+                                    onClick={() => handleTransferFunds(order)}
+                                    className="bg-green-100 text-green-600 rounded-full px-2 py-2"
+                                    title="Transfer Funds"
+                                  >
+                                    <FiDollarSign />
+                                  </button>
+                                ) : (
+                                  <Tooltip title="It takes 24 hours to enable withdraw after Delivered">
+                                    <button
+                                      className="bg-yellow-100 text-yellow-600 rounded-full px-2 py-2 cursor-not-allowed"
+                                      disabled
+                                    >
+                                      <FiInfo />
+                                    </button>
+                                  </Tooltip>
+                                )}
+                              </>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -350,6 +477,29 @@ const Orders = () => {
                 {selectedOrder.orderStatus || "Unknown"}
               </span>
             </div>
+
+            {/* Withdraw Success Message */}
+            {selectedOrder.paidByAdmin && (
+              <div className="mb-6 p-4 bg-green-100 border border-green-400 rounded-lg flex items-center gap-3">
+                <svg
+                  className="w-6 h-6 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <p className="text-green-800 font-medium text-lg">
+                  Withdraw successful of this order
+                </p>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="border rounded-lg p-4">
@@ -478,6 +628,152 @@ const Orders = () => {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Seller Bank Accounts Modal */}
+      <Modal
+        title="Seller Bank Accounts"
+        open={isBankModalVisible}
+        onCancel={handleBankModalClose}
+        footer={null}
+        width={700}
+      >
+        <div className="p-4">
+          {/* Seller Information */}
+          {selectedOrderForBank && selectedOrderForBank.toUserId && (
+            <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+              <p className="text-sm text-gray-600 mb-3 font-medium">Seller Information</p>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                  {selectedOrderForBank.toUserId.image ? (
+                    <Image
+                      src={`${BACKEND_URL}/${selectedOrderForBank.toUserId.image}`}
+                      alt={selectedOrderForBank.toUserId.username || "Seller"}
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-500 text-sm">No Image</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-lg font-semibold text-gray-800">
+                    {selectedOrderForBank.toUserId.username || "N/A"}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {selectedOrderForBank.toUserId.email || "N/A"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Withdrawal Amount Display */}
+          {selectedOrderForBank && (
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-gray-600 mb-1">Withdrawal Amount of this Order</p>
+              <div className="flex items-center gap-2">
+                <Image
+                  alt="Dirham"
+                  src="/dirham-sign.svg"
+                  width={24}
+                  height={24}
+                  className="inline-block"
+                />
+                <p className="text-3xl font-bold text-gray-800">
+                  {selectedOrderForBank.total || "0.00"}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {bankLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <p className="text-[var(--text-color-body)]">
+                Loading bank accounts...
+              </p>
+            </div>
+          ) : sellerBanks.length === 0 ? (
+            <div className="flex flex-col justify-center items-center h-40">
+              <p className="text-red-500 text-lg font-medium">
+                No bank added by Seller
+              </p>
+              <p className="text-gray-500 text-sm mt-2">
+                The seller has not added any bank account yet.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-gray-600 mb-4">
+                Select a bank account to transfer funds:
+              </p>
+              {sellerBanks.map((bank, index) => (
+                <div
+                  key={bank._id}
+                  className={`border rounded-lg p-4 ${bank.bankStatus === "active"
+                    ? "border-green-300 bg-green-50"
+                    : "border-gray-300 bg-gray-50"
+                    }`}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Bank {index + 1}
+                    </h3>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${bank.bankStatus === "active"
+                        ? "bg-green-200 text-green-800"
+                        : "bg-gray-200 text-gray-800"
+                        }`}
+                    >
+                      {bank.bankStatus}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-sm text-gray-600">Bank Name</p>
+                      <p className="font-medium text-gray-800">
+                        {bank.bankName || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Account Holder</p>
+                      <p className="font-medium text-gray-800">
+                        {bank.accountHolderName || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Account Number</p>
+                      <p className="font-medium text-gray-800">
+                        {bank.accountNo || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">IBAN</p>
+                      <p className="font-medium text-gray-800">
+                        {bank.iban || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Withdraw Sent Button */}
+              <div className="mt-6 pt-4 border-t flex justify-end">
+                <button
+                  onClick={handleWithdrawSent}
+                  disabled={withdrawLoading}
+                  className={`px-6 py-3 rounded-lg font-medium text-white transition-colors ${withdrawLoading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-700"
+                    }`}
+                >
+                  {withdrawLoading ? "Processing..." : "Withdraw Sent?"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </Modal>
     </div>
   );
