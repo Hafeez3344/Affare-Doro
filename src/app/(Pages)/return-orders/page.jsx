@@ -230,7 +230,7 @@ const ReturnOrders = () => {
                                                         >
                                                             <FiEye />
                                                         </button>
-                                                        {order.status?.toLowerCase() !== "delivered" && (
+                                                        {order.status?.toLowerCase() === "delivered" && (
                                                             <button
                                                                 className="bg-green-100 text-green-600 rounded-full px-2 py-2"
                                                                 title="Payment Details"
