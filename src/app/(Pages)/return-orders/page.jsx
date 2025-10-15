@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { FiEye } from "react-icons/fi";
+import { FiEye, FiDollarSign } from "react-icons/fi";
+import { AiOutlineClose } from "react-icons/ai";
 
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
-import BACKEND_URL, { getAllReturnOrders } from "@/api/api";
+import BACKEND_URL, { getAllReturnOrders, getUserActiveBanks, updateReturnOrderWithdrawalStatus } from "@/api/api";
 import { updatePageNavigation } from "@/features/features";
 
 const ReturnOrders = () => {
@@ -23,6 +24,11 @@ const ReturnOrders = () => {
     const [loading, setLoading] = useState(true);
     const auth = useSelector((state) => state.auth);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [customerBanks, setCustomerBanks] = useState([]);
+    const [banksLoading, setBanksLoading] = useState(false);
+    const [withdrawalProcessing, setWithdrawalProcessing] = useState(false);
 
     useEffect(() => {
         if (!auth) {
@@ -55,6 +61,65 @@ const ReturnOrders = () => {
 
     const handleRowClick = (returnOrderId) => {
         router.push(`/return-orders/${returnOrderId}`);
+    };
+
+    const handlePaymentClick = async (e, order) => {
+        e.stopPropagation();
+        setSelectedOrder(order);
+        setIsPaymentModalOpen(true);
+
+        // Fetch customer's active banks
+        if (order?.customerId?._id) {
+            setBanksLoading(true);
+            try {
+                const response = await getUserActiveBanks(order.customerId._id);
+                if (response.status) {
+                    setCustomerBanks(response.data || []);
+                } else {
+                    setCustomerBanks([]);
+                }
+            } catch (error) {
+                console.error("Error fetching banks:", error);
+                setCustomerBanks([]);
+            } finally {
+                setBanksLoading(false);
+            }
+        }
+    };
+
+    const closePaymentModal = () => {
+        setIsPaymentModalOpen(false);
+        setSelectedOrder(null);
+        setCustomerBanks([]);
+    };
+
+    const handleWithdrawalPaid = async () => {
+        if (!selectedOrder?._id) return;
+
+        // Calculate final withdrawal amount
+        const subTotal = parseFloat(selectedOrder?.orderId?.subTotal || 0);
+        const deduction1 = subTotal * 0.034; // 3.4% of subtotal
+        const deduction2 = 14.7; // Fixed amount
+        const totalDeduction = deduction1 + deduction2;
+        const finalWithdrawal = subTotal - totalDeduction;
+
+        setWithdrawalProcessing(true);
+        try {
+            const response = await updateReturnOrderWithdrawalStatus(selectedOrder._id, finalWithdrawal);
+            if (response.status) {
+                alert("Withdrawal status updated successfully!");
+                closePaymentModal();
+                // Refresh the orders list
+                fetchReturnOrders();
+            } else {
+                alert(response.message || "Failed to update withdrawal status");
+            }
+        } catch (error) {
+            console.error("Error updating withdrawal status:", error);
+            alert("An error occurred while updating withdrawal status");
+        } finally {
+            setWithdrawalProcessing(false);
+        }
     };
 
     console.log(orders);
@@ -96,6 +161,7 @@ const ReturnOrders = () => {
                                             <th className="p-4 font-[500] text-nowrap">Product</th>
                                             <th className="p-4 font-[500]">Order Amount</th>
                                             <th className="p-4 font-[500]">Return Status</th>
+                                            <th className="p-4 font-[500]">Payment Status</th>
                                             <th className="p-4 font-[500]">Action</th>
                                         </tr>
                                     </thead>
@@ -145,16 +211,35 @@ const ReturnOrders = () => {
                                                     {order.status || "Unknown"}
                                                 </td>
                                                 <td className="p-4">
-                                                    <button
-                                                        className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
-                                                        title="View Details"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleRowClick(order._id);
-                                                        }}
-                                                    >
-                                                        <FiEye />
-                                                    </button>
+                                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${order.paidByAdmin === "paid"
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                        }`}>
+                                                        {order?.paidByAdmin || "unpaid"}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            className="bg-blue-100 text-blue-600 rounded-full px-2 py-2"
+                                                            title="View Details"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleRowClick(order._id);
+                                                            }}
+                                                        >
+                                                            <FiEye />
+                                                        </button>
+                                                        {order.status?.toLowerCase() !== "delivered" && (
+                                                            <button
+                                                                className="bg-green-100 text-green-600 rounded-full px-2 py-2"
+                                                                title="Payment Details"
+                                                                onClick={(e) => handlePaymentClick(e, order)}
+                                                            >
+                                                                <FiDollarSign />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -173,6 +258,229 @@ const ReturnOrders = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Payment Modal */}
+            {isPaymentModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-xl w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto">
+                        {/* Modal Header */}
+                        <div className="flex justify-between items-center p-6 border-b">
+                            <h2 className="text-xl font-semibold text-gray-800">
+                                Payment Details
+                            </h2>
+                            <button
+                                onClick={closePaymentModal}
+                                className="text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                                <AiOutlineClose size={24} />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6">
+                            <div className="space-y-4">
+
+                                {/* Withdrawal Calculation */}
+                                <div className="bg-blue-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-medium text-gray-700 mb-4">
+                                        Withdrawal Calculation
+                                    </h3>
+                                    {(() => {
+                                        const subTotal = parseFloat(selectedOrder?.orderId?.subTotal || 0);
+                                        const deduction1 = subTotal * 0.034; // 3.4% of subtotal
+                                        const deduction2 = 14.7; // Fixed amount
+                                        const totalDeduction = deduction1 + deduction2;
+                                        const finalWithdrawal = subTotal - totalDeduction;
+
+                                        return (
+                                            <div className="space-y-3">
+                                                {/* Subtotal */}
+                                                <div className="flex justify-between items-center bg-white p-3 rounded">
+                                                    <span className="text-gray-700 font-medium">Order Subtotal</span>
+                                                    <span className="inline-flex items-center text-gray-900 font-semibold">
+                                                        <Image
+                                                            alt="dirham"
+                                                            src="/dirham-sign.svg"
+                                                            width={14}
+                                                            height={14}
+                                                            className="mr-1.5"
+                                                        />
+                                                        {subTotal.toFixed(2)}
+                                                    </span>
+                                                </div>
+
+                                                {/* Deductions Section */}
+                                                <div className="bg-red-50 p-3 rounded space-y-2">
+                                                    <p className="text-sm font-semibold text-red-800 mb-2">Deductions:</p>
+
+                                                    <div className="flex justify-between items-center text-sm">
+                                                        <span className="text-gray-700">Platform Fee (3.4%)</span>
+                                                        <span className="inline-flex items-center text-red-600 font-medium">
+                                                            -<Image
+                                                                alt="dirham"
+                                                                src="/dirham-sign.svg"
+                                                                width={12}
+                                                                height={12}
+                                                                className="mx-1"
+                                                            />
+                                                            {deduction1.toFixed(2)}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex justify-between items-center text-sm">
+                                                        <span className="text-gray-700">Service Charge</span>
+                                                        <span className="inline-flex items-center text-red-600 font-medium">
+                                                            -<Image
+                                                                alt="dirham"
+                                                                src="/dirham-sign.svg"
+                                                                width={12}
+                                                                height={12}
+                                                                className="mx-1"
+                                                            />
+                                                            {deduction2.toFixed(2)}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="border-t border-red-200 pt-2 mt-2">
+                                                        <div className="flex justify-between items-center text-sm">
+                                                            <span className="text-gray-700 font-semibold">Total Deductions</span>
+                                                            <span className="inline-flex items-center text-red-700 font-semibold">
+                                                                -<Image
+                                                                    alt="dirham"
+                                                                    src="/dirham-sign.svg"
+                                                                    width={12}
+                                                                    height={12}
+                                                                    className="mx-1"
+                                                                />
+                                                                {totalDeduction.toFixed(2)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Final Withdrawal Amount */}
+                                                <div className="bg-green-100 p-4 rounded border-2 border-green-300">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-lg font-bold text-green-800">Final Withdrawal Amount</span>
+                                                        <span className="inline-flex items-center text-xl text-green-900 font-bold">
+                                                            <Image
+                                                                alt="dirham"
+                                                                src="/dirham-sign.svg"
+                                                                width={18}
+                                                                height={18}
+                                                                className="mr-2"
+                                                            />
+                                                            {finalWithdrawal.toFixed(2)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+
+                                {/* Customer Banks Section */}
+                                <div className="bg-purple-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-medium text-gray-700 mb-4">
+                                        Customer Bank Accounts
+                                    </h3>
+                                    {banksLoading ? (
+                                        <div className="flex justify-center items-center py-4">
+                                            <p className="text-gray-600">Loading bank accounts...</p>
+                                        </div>
+                                    ) : customerBanks.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {customerBanks.map((bank, index) => (
+                                                <div key={bank._id || index} className="bg-white p-4 rounded border border-purple-200">
+                                                    <div className="space-y-2">
+                                                        <div className="flex justify-between items-start">
+                                                            <div>
+                                                                <p className="text-sm text-gray-500">Bank Name</p>
+                                                                <p className="text-gray-900 font-semibold">
+                                                                    {bank.bankName || "N/A"}
+                                                                </p>
+                                                            </div>
+                                                            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                                                                {bank?.bankStatus}
+                                                            </span>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-3 pt-2">
+                                                            <div>
+                                                                <p className="text-xs text-gray-500">Account Number</p>
+                                                                <p className="text-sm text-gray-900 font-medium">
+                                                                    {bank.accountNo || "N/A"}
+                                                                </p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs text-gray-500">Account Holder</p>
+                                                                <p className="text-sm text-gray-900 font-medium">
+                                                                    {bank.accountHolderName || "N/A"}
+                                                                </p>
+                                                            </div>
+                                                            {bank.iban && (
+                                                                <div className="col-span-2">
+                                                                    <p className="text-xs text-gray-500">IBAN</p>
+                                                                    <p className="text-sm text-gray-900 font-medium">
+                                                                        {bank.iban}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                            {bank.swiftCode && (
+                                                                <div>
+                                                                    <p className="text-xs text-gray-500">SWIFT Code</p>
+                                                                    <p className="text-sm text-gray-900 font-medium">
+                                                                        {bank.swiftCode}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="bg-white p-4 rounded border border-purple-200 text-center">
+                                            <p className="text-gray-500 text-sm">
+                                                No active bank accounts found for this customer
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="bg-yellow-50 p-4 rounded-lg">
+                                    <p className="text-sm text-yellow-800">
+                                        <span className="font-semibold">Note:</span> The final withdrawal amount will be transferred to the customer's account after deducting platform fees and service charges.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex justify-between items-center gap-3 p-6 border-t">
+                            <button
+                                onClick={closePaymentModal}
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                            >
+                                Close
+                            </button>
+                            <button
+                                onClick={handleWithdrawalPaid}
+                                disabled={withdrawalProcessing || selectedOrder?.paidByAdmin === "paid"}
+                                className={`px-4 py-2 rounded-md transition-colors ${withdrawalProcessing || selectedOrder?.paidByAdmin === "paid"
+                                        ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                        : "bg-green-600 text-white hover:bg-green-700"
+                                    }`}
+                            >
+                                {withdrawalProcessing
+                                    ? "Processing..."
+                                    : selectedOrder?.paidByAdmin === "paid"
+                                        ? "Already Paid"
+                                        : "Withdraw Amount Paid"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

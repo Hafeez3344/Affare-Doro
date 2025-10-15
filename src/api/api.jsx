@@ -1195,3 +1195,69 @@ export const updateAdminCredentials = async (data) => {
     };
   }
 };
+
+// ---------------------------- Get User Active Banks -------------------------------
+export const getUserActiveBanks = async (customerId) => {
+  try {
+    const token = Cookies.get("token");
+    if (!token) {
+      return {
+        status: false,
+        message: "No authentication token found",
+      };
+    }
+
+    const response = await api.get(`/bank/userBank/${customerId}?active=true`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      status: true,
+      message: "User banks fetched successfully",
+      data: response.data.data,
+    };
+  } catch (error) {
+    console.error("API Error:", error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};
+
+// ---------------------------- Update Return Order Withdrawal Status -------------------------------
+export const updateReturnOrderWithdrawalStatus = async (orderId, amountPaid) => {
+  try {
+    const token = Cookies.get("token");
+    if (!token) {
+      return {
+        status: false,
+        message: "No authentication token found",
+      };
+    }
+
+    const requestBody = {
+      paidStatus: "paid",
+      amountPaid: amountPaid,
+    };
+
+    const response = await api.put(`/return-order/updateStatus/${orderId}`, requestBody, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return {
+      status: true,
+      message: "Withdrawal status updated successfully",
+      data: response.data,
+    };
+  } catch (error) {
+    console.error("API Error:", error);
+    return {
+      status: false,
+      message: error?.response?.data?.message || "An unexpected error occurred",
+    };
+  }
+};
