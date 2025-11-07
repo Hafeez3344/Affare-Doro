@@ -168,7 +168,7 @@ const Orders = () => {
     setBankLoading(true);
 
     try {
-      const response = await fetch(`https://backend.affaredoro.com/bank/userBank/${userId}?active=true`);
+      const response = await fetch(`${BACKEND_URL}/bank/userBank/${userId}?active=true`);
       const data = await response.json();
 
       if (data.status === "ok" && data.data) {
@@ -395,7 +395,7 @@ const Orders = () => {
                               height={16}
                               className="inline-block mr-1 mb-0.5"
                             />
-                            {order.total || "0.00"}
+                            {order.subTotal || "0.00"}
                           </div>
                         </td>
                         <td className="p-4">
@@ -535,7 +535,7 @@ const Orders = () => {
                 </h3>
                 <p>
                   <span className="font-medium">Address:</span>{" "}
-                  {selectedOrder.address || "N/A"}
+                  {selectedOrder.address1 || "N/A"}
                 </p>
                 <p>
                   <span className="font-medium">City:</span>{" "}
@@ -611,7 +611,7 @@ const Orders = () => {
                   height={15}
                   className="inline-block mr-1 mb-1"
                 />
-                {selectedOrder.total || "0.00"}
+                {selectedOrder.subTotal || "0.00"}
               </p>
               <p>
                 <span className="font-medium">Payment Method:</span>{" "}
@@ -669,6 +669,30 @@ const Orders = () => {
             </div>
           )}
 
+          {/* KYC Status Section */}
+          {selectedOrderForBank && selectedOrderForBank.toUserId && (
+            <div className={`mb-6 p-4 rounded-lg ${selectedOrderForBank.toUserId.kycApproved ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+              <p className="text-sm text-gray-600 mb-3 font-medium">KYC Verification Status</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-lg font-semibold ${selectedOrderForBank.toUserId.kycApproved ? 'text-green-700' : 'text-red-700'}`}>
+                    {selectedOrderForBank.toUserId.kycApproved ? 'KYC Approved' : 'KYC Not Completed'}
+                  </p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedOrderForBank.toUserId.kycApproved ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                  {selectedOrderForBank.toUserId.kycApproved ? 'Verified' : 'Not Verified'}
+                </span>
+              </div>
+              {!selectedOrderForBank.toUserId.kycApproved && (
+                <div className="mt-3 p-3 bg-red-100 rounded border border-red-300">
+                  <p className="text-sm text-red-800">
+                    ⚠️ Seller did not complete KYC verification. Payment cannot be processed until KYC is approved.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Withdrawal Amount Display */}
           {selectedOrderForBank && (
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -695,13 +719,24 @@ const Orders = () => {
               </p>
             </div>
           ) : sellerBanks.length === 0 ? (
-            <div className="flex flex-col justify-center items-center h-40">
-              <p className="text-red-500 text-lg font-medium">
-                No bank added by Seller
-              </p>
-              <p className="text-gray-500 text-sm mt-2">
-                The seller has not added any bank account yet.
-              </p>
+            <div>
+              <div className="flex flex-col justify-center items-center h-40">
+                <p className="text-red-500 text-lg font-medium">
+                  No bank added by Seller
+                </p>
+                <p className="text-gray-500 text-sm mt-2">
+                  The seller has not added any bank account yet.
+                </p>
+              </div>
+              {/* Withdraw Sent Button - Disabled */}
+              <div className="mt-6 pt-4 border-t flex justify-end">
+                <button
+                  disabled={true}
+                  className="px-6 py-3 rounded-lg font-medium text-white bg-gray-400 cursor-not-allowed"
+                >
+                  {!selectedOrderForBank?.toUserId?.kycApproved ? "KYC Not Approved" : "No Bank Details"}
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -762,13 +797,19 @@ const Orders = () => {
               <div className="mt-6 pt-4 border-t flex justify-end">
                 <button
                   onClick={handleWithdrawSent}
-                  disabled={withdrawLoading}
-                  className={`px-6 py-3 rounded-lg font-medium text-white transition-colors ${withdrawLoading
+                  disabled={withdrawLoading || sellerBanks.length === 0 || !selectedOrderForBank?.toUserId?.kycApproved}
+                  className={`px-6 py-3 rounded-lg font-medium text-white transition-colors ${withdrawLoading || sellerBanks.length === 0 || !selectedOrderForBank?.toUserId?.kycApproved
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-green-600 hover:bg-green-700"
                     }`}
                 >
-                  {withdrawLoading ? "Processing..." : "Withdraw Sent?"}
+                  {withdrawLoading
+                    ? "Processing..."
+                    : !selectedOrderForBank?.toUserId?.kycApproved
+                      ? "KYC Not Approved"
+                      : sellerBanks.length === 0
+                        ? "No Bank Details"
+                        : "Withdraw Sent?"}
                 </button>
               </div>
             </div>

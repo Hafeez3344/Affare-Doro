@@ -96,12 +96,7 @@ const ReturnOrders = () => {
     const handleWithdrawalPaid = async () => {
         if (!selectedOrder?._id) return;
 
-        // Calculate final withdrawal amount
-        const subTotal = parseFloat(selectedOrder?.orderId?.subTotal || 0);
-        const deduction1 = subTotal * 0.034; // 3.4% of subtotal
-        const deduction2 = 14.7; // Fixed amount
-        const totalDeduction = deduction1 + deduction2;
-        const finalWithdrawal = subTotal - totalDeduction;
+        const finalWithdrawal = selectedOrder?.orderId?.total;
 
         setWithdrawalProcessing(true);
         try {
@@ -207,13 +202,18 @@ const ReturnOrders = () => {
                                                         {order?.orderId?.subTotal || "0.00"}
                                                     </div>
                                                 </td>
-                                                <td className="p-4 capitalize">
-                                                    {order?.deliveryId?.status || "Unknown"}
+                                                <td className="p-4">
+                                                    <p className={`w-[max-content] rounded-full px-2 py-1 text-xs font-semibold capitalize ${order?.status?.toLowerCase() === "Delivered"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : order?.status?.toLowerCase() === "pending"
+                                                            ? "bg-yellow-100 text-yellow-700"
+                                                            : "bg-blue-100 text-blue-700"
+                                                        }`}>{order?.status || "Unknown"}</p>
                                                 </td>
                                                 <td className="p-4">
                                                     <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${order.paidByAdmin === "paid"
-                                                            ? "bg-green-100 text-green-700"
-                                                            : "bg-red-100 text-red-700"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
                                                         }`}>
                                                         {order?.paidByAdmin || "unpaid"}
                                                     </span>
@@ -230,7 +230,7 @@ const ReturnOrders = () => {
                                                         >
                                                             <FiEye />
                                                         </button>
-                                                        {order?.deliveryId?.status?.toLowerCase() === "delivered" && (
+                                                        {order?.status?.toLowerCase() === "delivered" && (
                                                             <button
                                                                 className="bg-green-100 text-green-600 rounded-full px-2 py-2"
                                                                 title="Payment Details"
@@ -287,10 +287,10 @@ const ReturnOrders = () => {
                                     </h3>
                                     {(() => {
                                         const subTotal = parseFloat(selectedOrder?.orderId?.subTotal || 0);
-                                        const deduction1 = subTotal * 0.034; // 3.4% of subtotal
-                                        const deduction2 = 14.7; // Fixed amount
+                                        const deduction1 = selectedOrder?.orderId?.total * 0.12; // 12% of subtotal
+                                        const deduction2 = 17.36; // Fixed amount
                                         const totalDeduction = deduction1 + deduction2;
-                                        const finalWithdrawal = subTotal - totalDeduction;
+                                        const finalWithdrawal = selectedOrder?.orderId?.total;
 
                                         return (
                                             <div className="space-y-3">
@@ -314,7 +314,7 @@ const ReturnOrders = () => {
                                                     <p className="text-sm font-semibold text-red-800 mb-2">Deductions:</p>
 
                                                     <div className="flex justify-between items-center text-sm">
-                                                        <span className="text-gray-700">Platform Fee (3.4%)</span>
+                                                        <span className="text-gray-700">Platform Fee (12%)</span>
                                                         <span className="inline-flex items-center text-red-600 font-medium">
                                                             -<Image
                                                                 alt="dirham"
@@ -328,7 +328,7 @@ const ReturnOrders = () => {
                                                     </div>
 
                                                     <div className="flex justify-between items-center text-sm">
-                                                        <span className="text-gray-700">Service Charge</span>
+                                                        <span className="text-gray-700">Shipping Charge + VAT</span>
                                                         <span className="inline-flex items-center text-red-600 font-medium">
                                                             -<Image
                                                                 alt="dirham"
@@ -377,6 +377,33 @@ const ReturnOrders = () => {
                                             </div>
                                         );
                                     })()}
+                                </div>
+
+                                {/* KYC Status Section */}
+                                <div className={`p-4 rounded-lg ${selectedOrder?.customerId?.kycApproved ? 'bg-green-50' : 'bg-red-50'}`}>
+                                    <h3 className="text-lg font-medium text-gray-700 mb-4">
+                                        KYC Verification Status
+                                    </h3>
+                                    <div className="bg-white p-4 rounded border border-gray-200">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-gray-500">Verification Status</p>
+                                                <p className={`text-lg font-semibold ${selectedOrder?.customerId?.kycApproved ? 'text-green-700' : 'text-red-700'}`}>
+                                                    {selectedOrder?.customerId?.kycApproved ? 'KYC Approved' : 'KYC Not Completed'}
+                                                </p>
+                                            </div>
+                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedOrder?.customerId?.kycApproved ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                {selectedOrder?.customerId?.kycApproved ? 'Verified' : 'Not Verified'}
+                                            </span>
+                                        </div>
+                                        {!selectedOrder?.customerId?.kycApproved && (
+                                            <div className="mt-3 p-3 bg-red-50 rounded border border-red-200">
+                                                <p className="text-sm text-red-800">
+                                                    ⚠️ User did not complete KYC verification. Payment cannot be processed until KYC is approved.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {/* Customer Banks Section */}
@@ -446,12 +473,6 @@ const ReturnOrders = () => {
                                         </div>
                                     )}
                                 </div>
-
-                                <div className="bg-yellow-50 p-4 rounded-lg">
-                                    <p className="text-sm text-yellow-800">
-                                        <span className="font-semibold">Note:</span> The final withdrawal amount will be transferred to the customer's account after deducting platform fees and service charges.
-                                    </p>
-                                </div>
                             </div>
                         </div>
 
@@ -465,17 +486,21 @@ const ReturnOrders = () => {
                             </button>
                             <button
                                 onClick={handleWithdrawalPaid}
-                                disabled={withdrawalProcessing || selectedOrder?.paidByAdmin === "paid"}
-                                className={`px-4 py-2 rounded-md transition-colors ${withdrawalProcessing || selectedOrder?.paidByAdmin === "paid"
-                                        ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                                        : "bg-green-600 text-white hover:bg-green-700"
+                                disabled={withdrawalProcessing || selectedOrder?.paidByAdmin === "paid" || customerBanks.length === 0 || !selectedOrder?.customerId?.kycApproved}
+                                className={`px-4 py-2 rounded-md transition-colors ${withdrawalProcessing || selectedOrder?.paidByAdmin === "paid" || customerBanks.length === 0 || !selectedOrder?.customerId?.kycApproved
+                                    ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                    : "bg-green-600 text-white hover:bg-green-700"
                                     }`}
                             >
                                 {withdrawalProcessing
                                     ? "Processing..."
                                     : selectedOrder?.paidByAdmin === "paid"
                                         ? "Already Paid"
-                                        : "Withdraw Amount Paid"}
+                                        : !selectedOrder?.customerId?.kycApproved
+                                            ? "KYC Not Approved"
+                                            : customerBanks.length === 0
+                                                ? "No Bank Details"
+                                                : "Withdraw Amount Paid"}
                             </button>
                         </div>
                     </div>

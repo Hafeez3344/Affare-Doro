@@ -25,6 +25,11 @@ const nextConfig = {
         hostname: 'backend.affaredoro.com',
         pathname: '/**', // Allow all paths
       },
+      {
+        protocol: 'https',
+        hostname: 'test-backend.affaredoro.com',
+        pathname: '/**', // Allow all paths
+      },
     ],
   },
 };

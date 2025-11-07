@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 const initialState = {
   pageNavigation: "",
   showSidebar: true,
-  auth: Cookies.get('token') ? true : false,
+  auth: false, // Will be set on client after hydration
 };
 
 export const featuresSlice = createSlice({
